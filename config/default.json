@@ -1,0 +1,15 @@
+{
+	"app": {
+		"port": 3000,
+		"title": "Intranet of TTCKunming"
+	},
+	"db": {
+		"host": "mongodb://localhost/",
+		"port": 12345,
+		"dbName": "development"
+	},
+	"security": {
+		"saltRounds": 10,
+		"signupAccessLifeSpanDays": 5
+	}
+}

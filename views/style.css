@@ -1,0 +1,19 @@
+body {
+	min-height: 100vh;
+}
+
+.drop-target {
+	background-color: whitesmoke;
+	box-sizing: border-box;
+	border: 5px dotted darkgray;
+	border-radius: 3px;
+	color: dimgray;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2em;
+}
+
+.justadiv p {
+	/*text-indent: 5mm;*/
+}

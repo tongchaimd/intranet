@@ -1,0 +1,17 @@
+extends ./layout.jade
+
+block content
+	.box
+		h1.title Log In
+		form(action="/sessions", method="post")
+			.field
+				label.label Username
+				.control
+					input.input(type="input", name="username", placeholder="username")
+			.field
+				label.label Password
+				.control
+					input.input(type="password", name="password" placeholder="password")
+			.field
+				.control
+					input.button.is-primary(type="submit")

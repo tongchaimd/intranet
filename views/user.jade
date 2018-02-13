@@ -1,0 +1,20 @@
+extends ./layout.jade
+
+//- block script
+	//- script(src="../public/user.js", type="application/javascript")
+block content
+	.hero.is-primary
+		.hero-body
+			h1.title Profile of #{u.username}
+	.section
+		.content
+			h2 Full Names
+			if u.fullName.length
+				ul
+					each name in u.fullName
+						li= name
+			else
+				p none
+			h2 email
+			p= u.email
+

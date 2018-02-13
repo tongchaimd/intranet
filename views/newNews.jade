@@ -1,0 +1,34 @@
+extends ./layout.jade
+
+block content
+	.container
+		form
+			.field.is-horizontal
+				.field-label.is-large
+					label.label File
+				.field-body
+					.control
+						.file.has-name.is-boxed.is-large
+							label.file-label
+								input.file-input(type="file" name="doc" onchange="onFilesSelect.call(this.parentNode, null, this.files)")
+								span.file-cta
+									span.file-label
+										span Word(.doc[x]) file
+								.file-name
+									span 
+		.content
+			.justadiv
+			//- .field.is-horizontal
+			//- 	.field-label.is-normal
+			//- 		label.label Title
+			//- 	.field-body
+			//- 		.field
+			//- 			.control
+			//- 				input.input(type="input" name="Title" placeholder="Will be parsed from the file." disabled)
+			//- .field.is-horizontal
+			//- 	.field-label.is-normal
+			//- 		label.label Content
+			//- 	.field-body
+			//- 		.field
+			//- 			.control
+			//- 				textarea.textarea#content(rows="25" name="Title" placeholder="Will be parsed from the file." disabled)
