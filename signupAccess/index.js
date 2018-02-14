@@ -31,7 +31,9 @@ router.post('/', (req, res) => {
 				const signupUrl = new url.URL(path.join(req.get('host'), 'users/new'));
 				signupUrl.searchParams.set('token', token);
 				signupUrl.searchParams.set('tokenId', savedDoc._id);
-				req.flash('success', signupUrl);
+				if (process.env.NODE_ENV === 'development') {
+					req.flash('success', signupUrl);
+				}
 				res.redirect(path.join(req.baseUrl, '/new'));
 			})
 			.catch((err) => {
