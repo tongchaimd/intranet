@@ -21,7 +21,7 @@ exports.randomUrlSafeToken = (length) => {
 };
 
 exports.bcryptHash = function bcryptHash(value) {
-	return bcrypt.hashSync(value, process.env.SALT_ROUNDS);
+	return bcrypt.hashSync(value, +process.env.SALT_ROUNDS);
 };
 
 exports.currentUserMiddleware = function currentUserMiddleware(req, res, next) {
