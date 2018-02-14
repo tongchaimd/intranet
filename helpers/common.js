@@ -1,45 +1,43 @@
-var config = require('config');
-var urlSafeBase64 = require('urlsafe-base64');
-var crypto = require('crypto');
-var url = require('url');
-var bcrypt = require('bcrypt');
-var User = require('../user/user');
+const config = require('config');
+const urlSafeBase64 = require('urlsafe-base64');
+const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+const User = require('../user/user');
 
-var appConfig = config.get('app');
-var securityConfig = config.get('security');
+const appConfig = config.get('app');
+const securityConfig = config.get('security');
 
-exports.buildTitle = function(s) {
-	if(s && s.trim().length != 0) {
-		return s.trim() + " | " + appConfig.title;
-	} else {
-		return appConfig.title;
+exports.buildTitle = function buildTitle(s) {
+	if (s && s.trim().length) {
+		return `${s.trim()} | ${appConfig.title}`;
 	}
+	return appConfig.title;
 };
 
-exports.titleMiddleware = function(req, res, next) {
+exports.titleMiddleware = function titleMiddleware(req, res, next) {
 	res.locals.buildTitle = exports.buildTitle;
 	next();
 };
 
 exports.randomUrlSafeToken = (length) => {
-	var buf = crypto.randomFillSync(Buffer.alloc(length));
+	const buf = crypto.randomFillSync(Buffer.alloc(length));
 	return urlSafeBase64.encode(buf);
 };
 
-exports.bcryptHash = function(value) {
+exports.bcryptHash = function bcryptHash(value) {
 	return bcrypt.hashSync(value, securityConfig.saltRounds);
 };
 
-exports.currentUserMiddleware = function(req, res, next) {
-	if(req.session && req.session.userId) {
+exports.currentUserMiddleware = function currentUserMiddleware(req, res, next) {
+	if (req.session && req.session.userId) {
 		User.findById(req.session.userId)
-		.then((user) => {
-			req.currentUser = user;
-			next();
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+			.then((user) => {
+				req.currentUser = user;
+				next();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	} else {
 		next();
 	}

@@ -1,53 +1,51 @@
-var mongoose = require('mongoose');
-var moment = require('moment');
-var config = require('config');
-var helper = require('../helpers/common');
-var bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const moment = require('moment');
+const config = require('config');
+const helper = require('../helpers/common');
+const bcrypt = require('bcrypt');
 
-var securityConfig = config.get('security');
+const securityConfig = config.get('security');
 
-var signupAccessSchema = new mongoose.Schema({
+const signupAccessSchema = new mongoose.Schema({
 	tokenHash: {
 		type: String,
-		required: true
+		required: true,
 	},
 	expiryDate: {
 		type: Date,
-		required: true
-	}
+		required: true,
+	},
 });
 
-signupAccessSchema.pre('validate', function() {
+signupAccessSchema.pre('validate', function setExpiryDate() {
 	this.expiryDate = moment().add(securityConfig.signupAccessLifeSpanDays, 'days').toDate();
 });
 
 signupAccessSchema.virtual('token')
-	.get(function() {
+	.get(function getToken() {
 		return this._token;
 	})
-	.set(function(value) {
+	.set(function setToken(value) {
 		this._token = value;
 		this.tokenHash = helper.bcryptHash(value);
 	});
 
-var SignupAccess = mongoose.model('SignupAccess', signupAccessSchema);
+const SignupAccess = mongoose.model('SignupAccess', signupAccessSchema);
 
-SignupAccess.validateToken = function(token, id) {
+SignupAccess.validateToken = function validateToken(token, id) {
 	return this.findById(id)
-					.then((access) => {
-						if(!access) {
-							return false;
-						}
-						else if(access.expiryDate < moment()) {
-							return false;
-						}
-						else if(!bcrypt.compare(token, access.tokenHash)) {
-							return false;
-						}
-						else {
-							return access;
-						}
-					});
+		.then((access) => {
+			if (!access) {
+				return false;
+			}
+			if (access.expiryDate < moment()) {
+				return false;
+			}
+			if (!bcrypt.compare(token, access.tokenHash)) {
+				return false;
+			}
+			return access;
+		});
 };
 
 module.exports = SignupAccess;

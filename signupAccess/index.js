@@ -1,16 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var moment = require('moment');
-var SignupAccess = require('./signupAccess');
-var config = require('config');
-var crypto = require('crypto');
-var path = require('path');
-var url = require('url');
-var helper = require('../helpers/common');
+const express = require('express');
+const SignupAccess = require('./signupAccess');
+const path = require('path');
+const url = require('url');
+const helper = require('../helpers/common');
 
-var securityConfig = config.get('security');
+const router = express.Router();
 
-router.get('/new', function(req, res) {
+router.get('/new', (req, res) => {
 	res.render('newSignupAccess');
 });
 
@@ -23,26 +19,26 @@ router.get('/new', function(req, res) {
 // 					});
 // }
 
-router.post('/', function(req, res) {
-	var email = req.body.email;
-	if(email) {
-		var doc = new SignupAccess();
-		var token = helper.randomUrlSafeToken(32);
+router.post('/', (req, res) => {
+	const email = req.body.email;
+	if (email) {
+		const doc = new SignupAccess();
+		const token = helper.randomUrlSafeToken(32);
 		doc.token = token;
 		doc.save()
-		.then((doc) => {
-			req.flash('success', 'Signup invitation email sent.');
-			var signupUrl = new url.URL(path.join(req.get('host'), 'users/new'));
-			signupUrl.searchParams.set('token', token);
-			signupUrl.searchParams.set('tokenId', doc._id);
-			req.flash('success', signupUrl);
-			res.redirect(path.join(req.baseUrl, '/new'));
-		})
-		.catch((err) => {
-			console.log(err);
-			req.flash('danger', 'The request failed!');
-			res.redirect(path.join(req.baseUrl, '/new'));
-		});
+			.then((savedDoc) => {
+				req.flash('success', 'Signup invitation email sent.');
+				const signupUrl = new url.URL(path.join(req.get('host'), 'users/new'));
+				signupUrl.searchParams.set('token', token);
+				signupUrl.searchParams.set('tokenId', savedDoc._id);
+				req.flash('success', signupUrl);
+				res.redirect(path.join(req.baseUrl, '/new'));
+			})
+			.catch((err) => {
+				console.log(err);
+				req.flash('danger', 'The request failed!');
+				res.redirect(path.join(req.baseUrl, '/new'));
+			});
 	}
 });
 

@@ -2,6 +2,13 @@
 	"extends": "airbnb-base",
 	"rules": {
 		"indent": ["error", "tab"],
-		"no-tabs": "off"
+		"no-tabs": "off",
+		"no-use-before-define": "off",
+		"no-underscore-dangle": "off",
+		"prefer-destructuring": "off"
+	},
+	"env": {
+		"browser": true,
+		"node": true
 	}
 }

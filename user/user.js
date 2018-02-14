@@ -1,20 +1,20 @@
-var mongoose = require('mongoose');
-var helper = require('../helpers/common');
+const mongoose = require('mongoose');
+const helper = require('../helpers/common');
 
-String.prototype.capitalize = function() {
-	return this.charAt(0).toUpperCase() + this.slice(1);
-};
+function capitalize(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
-var uniqueValidator = function(key) {
-	return function(v, cb) {
-		User.findOne({ [key]: v }, function(err, u) {
-			cb(!u, `${key.capitalize()} has already been taken!`);
+const uniqueValidator = function uniqueValidator(key) {
+	return (v, cb) => {
+		User.findOne({ [key]: v }, (err, u) => {
+			cb(!u, `${capitalize(key)} has already been taken!`);
 		});
 	};
 };
 
 // schema
-var userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		unique: true,
@@ -24,12 +24,12 @@ var userSchema = new mongoose.Schema({
 		trim: true,
 		validate: {
 			isAsync: true,
-			validator: uniqueValidator('username')
-		}
+			validator: uniqueValidator('username'),
+		},
 	},
 	passwordHash: {
 		type: String,
-		required: true
+		required: true,
 	},
 	email: {
 		type: String,
@@ -38,50 +38,44 @@ var userSchema = new mongoose.Schema({
 		trim: true,
 		validate: {
 			isAsync: true,
-			validator: uniqueValidator('email')
-		}
+			validator: uniqueValidator('email'),
+		},
 	},
 	fullName: {
-		type: [String]
-	}
+		type: [String],
+	},
 });
 
 userSchema.virtual('password')
-	.get(function() {
-		return this._password;
+	.get(function getPassword() {
+		return this._passwordValue;
 	})
-	.set(function(value) {
+	.set(function setPassword(value) {
 		this._password = value;
 		this.passwordHash = helper.bcryptHash(value);
 	});
 
 userSchema.virtual('passwordConfirmation')
-	.get(function() {
+	.get(function getPasswordConfirmation() {
 		return this._passwordConfirmation;
 	})
-	.set(function(value) {
+	.set(function setPasswordConfirmation(value) {
 		this._passwordConfirmation = value;
 	});
 
-userSchema.path('passwordHash').validate(function() {
-	if(this._password || this._passwordConfirmation) {
-
-		if(this._password.length < 4) {
+userSchema.path('passwordHash').validate(function validatePasswordConfirmation() {
+	if (this._password || this._passwordConfirmation) {
+		if (this.password.length < 4) {
 			this.invalidate('password', 'Password must be at least 4 characters long!');
 		}
-		if(this._password !== this.passwordConfirmation) {
+		if (this._password !== this._passwordConfirmation) {
 			this.invalidate('passwordConfirmation', 'Password confirmation must be the same as password!');
 		}
-
 	} else {
 		this.invalidate('password', 'Password is required!');
 	}
 });
 
-var User = mongoose.model('User', userSchema);
-
-User.authenticate = function(password) {
-
-};
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

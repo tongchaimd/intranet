@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
 
-router.get('/new', function(req, res) {
-	res.render('newNews', {title: 'News', content: '<p>lololol<em>crap</em></p><br />'});
+const router = express.Router();
+
+router.get('/new', (req, res) => {
+	res.render('newNews', { title: 'News', content: '<p>lololol<em>crap</em></p><br />' });
 });
 
 module.exports = router;

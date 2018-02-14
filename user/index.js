@@ -1,20 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var User = require('./user');
-var SignupAccess = require('../signupAccess/signupAccess');
-var path = require('path');
+const express = require('express');
+const User = require('./user');
+const SignupAccess = require('../signupAccess/signupAccess');
+const path = require('path');
 
-router.get('/new', function(req, res) {
-	var token = req.query.token;
-	var tokenId = req.query.tokenId;
+const router = express.Router();
+
+router.get('/new', (req, res) => {
+	const { token, tokenId } = req.query;
 	SignupAccess.validateToken(token, tokenId)
 		.then((access) => {
-			if ( access ) {
-				return res.render('signup', {title: 'Signup', token: token, tokenId: tokenId});
-			}
-			else {
-				res.render('invalidToken');
-			}
+			if (access) res.render('signup', { title: 'Signup', token, tokenId });
+			else res.render('invalidToken');
 		})
 		.catch((err) => {
 			console.log(err);
@@ -31,48 +27,46 @@ router.get('/new', function(req, res) {
 	// });
 });
 
-router.post('/', function(req, res) {
-	var input = req.body;
-	var user = new User({
+router.post('/', (req, res) => {
+	const input = req.body;
+	const user = new User({
 		email: input.email,
 		username: input.username,
 		password: input.password,
-		passwordConfirmation: input.passwordConfirmation
+		passwordConfirmation: input.passwordConfirmation,
 	});
 	SignupAccess.validateToken(input.token, input.tokenId)
 		.then((access) => {
-			if(access) {
+			if (access) {
 				this.access = access;
 				return user.save();
-			} else {
-				return Promise.reject(new Error('token invalid'));
 			}
+			return Promise.reject(new Error('token invalid'));
 		})
-		.then((user) => {
+		.then((savedUser) => {
 			this.access.remove();
-			return res.end(user.toString());
+			return res.end(savedUser.toString());
 		})
 		.catch((err) => {
 			// if it's not a validation error
-			if(!err.errors) {
+			if (!err.errors) {
 				console.log(err);
 				res.render('sumtingwong');
-			}
-			else {
-				for(var errPath in err.errors) {
-					req.flash('danger', err.errors[errPath].message);
-				}
-				var signupPath = path.join(req.baseUrl, 'new');
+			} else {
+				err.errors.values.forEach((message) => {
+					req.flash('danger', message);
+				});
+				const signupPath = path.join(req.baseUrl, 'new');
 				res.redirect(`${signupPath}/?token=${input.token}&tokenId=${input.tokenId}`);
 			}
 		});
 });
 
-router.get('/:id', function(req, res) {
+router.get('/:id', (req, res) => {
 	User.findById(req.params.id)
 		.then((user) => {
-			if(user) {
-				return res.render('user', {u: user});
+			if (user) {
+				res.render('user', { u: user });
 			}
 		})
 		.catch((err) => {

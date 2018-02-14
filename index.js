@@ -1,44 +1,44 @@
-var express = require('express');
-var app = express();
-
 // imports
-var mongoose = require('mongoose');
-var config = require('config');
-var url = require('url');
-var path = require('path');
-var bodyParser = require('body-parser');
-var flash = require('express-flash');
-var session = require('express-session');
-var common = require('./helpers/common');
+const mongoose = require('mongoose');
+const config = require('config');
+const url = require('url');
+const path = require('path');
+const bodyParser = require('body-parser');
+const flash = require('express-flash');
+const session = require('express-session');
+const common = require('./helpers/common');
+const express = require('express');
+
+const app = express();
 
 // load configs
-var appConfig = config.get('app')
-var dbConfig = config.get('db');
+const appConfig = config.get('app');
+const dbConfig = config.get('db');
 
 // app setting and middleware
 app.set('views', './views');
 app.set('view engine', 'jade');
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
 	saveUninitialized: false,
 	secret: 'my little pony',
-	resave: false
+	resave: false,
 }));
 app.use(flash());
 app.use(common.titleMiddleware);
 app.use(common.currentUserMiddleware);
 
 // connect to database
-var dbUrl = new url.URL(dbConfig.host);
+const dbUrl = new url.URL(dbConfig.host);
 dbUrl.port = dbConfig.port;
 dbUrl.pathname = dbConfig.dbName;
 mongoose.connect(dbUrl.toString());
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // routing
-app.get('/something', (req,res) => {
+app.get('/something', (req, res) => {
 	res.end('anything');
 });
 app.use('/users', require('./user/index'));
