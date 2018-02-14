@@ -1,6 +1,5 @@
 // imports
 const mongoose = require('mongoose');
-const config = require('config');
 const url = require('url');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -8,12 +7,9 @@ const flash = require('express-flash');
 const session = require('express-session');
 const common = require('./helpers/common');
 const express = require('express');
+require('dotenv').config();
 
 const app = express();
-
-// load configs
-const appConfig = config.get('app');
-const dbConfig = config.get('db');
 
 // app setting and middleware
 app.set('views', './views');
@@ -30,9 +26,9 @@ app.use(common.titleMiddleware);
 app.use(common.currentUserMiddleware);
 
 // connect to database
-const dbUrl = new url.URL(dbConfig.host);
-dbUrl.port = dbConfig.port;
-dbUrl.pathname = dbConfig.dbName;
+const dbUrl = new url.URL(process.env.DB_HOST);
+dbUrl.port = process.env.DB_PORT;
+dbUrl.pathname = process.env.DB_NAME;
 mongoose.connect(dbUrl.toString());
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -52,4 +48,4 @@ app.get('/sumtingwong', (req, res) => {
 // 	res.redirect('/signup');
 // });
 
-app.listen(appConfig.port);
+app.listen(process.env.PORT);

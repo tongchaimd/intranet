@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
-const config = require('config');
 const helper = require('../helpers/common');
 const bcrypt = require('bcrypt');
-
-const securityConfig = config.get('security');
 
 const signupAccessSchema = new mongoose.Schema({
 	tokenHash: {
@@ -18,7 +15,7 @@ const signupAccessSchema = new mongoose.Schema({
 });
 
 signupAccessSchema.pre('validate', function setExpiryDate() {
-	this.expiryDate = moment().add(securityConfig.signupAccessLifeSpanDays, 'days').toDate();
+	this.expiryDate = moment().add(process.env.SIGNUP_ACCESS_LIFE_SPAN_DAYS, 'days').toDate();
 });
 
 signupAccessSchema.virtual('token')

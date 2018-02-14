@@ -1,17 +1,13 @@
-const config = require('config');
 const urlSafeBase64 = require('urlsafe-base64');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const User = require('../user/user');
 
-const appConfig = config.get('app');
-const securityConfig = config.get('security');
-
 exports.buildTitle = function buildTitle(s) {
 	if (s && s.trim().length) {
-		return `${s.trim()} | ${appConfig.title}`;
+		return `${s.trim()} | ${process.env.TITLE}`;
 	}
-	return appConfig.title;
+	return process.env.TITLE;
 };
 
 exports.titleMiddleware = function titleMiddleware(req, res, next) {
@@ -25,7 +21,7 @@ exports.randomUrlSafeToken = (length) => {
 };
 
 exports.bcryptHash = function bcryptHash(value) {
-	return bcrypt.hashSync(value, securityConfig.saltRounds);
+	return bcrypt.hashSync(value, process.env.SALT_ROUNDS);
 };
 
 exports.currentUserMiddleware = function currentUserMiddleware(req, res, next) {

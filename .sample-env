@@ -1,0 +1,13 @@
+## App
+PORT=3000
+TITLE=Intranet of TTCKunming
+
+## Database(MongoDB)
+DB_HOST=mongodb://localhost/
+DB_PORT=12345
+DB_NAME=development
+
+## Security
+SALT_ROUNDS=10
+# days before invitation link for signing up expires
+SIGNUP_ACCESS_LIFE_SPAN_DAYS=5
