@@ -10,15 +10,6 @@ router.get('/new', (req, res) => {
 	res.render('newSignupAccess');
 });
 
-// function randomTokenUntilUnique(length) {
-// 	var token = helper.randomUrlSafeToken(length);
-// 	return SignupAccess.findOne({token: token})
-// 					.then((u) => {
-// 						if(u) return randomTokenUntilUnique(length);
-// 						return token;
-// 					});
-// }
-
 router.post('/', (req, res) => {
 	const email = req.body.email;
 	if (email) {

@@ -44,8 +44,5 @@ app.use('/news', require('./news/index'));
 app.get('/sumtingwong', (req, res) => {
 	res.render('sumtingwong');
 });
-// app.get('/', (req, res) => {
-// 	res.redirect('/signup');
-// });
 
 app.listen(process.env.PORT);

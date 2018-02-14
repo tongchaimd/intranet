@@ -15,16 +15,6 @@ router.get('/new', (req, res) => {
 		.catch((err) => {
 			console.log(err);
 		});
-	// SignupAccess.findOne({token: token})
-	// .then((access) => {
-	// 	if(!access) return Promise.reject('no access');
-	// 	if(access.expiryDate < moment()) return Promise.reject('expired');
-	// 	res.render('signup', {title: 'Signup', token: req.query.token});
-	// })
-	// .catch((err) => {
-	// 	console.log(err);
-	// 	res.render('invalidToken');
-	// });
 });
 
 router.post('/', (req, res) => {
