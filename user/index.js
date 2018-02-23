@@ -17,6 +17,9 @@ router.get('/new', (req, res) => {
 		});
 });
 
+/**
+ * @todo consider about using 'this' keyword
+ */
 router.post('/', (req, res) => {
 	const input = req.body;
 	const user = new User({

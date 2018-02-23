@@ -1,3 +1,12 @@
+/**
+	* replace calling element with target box when user starts
+	* dragging file(s) and call callback when user drop file(s) on
+	* target with arguments of file(s)
+	* text parameter will be displayed in target box
+	* @todo refactor to be more atomic
+  * @param {string} text - will be displayed in target box
+  * @param {Function} callback - will be called with files that user drop
+  */
 Node.prototype.addFileDroppingListener = function addFileDroppingListener(text, callback) {
 	const elem = this;
 	let dragging = false;
@@ -34,6 +43,7 @@ Node.prototype.addFileDroppingListener = function addFileDroppingListener(text, 
 	document.body.addEventListener('dragleave', (event) => {
 		event.stopPropagation();
 		event.preventDefault();
+		// won't consider dragging stopped unless 'dragover' doesn't fire in 50 ms
 		timeout = setTimeout(stoppedDragging, 50);
 	});
 	document.body.addEventListener('drop', (event) => {

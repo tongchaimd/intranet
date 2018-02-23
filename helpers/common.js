@@ -3,13 +3,16 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const User = require('../user/user');
 
+/** build title in the template of `{pagename} | {appname}` */
 exports.buildTitle = function buildTitle(pageName) {
 	if (pageName && pageName.trim().length) {
 		return `${pageName.trim()} | ${process.env.TITLE}`;
 	}
+	// no pageName
 	return process.env.TITLE;
 };
 
+/** expose buildTitle to Views */
 exports.titleMiddleware = function titleMiddleware(req, res, next) {
 	res.locals.buildTitle = exports.buildTitle;
 	next();
