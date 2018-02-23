@@ -13,7 +13,7 @@ const app = express();
 
 // app setting and middleware
 app.set('views', './views');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
 	saveUninitialized: false,
