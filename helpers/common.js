@@ -3,9 +3,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const User = require('../user/user');
 
-exports.buildTitle = function buildTitle(s) {
-	if (s && s.trim().length) {
-		return `${s.trim()} | ${process.env.TITLE}`;
+exports.buildTitle = function buildTitle(pageName) {
+	if (pageName && pageName.trim().length) {
+		return `${pageName.trim()} | ${process.env.TITLE}`;
 	}
 	return process.env.TITLE;
 };
