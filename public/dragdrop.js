@@ -12,11 +12,10 @@ Node.prototype.addFileDroppingListener = function addFileDroppingListener(text, 
 	let dragging = false;
 	let timeout;
 	const parent = elem.parentNode;
-	const height = elem.offsetHeight;
-	const width = elem.offsetWidth;
+	const elemComputedStyle = window.getComputedStyle(elem);
 	const dropTarget = document.createElement('div');
-	dropTarget.style.height = `${height} px`;
-	dropTarget.style.width = `${width} px`;
+	dropTarget.style.height = elemComputedStyle.height;
+	dropTarget.style.width = elemComputedStyle.width;
 	dropTarget.className = 'drop-target';
 	dropTarget.textContent = text;
 
