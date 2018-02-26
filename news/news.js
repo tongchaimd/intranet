@@ -5,7 +5,7 @@ const newsSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	content: {
+	markedupContent: {
 		type: String,
 		required: true,
 	},
@@ -25,6 +25,10 @@ const newsSchema = new mongoose.Schema({
 	sourceUrl: {
 		type: String,
 	},
+	images: [new mongoose.Schema({
+		data: Buffer,
+		contentType: String,
+	})],
 });
 
 const News = mongoose.model('News', newsSchema);

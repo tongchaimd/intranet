@@ -1,6 +1,12 @@
-if images
-	each image in images
-		img.image(src="#{image.src}")
-h1.title = title
-.content
-	!{content}
+h1.title= title
+p.subtitle source: #[a(href=sourceUrl) #{sourceUrl}]
+
+if imageSourceArray && imageSourceArray.length
+	div.images
+		img.image(src=imageSourceArray[0])
+		if imageSourceArray.length > 1
+			img.image(src=imageSourceArray[0])
+		if imageSourceArray.length > 2
+			a(href="#") #{imageSourceArray.length - 2} more image(s)
+.content.
+	!{markedupContent}
