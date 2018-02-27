@@ -7,11 +7,7 @@ html
 			include ../node_modules/bulma/css/bulma.css
 			include ./style.css
 		block script
-			script(src="../public/dragdrop.js")
-			script(src="../public/mammoth.browser.min.js")
-			script(src="../public/newNews.js")
-			script.
-	body(onload="begin()")
+	body
 		if process.env.NODE_ENV == 'development'
 			.dropdown.is-up(style="position: fixed; bottom: 0%; z-index: 1000;")
 				.dropdown-trigger(onclick="this.parentNode.classList.toggle('is-active')")

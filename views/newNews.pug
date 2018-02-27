@@ -1,5 +1,7 @@
 extends ./layout.pug
 
+block script
+	script(type="module" src="../public/newNews.js")
 block content
 	.container
 		form
@@ -10,7 +12,7 @@ block content
 					.control
 						.file.has-name.is-boxed.is-large
 							label.file-label
-								input.file-input(type="file" name="doc" onchange="onFilesSelect.call(this.parentNode, null, this.files)")
+								input.file-input(type="file" name="doc")
 								span.file-cta
 									span.file-label
 										span Word(.doc[x]) file

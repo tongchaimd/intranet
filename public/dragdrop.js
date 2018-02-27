@@ -7,8 +7,7 @@
   * @param {string} text - will be displayed in target box
   * @param {Function} callback - will be called with files that user drop
   */
-Node.prototype.addFileDroppingListener = function addFileDroppingListener(text, callback) {
-	const elem = this;
+const addFileDroppingListener = function addFileDroppingListener(elem, text, callback) {
 	let dragging = false;
 	let timeout;
 	const parent = elem.parentNode;
@@ -54,3 +53,5 @@ Node.prototype.addFileDroppingListener = function addFileDroppingListener(text, 
 		}
 	});
 };
+
+export default addFileDroppingListener;

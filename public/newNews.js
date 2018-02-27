@@ -1,3 +1,6 @@
+import mammoth from './mammoth.browser.js';
+import addFileDroppingListener from './dragdrop.js';
+
 function readWordAsHtml(file) {
 	const reader = new FileReader();
 	return reader.pReadAsArrayBuffer(file)
@@ -106,8 +109,12 @@ function onFilesSelect(err, files) {
 }
 
 function begin() {
-	const fileLabel = document.querySelector('.file-label');
-	const fileName = fileLabel.querySelector('.file-name > span');
+	const fileLabelElem = document.querySelector('.file-label');
 
-	fileLabel.addFileDroppingListener('News', onFilesSelect.bind(fileLabel));
+	addFileDroppingListener(fileLabelElem, 'News', onFilesSelect.bind(fileLabelElem));
+
+	const fileInputElem = document.querySelector('.file-input');
+	fileInputElem.addEventListener('change', () => { onFilesSelect.call(fileInputElem.parentNode, null, fileInputElem.files); });
 }
+
+window.onload = begin;
