@@ -15,6 +15,7 @@ const app = express();
 app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(session({
 	saveUninitialized: false,
 	secret: 'my little pony',
