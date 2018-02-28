@@ -31,9 +31,11 @@ function htmlToNews(html) {
 		imageElem.parentNode.removeChild(imageElem);
 	}
 
-	const titleElem = container.querySelector('p, h1');
-	news.title = titleElem.textContent;
-	titleElem.parentNode.removeChild(titleElem);
+	while (!news.title || !news.title.trim()) {
+		const titleElem = container.querySelector('p, h1');
+		news.title = titleElem.textContent;
+		titleElem.parentNode.removeChild(titleElem);
+	}
 
 	const urlRegex = /(?:http(?:s)?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 	const urlMatches = container.innerHTML.match(urlRegex);
