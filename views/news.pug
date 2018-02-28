@@ -2,11 +2,15 @@ h1.title= title
 p.subtitle source: #[a(href=sourceUrl) #{sourceUrl}]
 
 if imageSourceArray && imageSourceArray.length
-	div.images
-		img.image(src=imageSourceArray[0])
-		if imageSourceArray.length > 1
-			img.image(src=imageSourceArray[0])
-		if imageSourceArray.length > 2
-			a(href="#") #{imageSourceArray.length - 2} more image(s)
+	.news-image-container.container.is-flex-desktop
+		div.level
+			div.level-item
+				img.image(src=imageSourceArray[0])
+			if imageSourceArray.length > 1
+				div.level-item
+					img.image(src=imageSourceArray[0])
+	if imageSourceArray.length > 2
+		.level
+			a.level-item(href="#") #{imageSourceArray.length - 2} more image(s)
 .content.
 	!{markedupContent}
