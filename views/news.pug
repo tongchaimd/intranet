@@ -1,6 +1,8 @@
 h1.title= title
 if sourceUrl
-	p.subtitle source: #[a#preview-source(href=sourceUrl) #{sourceUrl}]
+	p.subtitle#preview-source source: #[a(href=sourceUrl) #{sourceUrl}]
+else
+	p.subtitle.is-hidden#preview-source source: #[a]
 
 if imageSourceArray && imageSourceArray.length
 	.news-image-container.container.is-flex-desktop

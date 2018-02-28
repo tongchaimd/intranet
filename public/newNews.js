@@ -113,11 +113,15 @@ function onFilesSelect(err, files) {
 }
 
 function updatePreviewSource(newValue) {
-	const previewSourceUrlElem = document.querySelector('#preview-source');
-	if (previewSourceUrlElem) {
-		previewSourceUrlElem.text = newValue;
-		previewSourceUrlElem.href = newValue;
+	const previewSourceElem = document.querySelector('#preview-source');
+	if (previewSourceElem.classList.contains('is-hidden') && newValue) {
+		previewSourceElem.classList.remove('is-hidden');
+	} else if (!previewSourceElem.classList.contains('is-hidden') && !newValue) {
+		previewSourceElem.classList.add('is-hidden');
 	}
+	const sourceUrlElem = previewSourceElem.querySelector('a');
+	sourceUrlElem.text = newValue;
+	sourceUrlElem.href = newValue;
 }
 
 function begin() {
@@ -130,7 +134,7 @@ function begin() {
 
 	const sourceUrlInputElem = document.querySelector('input[name="sourceUrl"]');
 	sourceUrlInputElem.addEventListener('input', () => {
-		updatePreviewSource(sourceUrlInputElem.value);
+		updatePreviewSource(sourceUrlInputElem.value.trim());
 	});
 }
 
