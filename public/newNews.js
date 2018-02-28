@@ -114,14 +114,16 @@ function onFilesSelect(err, files) {
 
 function updatePreviewSource(newValue) {
 	const previewSourceElem = document.querySelector('#preview-source');
-	if (previewSourceElem.classList.contains('is-hidden') && newValue) {
-		previewSourceElem.classList.remove('is-hidden');
-	} else if (!previewSourceElem.classList.contains('is-hidden') && !newValue) {
-		previewSourceElem.classList.add('is-hidden');
+	if (previewSourceElem) {
+		if (previewSourceElem.classList.contains('is-hidden') && newValue) {
+			previewSourceElem.classList.remove('is-hidden');
+		} else if (!previewSourceElem.classList.contains('is-hidden') && !newValue) {
+			previewSourceElem.classList.add('is-hidden');
+		}
+		const sourceUrlElem = previewSourceElem.querySelector('a');
+		sourceUrlElem.text = newValue;
+		sourceUrlElem.href = newValue;
 	}
-	const sourceUrlElem = previewSourceElem.querySelector('a');
-	sourceUrlElem.text = newValue;
-	sourceUrlElem.href = newValue;
 }
 
 function begin() {
