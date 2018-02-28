@@ -1,5 +1,6 @@
 h1.title= title
-p.subtitle source: #[a(href=sourceUrl) #{sourceUrl}]
+if sourceUrl
+	p.subtitle source: #[a#preview-source(href=sourceUrl) #{sourceUrl}]
 
 if imageSourceArray && imageSourceArray.length
 	.news-image-container.container.is-flex-desktop

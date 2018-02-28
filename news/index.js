@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
 
 router.post('/preview', (req, res) => {
 	const input = req.body;
-	if (input.title && input.markedupContent && input.sourceUrl) {
+	if (input.title && input.markedupContent) {
 		res.render('news', input);
 	} else {
 		res.status(400).send('ERROR 400: bad request');

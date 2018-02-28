@@ -79,9 +79,11 @@ function onFilesSelect(err, files) {
 			if (!news.markedupContent) {
 				return Promise.reject(new Error('Couldn\'t find content in the document'));
 			}
-			if (!news.sourceUrl) {
-				return Promise.reject(new Error('Couldn\'t find source\'s url in the document'));
-			}
+
+			// update source url input
+			const sourceUrlInputElem = document.querySelector('input[name="sourceUrl"]');
+			sourceUrlInputElem.value = news.sourceUrl || '';
+
 			previewContainer.textContent = 'Loading...';
 			return fetch(new URL('/news/preview', window.location.href), {
 				method: 'POST',
@@ -108,6 +110,14 @@ function onFilesSelect(err, files) {
 		});
 }
 
+function updatePreviewSource(newValue) {
+	const previewSourceUrlElem = document.querySelector('#preview-source');
+	if (previewSourceUrlElem) {
+		previewSourceUrlElem.text = newValue;
+		previewSourceUrlElem.href = newValue;
+	}
+}
+
 function begin() {
 	const fileLabelElem = document.querySelector('.file-label');
 
@@ -115,6 +125,11 @@ function begin() {
 
 	const fileInputElem = document.querySelector('.file-input');
 	fileInputElem.addEventListener('change', () => { onFilesSelect.call(fileInputElem.parentNode, null, fileInputElem.files); });
+
+	const sourceUrlInputElem = document.querySelector('input[name="sourceUrl"]');
+	sourceUrlInputElem.addEventListener('input', () => {
+		updatePreviewSource(sourceUrlInputElem.value);
+	});
 }
 
 window.onload = begin;
