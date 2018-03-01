@@ -8,21 +8,6 @@ html
 			include ./style.css
 		block script
 	body
-		if process.env.NODE_ENV == 'development'
-			.dropdown.is-up(style="position: fixed; bottom: 0%; z-index: 1000;")
-				.dropdown-trigger(onclick="this.parentNode.classList.toggle('is-active')")
-					p dev
-				.dropdown-menu
-					.dropdown-content
-						a.dropdown-item(href="/users/new") Sign Up
-						a.dropdown-item(href="/signupAccess/new") New Signup Access
-						a.dropdown-item(href="/sessions/new") Sign In
-						a.dropdown-item(href="/news/new") New News
-		if (Object.keys(messages).length)
-			each key in Object.keys(messages)
-				article.message(class="is-#{key}")
-					.message-body
-						each message in messages[key]
-							ul
-								li= message
+		include partials/developerNav.pug
+		include partials/flash.pug
 		block content
