@@ -1,6 +1,6 @@
 if (Object.keys(messages).length)
 	each key in Object.keys(messages)
-		article.message(class="is-#{key}")
+		article.message(class=`is-${key}`)
 			.message-body
 				each message in messages[key]
 					ul
