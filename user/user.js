@@ -65,7 +65,7 @@ userSchema.virtual('passwordConfirmation')
 
 userSchema.path('passwordHash').validate(function validatePasswordConfirmation() {
 	if (this._password || this._passwordConfirmation) {
-		if (this.password.length < 4) {
+		if (this._password.length < 4) {
 			this.invalidate('password', 'Password must be at least 4 characters long!');
 		}
 		if (this._password !== this._passwordConfirmation) {

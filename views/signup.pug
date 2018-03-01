@@ -4,8 +4,8 @@ block content
 	.box
 		h1.title Register
 		form(action="/users", method="post")
-			input(type="hidden", name="token", value="#{token}")
-			input(type="hidden", name="tokenId", value="#{tokenId}")
+			input(type="hidden", name="token", value=token)
+			input(type="hidden", name="tokenId", value=tokenId)
 			.field
 				label.label Email
 				.control
