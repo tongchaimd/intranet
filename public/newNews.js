@@ -140,4 +140,7 @@ function begin() {
 	});
 }
 
-window.onload = begin;
+if (!window.jobList) {
+	window.jobList = [];
+}
+window.jobList.push(begin);
