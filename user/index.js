@@ -49,8 +49,7 @@ router.post('/', (req, res) => {
 				Object.values(err.errors).forEach((validationError) => {
 					req.flash('danger', validationError.message);
 				});
-				const signupPath = path.join(req.baseUrl, 'new');
-				res.redirect(`${signupPath}/?token=${input.token}&tokenId=${input.tokenId}`);
+				res.redirect('back');
 			}
 		});
 });

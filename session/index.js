@@ -26,18 +26,18 @@ router.post('/', (req, res) => {
 				if (good) {
 					req.session.userId = this.user._id;
 					req.flash('success', 'logged in!');
-					return res.redirect(path.join(req.baseUrl, 'new'));
+					return res.redirect('back');
 				}
 				return Promise.reject(new Error('incorrect password'));
 			})
 			.catch((err) => {
 				console.log(err);
 				req.flash('danger', 'Username or password is incorrect.');
-				res.redirect(path.join(req.baseUrl, 'new'));
+				res.redirect('back');
 			});
 	} else {
 		req.flash('danger', 'Both fields are required!');
-		res.redirect(path.join(req.baseUrl, 'new'));
+		res.redirect('back');
 	}
 });
 

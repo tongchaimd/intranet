@@ -25,12 +25,12 @@ router.post('/', (req, res) => {
 				if (process.env.NODE_ENV === 'development') {
 					req.flash('success', signupUrl);
 				}
-				res.redirect(path.join(req.baseUrl, '/new'));
+				res.redirect('back');
 			})
 			.catch((err) => {
 				console.log(err);
 				req.flash('danger', 'The request failed!');
-				res.redirect(path.join(req.baseUrl, '/new'));
+				res.redirect('back');
 			});
 	}
 });
