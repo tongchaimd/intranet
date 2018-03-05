@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(session({
 	saveUninitialized: false,
-	secret: 'my little pony',
+	secret: process.env.COOKIE_SECRET,
 	resave: false,
 }));
 app.use(flash());

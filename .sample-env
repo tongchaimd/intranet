@@ -11,3 +11,4 @@ DB_NAME=development
 SALT_ROUNDS=10
 # days before invitation link for signing up expires
 SIGNUP_ACCESS_LIFE_SPAN_DAYS=5
+COOKIE_SECRET=alrighty then
