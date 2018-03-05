@@ -13,6 +13,7 @@ require('dotenv').config();
 const app = express();
 
 // app setting and middleware
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,6 +46,5 @@ app.use('/news', mustBeSignedIn, require('./news/index')); // eslint-disable-lin
 app.get('/sumtingwong', (req, res) => {
 	res.render('sumtingwong');
 });
-app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.listen(process.env.PORT);
