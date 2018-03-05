@@ -1,10 +1,9 @@
-if process.env.NODE_ENV == 'development'
-	.dropdown.is-up(style="position: fixed; bottom: 0%; z-index: 1000;")
-		.dropdown-trigger(onclick="this.parentNode.classList.toggle('is-active')")
-			p dev
-		.dropdown-menu
-			.dropdown-content
-				a.dropdown-item(href="/users/new") Sign Up
-				a.dropdown-item(href="/signupAccess/new") New Signup Access
-				a.dropdown-item(href="/sessions/new") Sign In
-				a.dropdown-item(href="/news/new") New News
+.dropdown.is-up(style="position: fixed; bottom: 0%; z-index: 1000;")
+	.dropdown-trigger(onclick="this.parentNode.classList.toggle('is-active')")
+		p dev
+	.dropdown-menu
+		.dropdown-content
+			a.dropdown-item(href="/users/new") Sign Up
+			a.dropdown-item(href="/signupAccess/new") New Signup Access
+			a.dropdown-item(href="/sessions/new") Sign In
+			a.dropdown-item(href="/news/new") New News

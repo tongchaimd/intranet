@@ -12,6 +12,7 @@ html
 	body
 		if isSignedIn
 			include partials/header.pug
-		include partials/developerNav.pug
+		if process.env.NODE_ENV == 'development'
+			include partials/developerNav.pug
 		include partials/flash.pug
 		block content
