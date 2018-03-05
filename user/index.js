@@ -1,7 +1,6 @@
 const express = require('express');
 const User = require('./user');
 const SignupAccess = require('../signupAccess/signupAccess');
-const path = require('path');
 const authHelper = require('../helpers/authorization');
 
 const router = express.Router();
