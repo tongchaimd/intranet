@@ -7,7 +7,7 @@ function capitalize(str) {
 
 const uniqueValidator = function uniqueValidator(key) {
 	return (v, cb) => {
-		User.findOne({ [key]: v }, (err, u) => {
+		User.findOne({ [key]: v, _id: { $ne: this._id } }, (err, u) => {
 			cb(!u, `${capitalize(key)} has already been taken!`);
 		});
 	};
@@ -71,7 +71,7 @@ userSchema.path('passwordHash').validate(function validatePasswordConfirmation()
 		if (this._password !== this._passwordConfirmation) {
 			this.invalidate('passwordConfirmation', 'Password confirmation must be the same as password!');
 		}
-	} else {
+	} else if (this.isNew) {
 		this.invalidate('password', 'Password is required!');
 	}
 });
