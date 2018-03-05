@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const session = require('express-session');
 const common = require('./helpers/common');
+const authHelper = require('./helpers/authorization');
 const express = require('express');
 require('dotenv').config();
 
@@ -23,7 +24,7 @@ app.use(session({
 }));
 app.use(flash());
 app.use(common.titleMiddleware); // expose buildTitle helper to Controllers
-app.use(common.currentUserMiddleware); // expose req.currentUser to Controllers
+app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
 
 // connect to database
 const dbUrl = new url.URL(process.env.DB_HOST);
@@ -34,10 +35,13 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // routing
+app.locals.homePath = '/';
+app.locals.signInPath = '/sessions/new';
+const mustBeSignedIn = authHelper.mustBeSignedIn;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
-app.use('/signupAccess', require('./signupAccess/index'));
-app.use('/news', require('./news/index')); // eslint-disable-line import/newline-after-import
+app.use('/signupAccess', mustBeSignedIn, require('./signupAccess/index'));
+app.use('/news', mustBeSignedIn, require('./news/index')); // eslint-disable-line import/newline-after-import
 app.get('/sumtingwong', (req, res) => {
 	res.render('sumtingwong');
 });

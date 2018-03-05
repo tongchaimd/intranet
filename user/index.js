@@ -2,10 +2,11 @@ const express = require('express');
 const User = require('./user');
 const SignupAccess = require('../signupAccess/signupAccess');
 const path = require('path');
+const authHelper = require('../helpers/authorization');
 
 const router = express.Router();
 
-router.get('/new', (req, res) => {
+router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 	const { token, tokenId } = req.query;
 	SignupAccess.validateToken(token, tokenId)
 		.then((access) => {
@@ -20,7 +21,7 @@ router.get('/new', (req, res) => {
 /**
  * @todo consider about using 'this' keyword
  */
-router.post('/', (req, res) => {
+router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 	const input = req.body;
 	const user = new User({
 		email: input.email,
@@ -36,9 +37,9 @@ router.post('/', (req, res) => {
 			}
 			return Promise.reject(new Error('token invalid'));
 		})
-		.then((savedUser) => {
+		.then(() => {
 			this.access.remove();
-			return res.end(savedUser.toString());
+			return res.redirect(req.app.locals.homePath);
 		})
 		.catch((err) => {
 			// if it's not a validation error
@@ -54,7 +55,7 @@ router.post('/', (req, res) => {
 		});
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', authHelper.mustBeSignedIn, (req, res) => {
 	User.findById(req.params.id)
 		.then((user) => {
 			if (user) {
