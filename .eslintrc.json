@@ -5,7 +5,8 @@
 		"no-tabs": "off",
 		"no-use-before-define": "off",
 		"no-underscore-dangle": "off",
-		"prefer-destructuring": "off"
+		"prefer-destructuring": "off",
+		"no-param-reassign": 0
 	},
 	"env": {
 		"browser": true,

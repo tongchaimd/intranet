@@ -23,12 +23,18 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 				return bcrypt.compare(password, user.passwordHash);
 			})
 			.then((good) => {
-				if (good) {
-					req.session.userId = user._id;
-					req.flash('success', 'logged in!');
-					return res.redirect(req.app.locals.homePath);
+				if (!good) {
+					return Promise.reject(new Error('incorrect password'));
 				}
-				return Promise.reject(new Error('incorrect password'));
+				authHelper.signIn(user, req);
+				if (req.body.remember) {
+					return authHelper.remember(user, res);
+				}
+				return Promise.resolve();
+			})
+			.then(() => {
+				req.flash('success', 'logged in!');
+				return res.redirect(req.app.locals.homePath);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -42,8 +48,13 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 });
 
 router.delete('/', authHelper.mustBeSignedIn, (req, res) => {
-	req.session.userId = null;
-	res.status(200).end(req.app.locals.signInPath);
+	authHelper.signOut(req, res)
+		.then(() => {
+			res.status(200).end(req.app.locals.signInPath);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 });
 
 module.exports = router;

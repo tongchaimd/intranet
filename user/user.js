@@ -44,6 +44,12 @@ const userSchema = new mongoose.Schema({
 	fullName: {
 		type: [String],
 	},
+	rememberHash: {
+		type: String,
+	},
+	rememberExpiryDate: {
+		type: Date,
+	},
 });
 
 userSchema.virtual('password')

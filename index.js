@@ -5,6 +5,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const common = require('./helpers/common');
 const authHelper = require('./helpers/authorization');
 const express = require('express');
@@ -23,6 +24,7 @@ app.use(session({
 	secret: process.env.COOKIE_SECRET,
 	resave: false,
 }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
 app.use(common.titleMiddleware); // expose buildTitle helper to Controllers
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
