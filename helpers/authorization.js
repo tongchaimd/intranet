@@ -2,8 +2,7 @@ const User = require('../user/user');
 
 function currentUser(req) {
 	if (req.session && req.session.userId) {
-		return User.findById(req.session.userId)
-			.then(user => user);
+		return User.findById(req.session.userId);
 	}
 	return Promise.resolve(null);
 }
