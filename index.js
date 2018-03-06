@@ -41,8 +41,13 @@ app.locals.signInPath = '/sessions/new';
 const mustBeSignedIn = authHelper.mustBeSignedIn;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
-app.use('/signupAccess', mustBeSignedIn, require('./signupAccess/index'));
-app.use('/news', mustBeSignedIn, require('./news/index')); // eslint-disable-line import/newline-after-import
+app.use('/news', mustBeSignedIn, require('./news/index'));
+const signupAccessRouter = require('./signupAccess/index'); // eslint-disable-line import/newline-after-import
+if (process.env.NODE_ENV === 'development') {
+	app.use('/signupAccess', signupAccessRouter);
+} else {
+	app.use('/signupAccess', mustBeSignedIn, signupAccessRouter);
+}
 app.get('/sumtingwong', (req, res) => {
 	res.render('sumtingwong');
 });
