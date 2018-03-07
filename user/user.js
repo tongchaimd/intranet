@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
 			validator: uniqueValidator('email'),
 		},
 	},
-	fullName: {
+	fullNameList: {
 		type: [String],
 	},
 	rememberHash: {
