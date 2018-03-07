@@ -38,8 +38,9 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // routing
-app.locals.homePath = '/';
-app.locals.signInPath = '/sessions/new';
+app.locals.paths = {};
+app.locals.paths.home = '/';
+app.locals.paths.signIn = '/sessions/new';
 const mustBeSignedIn = authHelper.mustBeSignedIn;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
@@ -56,7 +57,7 @@ app.get('/sumtingwong', (req, res) => {
 app.use((req, res) => {
 	res.status(404);
 
-	res.render('404', { signInPath: app.locals.signInPath });
+	res.render('404', { signInPath: app.locals.paths.signIn });
 });
 
 app.listen(process.env.PORT);

@@ -37,7 +37,7 @@ exports.currentUserMiddleware = function currentUserMiddleware(req, res, next) {
 exports.mustBeSignedIn = function mustBeSignedIn(req, res, next) {
 	if (!req.isSignedIn) {
 		req.session.intendedPath = req.originalUrl;
-		res.redirect(req.app.locals.signInPath);
+		res.redirect(req.app.locals.paths.signIn);
 	} else {
 		next();
 	}
@@ -45,7 +45,7 @@ exports.mustBeSignedIn = function mustBeSignedIn(req, res, next) {
 
 exports.redirectIfSignedIn = function redirectIfSignedIn(req, res, next) {
 	if (req.isSignedIn) {
-		res.redirect(req.app.locals.homePath);
+		res.redirect(req.app.locals.paths.home);
 	} else {
 		next();
 	}
