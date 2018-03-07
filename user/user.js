@@ -6,7 +6,7 @@ function capitalize(str) {
 }
 
 const uniqueValidator = function uniqueValidator(key) {
-	return (v, cb) => {
+	return function (v, cb) {
 		User.findOne({ [key]: v, _id: { $ne: this._id } }, (err, u) => {
 			cb(!u, `${capitalize(key)} has already been taken!`);
 		});
