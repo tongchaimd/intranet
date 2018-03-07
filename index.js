@@ -56,6 +56,8 @@ app.locals.paths.user = (user) => {
 };
 app.locals.paths.sessions = '/sessions';
 app.locals.paths.signUpAccess = '/signUpAccess';
+app.locals.paths.news = '/news';
+app.locals.paths.newsPreview = '/news/preview';
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;

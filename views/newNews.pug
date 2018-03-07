@@ -10,7 +10,7 @@ block content
 			.field-body
 				.control
 					.file.has-name.is-boxed.is-large
-						label.file-label
+						label.file-label(data-target=paths.newsPreview)
 							input.file-input(type="file" name="doc")
 							span.file-cta
 								span.file-label
@@ -28,6 +28,6 @@ block content
 			.field-label
 			.field-body
 				.control
-					input#submit-news-button.button.is-primary.is-large(type="submit")
+					input#submit-news-button.button.is-primary.is-large(type="submit" data-target=paths.news)
 		.content
 			.justadiv

@@ -2,7 +2,7 @@ function begin() {
 	const signOutElem = document.querySelector('#sign-out');
 	if (signOutElem) {
 		signOutElem.addEventListener('click', () => {
-			fetch(new URL('/sessions', window.location.href), {
+			fetch(new URL(signOutElem.dataset.target, window.location.href), {
 				method: 'DELETE',
 				credentials: 'same-origin',
 				redirect: 'follow',

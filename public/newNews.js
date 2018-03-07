@@ -87,7 +87,7 @@ function onFilesSelect(err, files) {
 			sourceUrlInputElem.value = news.sourceUrl || '';
 
 			previewContainer.textContent = 'Loading...';
-			return fetch(new URL('/news/preview', window.location.href), {
+			return fetch(new URL(dropTarget.dataset.target, window.location.href), {
 				method: 'POST',
 				body: JSON.stringify(news),
 				headers: {
@@ -150,7 +150,7 @@ function begin() {
 				if (customSourceUrl) {
 					news.sourceUrl = customSourceUrl;
 				}
-				return fetch(new URL('/news', window.location.href), {
+				return fetch(new URL(submitButtonElem.dataset.target, window.location.href), {
 					body: JSON.stringify(news),
 					headers: {
 						'content-type': 'application/json',
