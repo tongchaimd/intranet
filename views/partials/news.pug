@@ -3,6 +3,9 @@ if sourceUrl
 	p.subtitle#preview-source source: #[a(href=sourceUrl) #{sourceUrl}]
 else
 	p.subtitle.is-hidden#preview-source source: #[a]
+p.subtitle.has-text-weight-bold posted by: #[a(href=paths.user(poster)) #{poster.name || "no name"}]
+	if postedAt
+		span.duration-ago.has-text-weight-semibold.is-italic.is-size-6.has-text-grey #{moment(postedAt).fromNow()} (#{moment(postedAt).format('LLLL')})
 
 if imageSourceArray && imageSourceArray.length
 	.news-image-container.container.is-flex-desktop

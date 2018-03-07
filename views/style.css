@@ -36,3 +36,7 @@ header.navbar {
 	font-size: 2em;
 	font-family: 'Herculanum';
 }
+
+.duration-ago {
+	padding-left: 1em;
+}

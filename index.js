@@ -29,6 +29,7 @@ app.use(flash());
 app.use(common.titleMiddleware); // expose buildTitle helper to Controllers
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
 app.use(common.pathsMiddleware); // expose app.locals.paths to views' "paths"
+app.locals.moment = require('moment');
 
 // connect to database
 const dbUrl = new url.URL(process.env.DB_HOST);
