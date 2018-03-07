@@ -25,8 +25,3 @@ exports.randomUrlSafeToken = (length) => {
 exports.bcryptHash = function bcryptHash(value) {
 	return bcrypt.hashSync(value, +process.env.SALT_ROUNDS);
 };
-
-exports.pathsMiddleware = (req, res, next) => {
-	res.locals.paths = req.app.locals.paths;
-	next();
-};
