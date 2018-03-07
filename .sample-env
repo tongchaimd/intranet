@@ -10,6 +10,6 @@ DB_NAME=development
 ## Security
 SALT_ROUNDS=10
 # days before invitation link for signing up expires
-SIGNUP_ACCESS_LIFE_SPAN_DAYS=5
+SIGN_UP_ACCESS_LIFE_SPAN_DAYS=5
 COOKIE_SECRET=alrighty then
-SIGNIN_REMEMBER_LIFE_SPAN_DAYS=30
+SIGN_IN_REMEMBER_LIFE_SPAN_DAYS=30

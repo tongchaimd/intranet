@@ -1,5 +1,5 @@
 const express = require('express');
-const SignupAccess = require('./signupAccess');
+const SignUpAccess = require('./signUpAccess');
 const path = require('path');
 const url = require('url');
 const helper = require('../helpers/common');
@@ -7,23 +7,23 @@ const helper = require('../helpers/common');
 const router = express.Router();
 
 router.get('/new', (req, res) => {
-	res.render('newSignupAccess');
+	res.render('newSignUpAccess');
 });
 
 router.post('/', (req, res) => {
 	const email = req.body.email;
 	if (email) {
-		const doc = new SignupAccess();
+		const doc = new SignUpAccess();
 		const token = helper.randomUrlSafeToken(32);
 		doc.token = token;
 		doc.save()
 			.then((savedDoc) => {
-				req.flash('success', 'Signup invitation email sent.');
-				const signupUrl = new url.URL(path.join(req.get('host'), 'users/new'));
-				signupUrl.searchParams.set('token', token);
-				signupUrl.searchParams.set('tokenId', savedDoc._id);
+				req.flash('success', 'Sign up invitation email sent.');
+				const signUpUrl = new url.URL(path.join(req.get('host'), 'users/new'));
+				signUpUrl.searchParams.set('token', token);
+				signUpUrl.searchParams.set('tokenId', savedDoc._id);
 				if (process.env.NODE_ENV === 'development') {
-					req.flash('success', signupUrl);
+					req.flash('success', signUpUrl);
 				}
 				res.redirect('back');
 			})

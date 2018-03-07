@@ -58,7 +58,7 @@ exports.signIn = signIn;
 
 exports.remember = async function remember(user, res) {
 	const rememberToken = commonHelper.randomUrlSafeToken(32);
-	const rememberExpiryDate = moment().add(process.env.SIGNIN_REMEMBER_LIFE_SPAN_DAYS, 'days').toDate();
+	const rememberExpiryDate = moment().add(process.env.SIGN_IN_REMEMBER_LIFE_SPAN_DAYS, 'days').toDate();
 	user.set({ rememberHash: commonHelper.bcryptHash(rememberToken) });
 	user.set({ rememberExpiryDate });
 	return user.save()

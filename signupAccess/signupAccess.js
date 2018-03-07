@@ -3,7 +3,7 @@ const moment = require('moment');
 const helper = require('../helpers/common');
 const bcrypt = require('bcrypt');
 
-const signupAccessSchema = new mongoose.Schema({
+const signUpAccessSchema = new mongoose.Schema({
 	tokenHash: {
 		type: String,
 		required: true,
@@ -14,11 +14,11 @@ const signupAccessSchema = new mongoose.Schema({
 	},
 });
 
-signupAccessSchema.pre('validate', function setExpiryDate() {
-	this.expiryDate = moment().add(process.env.SIGNUP_ACCESS_LIFE_SPAN_DAYS, 'days').toDate();
+signUpAccessSchema.pre('validate', function setExpiryDate() {
+	this.expiryDate = moment().add(process.env.SIGN_UP_ACCESS_LIFE_SPAN_DAYS, 'days').toDate();
 });
 
-signupAccessSchema.virtual('token')
+signUpAccessSchema.virtual('token')
 	.get(function getToken() {
 		return this._token;
 	})
@@ -27,9 +27,9 @@ signupAccessSchema.virtual('token')
 		this.tokenHash = helper.bcryptHash(value);
 	});
 
-const SignupAccess = mongoose.model('SignupAccess', signupAccessSchema);
+const SignUpAccess = mongoose.model('SignUpAccess', signUpAccessSchema);
 
-SignupAccess.validateToken = function validateToken(token, id) {
+SignUpAccess.validateToken = function validateToken(token, id) {
 	return this.findById(id)
 		.then((access) => {
 			if (!access) {
@@ -45,4 +45,4 @@ SignupAccess.validateToken = function validateToken(token, id) {
 		});
 };
 
-module.exports = SignupAccess;
+module.exports = SignUpAccess;

@@ -1,15 +1,15 @@
 const express = require('express');
 const User = require('./user');
-const SignupAccess = require('../signupAccess/signupAccess');
+const SignUpAccess = require('../signUpAccess/signUpAccess');
 const authHelper = require('../helpers/authorization');
 
 const router = express.Router();
 
 router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 	const { token, tokenId } = req.query;
-	SignupAccess.validateToken(token, tokenId)
+	SignUpAccess.validateToken(token, tokenId)
 		.then((access) => {
-			if (access) res.render('signup', { title: 'Signup', token, tokenId });
+			if (access) res.render('signUp', { title: 'SignUp', token, tokenId });
 			else res.render('invalidToken');
 		})
 		.catch((err) => {
@@ -28,7 +28,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 		password: input.password,
 		passwordConfirmation: input.passwordConfirmation,
 	});
-	SignupAccess.validateToken(input.token, input.tokenId)
+	SignUpAccess.validateToken(input.token, input.tokenId)
 		.then((access) => {
 			if (access) {
 				this.access = access;
