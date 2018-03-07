@@ -3,7 +3,7 @@ extends ./layout.pug
 block content
 	.box
 		h1.title Log In
-		form(action="/sessions", method="post")
+		form(action=paths.sessions, method="post")
 			.field
 				label.label Username
 				.control

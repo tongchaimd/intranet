@@ -28,6 +28,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
 app.use(common.titleMiddleware); // expose buildTitle helper to Controllers
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
+app.use(common.pathsMiddleware); // expose app.locals.paths to views' "paths"
 
 // connect to database
 const dbUrl = new url.URL(process.env.DB_HOST);
@@ -37,10 +38,26 @@ mongoose.connect(dbUrl.toString());
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
-// routing
+// defining routing paths
 app.locals.paths = {};
 app.locals.paths.home = '/';
 app.locals.paths.signIn = '/sessions/new';
+app.locals.paths.users = '/users';
+app.locals.paths.user = (user) => {
+	console.log(!!user._id);
+	const userPaths = app.locals.paths.users;
+	if (typeof user === 'string') {
+		return `${userPaths}/${user}`;
+	}
+	if (user && user._id) {
+		return `${userPaths}/${user._id.toString()}`;
+	}
+	return `${userPaths}`;
+};
+app.locals.paths.sessions = '/sessions';
+app.locals.paths.signUpAccess = '/signUpAccess';
+
+// routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
@@ -57,7 +74,7 @@ app.get('/sumtingwong', (req, res) => {
 app.use((req, res) => {
 	res.status(404);
 
-	res.render('404', { signInPath: app.locals.paths.signIn });
+	res.render('404');
 });
 
 app.listen(process.env.PORT);
