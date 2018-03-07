@@ -44,7 +44,6 @@ app.locals.paths.home = '/';
 app.locals.paths.signIn = '/sessions/new';
 app.locals.paths.users = '/users';
 app.locals.paths.user = (user) => {
-	console.log(!!user._id);
 	const userPaths = app.locals.paths.users;
 	if (typeof user === 'string') {
 		return `${userPaths}/${user}`;
