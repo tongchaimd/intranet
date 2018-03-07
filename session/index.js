@@ -34,6 +34,11 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 			})
 			.then(() => {
 				req.flash('success', 'logged in!');
+				if (req.session.intendedPath) {
+					const target = req.session.intendedPath;
+					req.session.intendedPath = undefined;
+					return res.redirect(target);
+				}
 				return res.redirect(req.app.locals.homePath);
 			})
 			.catch((err) => {
