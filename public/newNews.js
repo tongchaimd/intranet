@@ -128,15 +128,50 @@ function updatePreviewSource(newValue) {
 
 function begin() {
 	const fileLabelElem = document.querySelector('.file-label');
-
-	addFileDroppingListener(fileLabelElem, 'News', onFilesSelect.bind(fileLabelElem));
-
 	const fileInputElem = document.querySelector('.file-input');
-	fileInputElem.addEventListener('change', () => { onFilesSelect.call(fileInputElem.parentNode, null, fileInputElem.files); });
+	addFileDroppingListener(fileLabelElem, 'News', (err, files) => {
+		fileInputElem.files = files;
+	});
+	fileInputElem.addEventListener('change', () => {
+		onFilesSelect.call(fileInputElem.parentNode, null, fileInputElem.files);
+	});
 
 	const sourceUrlInputElem = document.querySelector('input[name="sourceUrl"]');
 	sourceUrlInputElem.addEventListener('input', () => {
 		updatePreviewSource(sourceUrlInputElem.value.trim());
+	});
+
+	const submitButtonElem = document.querySelector('#submit-news-button');
+	submitButtonElem.addEventListener('click', () => {
+		readWordAsHtml(fileInputElem.files[0])
+			.then((html) => {
+				const news = htmlToNews(html);
+				const customSourceUrl = sourceUrlInputElem.value.trim();
+				if (customSourceUrl) {
+					news.sourceUrl = customSourceUrl;
+				}
+				return fetch(new URL('/news', window.location.href), {
+					body: JSON.stringify(news),
+					headers: {
+						'content-type': 'application/json',
+					},
+					method: 'POST',
+					credentials: 'same-origin',
+				});
+			})
+			.then((res) => {
+				if (res.ok) {
+					return res.text();
+				} else {
+					// TODO
+				}
+			})
+			.then((link) => {
+				window.location.href = link;
+			})
+			.catch((err) => {
+				// TODO
+			});
 	});
 }
 

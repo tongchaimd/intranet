@@ -31,6 +31,11 @@ const newsSchema = new mongoose.Schema({
 	})],
 });
 
+newsSchema.virtual('imageSourceArray')
+	.get(function getImageSourceArray() {
+		return this.images.map(image => `data:${image.contentType};base64,${image.data.toString('base64')}`);
+	});
+
 const News = mongoose.model('News', newsSchema);
 
 module.exports = News;

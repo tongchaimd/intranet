@@ -13,6 +13,9 @@ router.post('/', (req, res) => {
 		title: input.title,
 		markedupContent: input.markedupContent,
 		sourceUrl: input.sourceUrl,
+		poster: req.currentUser._id,
+		postedAt: new Date(),
+		updatedAt: new Date(),
 	});
 	if (input.imageSourceArray && input.imageSourceArray.length) {
 		const dataUrlRegex = /^data:.+\/(.+);base64,(.*)$/;
@@ -23,12 +26,26 @@ router.post('/', (req, res) => {
 			news.images.push({ contentType, data });
 		});
 	}
+	news.save()
+		.then((savedNews) => {
+			res.end(`/news/${savedNews._id.toString()}`);
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+});
+
+router.get('/:id', (req, res) => {
+	News.findById(req.params.id)
+		.then((news) => {
+			res.render('news', { ...news.toObject(), imageSourceArray: news.imageSourceArray });
+		});
 });
 
 router.post('/preview', (req, res) => {
 	const input = req.body;
 	if (input.title && input.markedupContent) {
-		res.render('news', input);
+		res.render('partials/news', input);
 	} else {
 		res.status(400).send('ERROR 400: bad request');
 	}
