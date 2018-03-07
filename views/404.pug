@@ -1,0 +1,7 @@
+extends ./layout.pug
+
+block content 
+	h1.title 404
+	p The page you requested does not exist!
+	if !isSignedIn
+		a(href=signInPath) Sign In

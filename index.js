@@ -53,5 +53,10 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/sumtingwong', (req, res) => {
 	res.render('sumtingwong');
 });
+app.use((req, res) => {
+	res.status(404);
+
+	res.render('404', { signInPath: app.locals.signInPath });
+});
 
 app.listen(process.env.PORT);
