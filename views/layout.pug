@@ -6,9 +6,9 @@ html
 		style
 			include ../node_modules/bulma/css/bulma.css
 			include ./style.css
-		script(src="../public/sessions.js")
+		script(src="/public/sessions.js")
 		block script
-		script(src="../public/startJobs.js")
+		script(src="/public/startJobs.js")
 	body
 		if isSignedIn
 			include partials/header.pug
