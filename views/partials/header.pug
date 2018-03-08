@@ -1,4 +1,5 @@
 header.navbar
 	.navbar-menu
 		.navbar-end
+			a.navbar-item(href=paths.user(currentUser)) #{currentUser.username}
 			a#sign-out.navbar-item(data-target=paths.sessions) Sign Out

@@ -26,6 +26,7 @@ exports.currentUserMiddleware = function currentUserMiddleware(req, res, next) {
 				req.isSignedIn = user;
 				req.currentUser = user;
 				res.locals.isSignedIn = user;
+				res.locals.currentUser = user;
 				next();
 			})
 			.catch((err) => {
