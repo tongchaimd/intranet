@@ -1,21 +1,24 @@
 extends ../layout.pug
 
+block hero
+	include ../partials/banner.pug
+	.hero.is-light
+		.hero-body
+			h1.title Sign In
 block content
-	.box
-		h1.title Log In
-		form(action=paths.sessions, method="post")
-			.field
-				label.label Username
-				.control
-					input.input(type="input", name="username", placeholder="username")
-			.field
-				label.label Password
-				.control
-					input.input(type="password", name="password" placeholder="password")
-			.field
-				label.checkbox.
-					#[input(type="checkbox" name="remember")]
-					Remember me
-			.field
-				.control
-					input.button.is-primary(type="submit")
+	form(action=paths.sessions, method="post")
+		.field
+			label.label Username
+			.control
+				input.input(type="input", name="username", placeholder="username")
+		.field
+			label.label Password
+			.control
+				input.input(type="password", name="password" placeholder="password")
+		.field
+			label.checkbox.
+				#[input(type="checkbox" name="remember")]
+				Remember me
+		.field
+			.control
+				input.button.is-primary(type="submit")

@@ -1,7 +1,7 @@
 if (Object.keys(messages).length)
-	each key in Object.keys(messages)
-		article.message(class=`is-${key}`)
-			.message-body
+	.container(style="margin-top: 5px; margin-bottom: 5px;")
+		each key in Object.keys(messages)
+			article.notification(class=`is-${key}`)
 				each message in messages[key]
 					ul
 						li= message

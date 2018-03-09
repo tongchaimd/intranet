@@ -33,7 +33,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 				return Promise.resolve();
 			})
 			.then(() => {
-				req.flash('success', 'logged in!');
+				req.flash('success', 'signed in!');
 				if (req.session.intendedPath) {
 					const target = req.session.intendedPath;
 					req.session.intendedPath = undefined;

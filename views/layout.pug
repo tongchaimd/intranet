@@ -15,5 +15,7 @@ html
 			include partials/header.pug
 		if process.env.NODE_ENV == 'development'
 			include partials/developerNav.pug
+		block hero
 		include partials/flash.pug
-		block content
+		.container(style="padding-top: 10px; padding-bottom: 10px;")
+			block content

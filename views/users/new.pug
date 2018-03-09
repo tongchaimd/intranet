@@ -1,22 +1,25 @@
 extends ../layout.pug
 
+block hero
+	include ../partials/banner.pug
+	.hero.is-light
+		.hero-body
+			h1.title Register
 block content
-	.box
-		h1.title Register
-		form(action=paths.users, method="post")
-			input(type="hidden", name="token", value=token)
-			input(type="hidden", name="tokenId", value=tokenId)
-			.field
-				label.label Username
-				.control
-					input.input(type="input", name="username", placeholder="4-20 characters")
-			.field
-				label.label Password
-				.control
-					input.input(type="password", name="password", placeholder="at least 4 characters")
-			.field
-				label.label Password Confirmation
-				.control
-					input.input(type="password", name="passwordConfirmation", placeholder="enter password again")
-			.field
-				input.button.is-primary(type="submit")
+	form(action=paths.users, method="post")
+		input(type="hidden", name="token", value=token)
+		input(type="hidden", name="tokenId", value=tokenId)
+		.field
+			label.label Username
+			.control
+				input.input(type="input", name="username", placeholder="4-20 characters")
+		.field
+			label.label Password
+			.control
+				input.input(type="password", name="password", placeholder="at least 4 characters")
+		.field
+			label.label Password Confirmation
+			.control
+				input.input(type="password", name="passwordConfirmation", placeholder="enter password again")
+		.field
+			input.button.is-primary(type="submit")

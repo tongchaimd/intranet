@@ -1,12 +1,14 @@
 extends ../layout.pug
 
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title New Sign Up Access
 block content
-	.box
-		h1.title New Sign Up Access
-		form(action=paths.signUpAccess method="post")
-			.field
-				label.label Email
-				.control
-					input.input(type="email" name="email" placeholder="New user's email")
-			.field
-				input.button.is-primary(type="submit")
+	form(action=paths.signUpAccess method="post")
+		.field
+			label.label Email
+			.control
+				input.input(type="email" name="email" placeholder="New user's email")
+		.field
+			input.button.is-primary(type="submit")

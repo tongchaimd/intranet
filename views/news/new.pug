@@ -2,32 +2,36 @@ extends ../layout.pug
 
 block script
 	script(type="module" src="/public/newNews.js")
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Posting News
 block content
-	.container
-		.field.is-horizontal
-			.field-label.is-large
-				label.label File
-			.field-body
+	.field.is-horizontal
+		.field-label.is-large
+			label.label File
+		.field-body
+			.control
+				.file.has-name.is-boxed.is-large
+					label.file-label(data-target=paths.newsPreview)
+						input.file-input(type="file" name="doc")
+						span.file-cta
+							span.file-label
+								span Word(.doc[x]) file
+						.file-name
+							span 
+	.field.is-horizontal
+		.field-label.is-normal
+			lbel.label Source URL
+		.field-body
+			.field
 				.control
-					.file.has-name.is-boxed.is-large
-						label.file-label(data-target=paths.newsPreview)
-							input.file-input(type="file" name="doc")
-							span.file-cta
-								span.file-label
-									span Word(.doc[x]) file
-							.file-name
-								span 
-		.field.is-horizontal
-			.field-label.is-normal
-				lbel.label Source URL
-			.field-body
-				.field
-					.control
-						input.input(type="text" name="sourceUrl")
-		.field.is-horizontal
-			.field-label
-			.field-body
-				.control
-					input#submit-news-button.button.is-primary.is-large(type="submit" data-target=paths.news)
-		.content
-			.justadiv
+					input.input(type="text" name="sourceUrl")
+	.field.is-horizontal
+		.field-label
+		.field-body
+			.control
+				input#submit-news-button.button.is-primary.is-large(type="submit" data-target=paths.news)
+	h2.title.is-4 Preview:
+	.box
+		.justadiv

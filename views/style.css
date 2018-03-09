@@ -31,12 +31,10 @@ header.navbar {
 	border-bottom: 2px #ddd solid;
 }
 
-.navbar-brand a {
-	padding: 10px 15px;
-	font-size: 2em;
-	font-family: 'Herculanum';
-}
-
 .duration-ago {
 	padding-left: 1em;
+}
+
+.big-list > li {
+	margin: 20px 0;
 }

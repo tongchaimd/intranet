@@ -76,6 +76,14 @@ userSchema.path('passwordHash').validate(function validatePasswordConfirmation()
 	}
 });
 
+userSchema.virtual('fullName')
+	.get(function fullname() {
+		if (!this.fullNameList.length) {
+			return 'no name';
+		}
+		return this.fullNameList[0];
+	});
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

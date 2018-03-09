@@ -1,7 +1,10 @@
 extends ../layout.pug
 
+block hero
+	.hero.is-danger
+		.hero-body
+			h1.title ERROR: 404
 block content 
-	h1.title 404
 	p The page you requested does not exist!
 	if !isSignedIn
 		a(href=paths.signIn) Sign In

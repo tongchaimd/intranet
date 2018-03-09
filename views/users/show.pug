@@ -1,20 +1,23 @@
 extends ../layout.pug
 
-block content
-	.hero.is-primary
+block hero
+	.hero.is-dark
 		.hero-body
-			h1.title Profile of #{u.username}
-	.section
-		.content
-			if u.equals(currentUser)
-				a.is-size-5.has-text-weight-bold(href=paths.userEdit(u)) Edit
-			h2 Full Names
-			if u.fullNameList.length
-				ul
-					each name in u.fullNameList
-						li= name
-			else
-				p none
-			h2 email
-			p= u.email
+			h1.title Profile of #[b #{u.fullName}]
+block content
+	if u.equals(currentUser)
+		a.is-size-5.has-text-weight-bold(href=paths.userEdit(u)) Edit
+	.details
+		ul.big-list
+			li
+				h2.title.is-3 Full Names
+				if u.fullNameList.length
+					ul
+						each name in u.fullNameList
+							li= name
+				else
+					p none
+			li
+				h2.title.is-3 Email
+				p= u.email || 'none'
 
