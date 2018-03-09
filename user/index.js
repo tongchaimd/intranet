@@ -9,8 +9,8 @@ router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 	const { token, tokenId } = req.query;
 	SignUpAccess.validateToken(token, tokenId)
 		.then((access) => {
-			if (access) res.render('signUp', { title: 'SignUp', token, tokenId });
-			else res.render('invalidToken');
+			if (access) res.render('users/new', { title: 'SignUp', token, tokenId });
+			else res.render('errors/invalidToken');
 		})
 		.catch((err) => {
 			console.log(err);
@@ -43,7 +43,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 			// if it's not a validation error
 			if (!err.errors) {
 				console.log(err);
-				res.render('sumtingwong');
+				res.render('errors/sumtingwong');
 			} else {
 				Object.values(err.errors).forEach((validationError) => {
 					req.flash('danger', validationError.message);
@@ -57,7 +57,7 @@ router.get('/:id', authHelper.mustBeSignedIn, (req, res) => {
 	User.findById(req.params.id)
 		.then((user) => {
 			if (user) {
-				res.render('user', { u: user });
+				res.render('users/show', { u: user });
 			}
 		})
 		.catch((err) => {
@@ -74,7 +74,7 @@ router.get('/edit/:id', authHelper.mustBeSignedIn, (req, res) => {
 	User.findById(req.params.id)
 		.then((user) => {
 			if (user) {
-				res.render('userEdit', { u: user });
+				res.render('users/edit', { u: user });
 			}
 		})
 		.catch((err) => {
@@ -117,7 +117,7 @@ router.patch('/:id', authHelper.mustBeSignedIn, (req, res) => {
 				Object.values(err.errors).forEach((validationError) => {
 					req.flash('danger', validationError.message);
 				});
-				res.render('userEdit', { u: user });
+				res.render('users/edit', { u: user });
 			}
 			console.log(err);
 		});

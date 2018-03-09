@@ -82,12 +82,12 @@ if (process.env.NODE_ENV === 'development') {
 	app.use('/signUpAccess', mustBeSignedIn, signUpAccessRouter);
 }
 app.get('/sumtingwong', (req, res) => {
-	res.render('sumtingwong');
+	res.render('errors/sumtingwong');
 });
 app.use((req, res) => {
 	res.status(404);
 
-	res.render('404');
+	res.render('errors/404');
 });
 
 app.listen(process.env.PORT);

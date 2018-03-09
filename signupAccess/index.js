@@ -7,7 +7,7 @@ const helper = require('../helpers/common');
 const router = express.Router();
 
 router.get('/new', (req, res) => {
-	res.render('newSignUpAccess');
+	res.render('signUpAccess/new');
 });
 
 router.post('/', (req, res) => {

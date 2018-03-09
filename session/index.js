@@ -6,7 +6,7 @@ const authHelper = require('../helpers/authorization');
 const router = express.Router();
 
 router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
-	res.render('signIn');
+	res.render('sessions/new');
 });
 
 router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
