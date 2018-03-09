@@ -36,7 +36,7 @@ app.locals.moment = require('moment');
 const dbUrl = new url.URL(process.env.DB_HOST);
 dbUrl.port = process.env.DB_PORT;
 dbUrl.pathname = process.env.DB_NAME;
-mongoose.connect(dbUrl.toString());
+mongoose.connect(dbUrl.toString(), { user: process.env.DB_USER, pass: process.env.DB_PWD });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 

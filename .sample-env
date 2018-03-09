@@ -6,6 +6,8 @@ TITLE=Intranet of TTCKunming
 DB_HOST=mongodb://localhost/
 DB_PORT=12345
 DB_NAME=development
+DB_USER=hacker
+DB_PWD=leet
 
 ## Security
 SALT_ROUNDS=10
