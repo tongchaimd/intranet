@@ -66,4 +66,62 @@ router.get('/:id', authHelper.mustBeSignedIn, (req, res) => {
 		});
 });
 
+router.get('/edit/:id', authHelper.mustBeSignedIn, (req, res) => {
+	if (req.params.id !== req.currentUser._id.toString()) {
+		req.flash('danger', 'not authorized!');
+		res.redirect('back');
+		return;
+	}
+	User.findById(req.params.id)
+		.then((user) => {
+			if (user) {
+				res.render('userEdit', { u: user });
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
+router.patch('/:id', authHelper.mustBeSignedIn, (req, res) => {
+	if (req.params.id !== req.currentUser._id.toString()) {
+		req.flash('danger', 'not authorized!');
+		res.redirect('back');
+		return;
+	}
+	const input = req.body;
+	let user;
+	User.findById(req.params.id)
+		.then((foundUser) => {
+			user = foundUser;
+			if (input.fullNameList) {
+				if (typeof input.fullNameList === 'string') {
+					input.fullNameList = [input.fullNameList];
+				}
+				user.fullNameList = input.fullNameList.filter(v => v.trim().length);
+			}
+			user.email = input.email;
+			if (input.password) {
+				user.password = input.password;
+				user.passwordConfirmation = input.passwordConfirmation;
+			}
+			console.log();
+			return user.save();
+		})
+		.then(() => {
+			req.flash('success', 'updated!');
+			res.redirect(req.app.locals.paths.user(user));
+		})
+		.catch((err) => {
+			req.flash('danger', 'UPDATING FAILED!');
+			if (err.errors) {
+				Object.values(err.errors).forEach((validationError) => {
+					req.flash('danger', validationError.message);
+				});
+				res.render('userEdit', { u: user });
+			}
+			console.log(err);
+		});
+});
+
 module.exports = router;

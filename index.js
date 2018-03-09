@@ -8,6 +8,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const common = require('./helpers/common');
 const authHelper = require('./helpers/authorization');
+const methodOverride = require('method-override');
 const express = require('express');
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ const app = express();
 
 // app setting and middleware
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(methodOverride('_method'));
 app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,6 +52,16 @@ app.locals.paths.user = (user) => {
 	}
 	if (user && user._id) {
 		return `${userPaths}/${user._id.toString()}`;
+	}
+	return `${userPaths}`;
+};
+app.locals.paths.userEdit = (user) => {
+	const userPaths = app.locals.paths.users;
+	if (typeof user === 'string') {
+		return `${userPaths}/edit/${user}`;
+	}
+	if (user && user._id) {
+		return `${userPaths}/edit/${user._id.toString()}`;
 	}
 	return `${userPaths}`;
 };

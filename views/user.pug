@@ -6,6 +6,8 @@ block content
 			h1.title Profile of #{u.username}
 	.section
 		.content
+			if u.equals(currentUser)
+				a.is-size-5.has-text-weight-bold(href=paths.userEdit(u)) Edit
 			h2 Full Names
 			if u.fullNameList.length
 				ul

@@ -1,0 +1,29 @@
+extends ./layout.pug
+
+block content
+	.box
+		form(action=`${paths.user(currentUser)}?_method=PATCH` method="POST")
+			.field
+				label.label Full Names (first of the list will be considered as the main one)
+				each name in u.fullNameList
+					.field
+						.control
+							input.input(type="text" name="fullNameList" value=name)
+				.field
+					.control
+						input.input(type="text" name="fullNameList")
+				span.button.add-input(data-input-name="fullNameList") +
+			.field
+				label.label Email
+				.control
+					input.input(type="email" name="email" value=u.email)
+			.field
+				label.label New Password
+				.field
+					.control
+						input.input(type="password" name="password" placeholder="New Password! at least 4 characters")
+				.field
+					.control
+						input.input(type="password" name="passwordConfirmation" placeholder="enter new password again")
+			.field
+				input.button.is-primary(type="submit")
