@@ -33,13 +33,7 @@ const userSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
-		required: [true, 'Email is required!'],
-		unique: true,
 		trim: true,
-		validate: {
-			isAsync: true,
-			validator: uniqueValidator('email'),
-		},
 	},
 	fullNameList: {
 		type: [String],

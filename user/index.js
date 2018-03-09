@@ -23,7 +23,6 @@ router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 	const input = req.body;
 	const user = new User({
-		email: input.email,
 		username: input.username,
 		password: input.password,
 		passwordConfirmation: input.passwordConfirmation,
