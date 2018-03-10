@@ -9,7 +9,7 @@ router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 	const { token, tokenId } = req.query;
 	SignUpAccess.validateToken(token, tokenId)
 		.then((access) => {
-			if (access) res.render('users/new', { title: 'SignUp', token, tokenId });
+			if (access) res.render('users/new', { token, tokenId });
 			else res.render('errors/invalidToken');
 		})
 		.catch((err) => {

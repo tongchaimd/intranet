@@ -1,5 +1,7 @@
 extends ../layout.pug
 
+block title
+	title= buildTitle(u.fullName)
 block hero
 	.hero.is-dark
 		.hero-body

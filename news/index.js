@@ -4,7 +4,7 @@ const News = require('./news');
 const router = express.Router();
 
 router.get('/new', (req, res) => {
-	res.render('news/new', { title: 'News' });
+	res.render('news/new');
 });
 
 router.post('/', (req, res) => {

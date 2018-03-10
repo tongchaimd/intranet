@@ -1,5 +1,7 @@
 extends ../layout.pug
 
+block title
+	title= buildTitle('Posting News')
 block script
 	script(type="module" src="/public/newNews.js")
 block hero

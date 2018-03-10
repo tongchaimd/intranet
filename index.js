@@ -28,8 +28,8 @@ app.use(session({
 }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
-app.use(common.titleMiddleware); // expose buildTitle helper to Controllers
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
+app.locals.buildTitle = common.buildTitle;
 app.locals.moment = require('moment');
 
 // connect to database
