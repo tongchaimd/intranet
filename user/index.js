@@ -37,7 +37,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 		})
 		.then(() => {
 			this.access.remove();
-			return res.redirect(req.app.locals.paths.home);
+			return res.redirect(req.app.locals.paths.home());
 		})
 		.catch((err) => {
 			// if it's not a validation error
@@ -109,7 +109,7 @@ router.patch('/:id', authHelper.mustBeSignedIn, (req, res) => {
 		})
 		.then(() => {
 			req.flash('success', 'updated!');
-			res.redirect(req.app.locals.paths.user(user));
+			res.redirect(req.app.locals.paths.users(user));
 		})
 		.catch((err) => {
 			req.flash('danger', 'UPDATING FAILED!');

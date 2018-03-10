@@ -14,5 +14,5 @@ block content
 					p.subtitle.is-6(style="margin-bottom: 10px")
 						a.is-italic(href=news.sourceUrl)= news.sourceUrl
 					p #{news.markedupContent.slice(0, 250).replace(/<\/?.>/, '')}...
-					p.has-text-weight-bold(style="margin-top: 5px") posted by: #[a(href=paths.user(news.poster))= news.poster.name || "no name"]
+					p.has-text-weight-bold(style="margin-top: 5px") posted by: #[a(href=paths.users(news.poster))= news.poster.name || "no name"]
 						span.duration-ago.has-text-weight-semibold.is-italic.is-size-6.has-text-grey #{moment(news.postedAt).fromNow()} (#{moment(news.postedAt).format('LLLL')})

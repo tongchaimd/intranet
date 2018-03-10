@@ -8,7 +8,7 @@ block hero
 		.hero-body
 			h1.title Register
 block content
-	form(action=paths.users, method="post")
+	form(action=paths.users(), method="post")
 		input(type="hidden", name="token", value=token)
 		input(type="hidden", name="tokenId", value=tokenId)
 		.field

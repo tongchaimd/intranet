@@ -39,7 +39,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 					req.session.intendedPath = undefined;
 					return res.redirect(target);
 				}
-				return res.redirect(req.app.locals.paths.home);
+				return res.redirect(req.app.locals.paths.home());
 			})
 			.catch((err) => {
 				console.log(err);
@@ -55,7 +55,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 router.delete('/', authHelper.mustBeSignedIn, (req, res) => {
 	authHelper.signOut(req, res)
 		.then(() => {
-			res.status(200).end(req.app.locals.paths.signIn);
+			res.status(200).end(req.app.locals.paths.signIn());
 		})
 		.catch((err) => {
 			console.log(err);

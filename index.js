@@ -41,44 +41,24 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // defining routing paths
+function pathWithId(base, arg) {
+	if (typeof arg === 'string') {
+		return `${base}/${arg}`;
+	}
+	if (arg && arg._id) {
+		return `${base}/${arg._id.toString()}`;
+	}
+	return base;
+}
 app.locals.paths = {};
-app.locals.paths.home = '/';
-app.locals.paths.signIn = '/sessions/new';
-app.locals.paths.users = '/users';
-app.locals.paths.user = (user) => {
-	const userPaths = app.locals.paths.users;
-	if (typeof user === 'string') {
-		return `${userPaths}/${user}`;
-	}
-	if (user && user._id) {
-		return `${userPaths}/${user._id.toString()}`;
-	}
-	return `${userPaths}`;
-};
-app.locals.paths.userEdit = (user) => {
-	const userPaths = app.locals.paths.users;
-	if (typeof user === 'string') {
-		return `${userPaths}/edit/${user}`;
-	}
-	if (user && user._id) {
-		return `${userPaths}/edit/${user._id.toString()}`;
-	}
-	return `${userPaths}`;
-};
-app.locals.paths.sessions = '/sessions';
-app.locals.paths.signUpAccess = '/signUpAccess';
-app.locals.paths.newsIndex = '/news';
-app.locals.paths.news = (news) => {
-	const newsPath = app.locals.paths.newsIndex;
-	if (typeof news === 'string') {
-		return `${newsPath}/${news}`;
-	}
-	if (news && news._id) {
-		return `${newsPath}/${news._id.toString()}`;
-	}
-	return `${newsPath}`;
-};
-app.locals.paths.newsPreview = '/news/preview';
+app.locals.paths.home = () => '/';
+app.locals.paths.signIn = () => '/sessions/new';
+app.locals.paths.users = user => pathWithId('/users', user);
+app.locals.paths.userEdit = user => pathWithId(path.join(app.locals.paths.users(), 'edit'), user);
+app.locals.paths.sessions = () => '/sessions';
+app.locals.paths.signUpAccess = () => '/signUpAccess';
+app.locals.paths.news = news => pathWithId('/news', news);
+app.locals.paths.newsPreview = () => path.join(app.locals.paths.news(), 'preview');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;

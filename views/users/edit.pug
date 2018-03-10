@@ -7,7 +7,7 @@ block hero
 		.hero-body
 			h1.title Updating Your Profile (#{u.username})
 block content
-	form(action=`${paths.user(currentUser)}?_method=PATCH` method="POST")
+	form(action=`${paths.users(currentUser)}?_method=PATCH` method="POST")
 		.field
 			label.label Full Names (first of the list will be considered as the main one)
 			each name in u.fullNameList

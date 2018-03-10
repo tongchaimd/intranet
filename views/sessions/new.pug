@@ -8,7 +8,7 @@ block hero
 		.hero-body
 			h1.title Sign In
 block content
-	form(action=paths.sessions, method="post")
+	form(action=paths.sessions(), method="post")
 		.field
 			label.label Username
 			.control

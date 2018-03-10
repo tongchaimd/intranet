@@ -7,7 +7,7 @@ block hero
 		.hero-body
 			h1.title New Sign Up Access
 block content
-	form(action=paths.signUpAccess method="post")
+	form(action=paths.signUpAccess() method="post")
 		.field
 			label.label Email
 			.control

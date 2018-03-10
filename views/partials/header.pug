@@ -3,6 +3,6 @@ header.navbar
 		.navbar-brand
 			img.image(src="http://application.ditp.go.th/images/logos/DIPT.png" style="height: 70px; padding: 16px;")
 		.navbar-end
-			a.navbar-item(href=paths.newsIndex) News
-			a.navbar-item(href=paths.user(currentUser)) #{currentUser.username}
-			a#sign-out.navbar-item(data-target=paths.sessions) Sign Out
+			a.navbar-item(href=paths.news()) News
+			a.navbar-item(href=paths.users(currentUser)) #{currentUser.username}
+			a#sign-out.navbar-item(data-target=paths.sessions()) Sign Out
