@@ -52,4 +52,15 @@ router.post('/preview', (req, res) => {
 	}
 });
 
+router.get('/', (req, res) => {
+	News.find()
+		.populate('poster')
+		.then((newsList) => {
+			res.render('news/index', { newsList });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
 module.exports = router;

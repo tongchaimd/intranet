@@ -67,7 +67,17 @@ app.locals.paths.userEdit = (user) => {
 };
 app.locals.paths.sessions = '/sessions';
 app.locals.paths.signUpAccess = '/signUpAccess';
-app.locals.paths.news = '/news';
+app.locals.paths.newsIndex = '/news';
+app.locals.paths.news = (news) => {
+	const newsPath = app.locals.paths.newsIndex;
+	if (typeof news === 'string') {
+		return `${newsPath}/${news}`;
+	}
+	if (news && news._id) {
+		return `${newsPath}/${news._id.toString()}`;
+	}
+	return `${newsPath}`;
+};
 app.locals.paths.newsPreview = '/news/preview';
 
 // routing

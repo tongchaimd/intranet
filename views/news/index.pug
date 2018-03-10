@@ -1,0 +1,18 @@
+extends ../layout.pug
+
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title News
+block content
+	ul
+		each news in newsList
+			li.media
+				.media-content
+					h3.title.is-4
+						a(href=paths.news(news)) #{news.title}
+					p.subtitle.is-6(style="margin-bottom: 10px")
+						a.is-italic(href=news.sourceUrl)= news.sourceUrl
+					p #{news.markedupContent.slice(0, 250).replace(/<\/?.>/, '')}...
+					p.has-text-weight-bold(style="margin-top: 5px") posted by: #[a(href=paths.user(news.poster))= news.poster.name || "no name"]
+						span.duration-ago.has-text-weight-semibold.is-italic.is-size-6.has-text-grey #{moment(news.postedAt).fromNow()} (#{moment(news.postedAt).format('LLLL')})
