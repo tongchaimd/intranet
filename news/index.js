@@ -39,7 +39,7 @@ router.get('/:id', (req, res) => {
 	News.findById(req.params.id)
 		.populate('poster')
 		.then((news) => {
-			res.render('news/show', { ...news.toObject(), imageSourceArray: news.imageSourceArray });
+			res.render('news/show', news);
 		});
 });
 
