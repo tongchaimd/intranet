@@ -1,7 +1,8 @@
 header.navbar
 	.navbar-menu
 		.navbar-brand
-			img.image(src="http://application.ditp.go.th/images/logos/DIPT.png" style="height: 70px; padding: 16px;")
+			a(href="#")
+				img.image(src="/public/images/dipt.png" style="height: 30px; margin: 10px")
 		.navbar-end
 			a.navbar-item(href=paths.news()) News
 			a.navbar-item(href=paths.users(currentUser)) #{currentUser.username}
