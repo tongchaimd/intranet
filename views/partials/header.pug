@@ -1,9 +1,13 @@
 header.navbar
+	.navbar-brand
+		a.navbar-item(href="#")
+			img.image(src="/public/images/dipt.png" style="height: 30px")
+		a.navbar-item(href=paths.news()) News
+		.navbar-burger(onclick="document.querySelector('.navbar-menu').classList.toggle('is-active')")
+			span
+			span
+			span
 	.navbar-menu
-		.navbar-brand
-			a(href="#")
-				img.image(src="/public/images/dipt.png" style="height: 30px; margin: 10px")
 		.navbar-end
-			a.navbar-item(href=paths.news()) News
 			a.navbar-item(href=paths.users(currentUser)) #{currentUser.username}
-			a#sign-out.navbar-item(data-target=paths.sessions()) Sign Out
+			a#sign-out.navbar-item.has-text-danger(data-target=paths.sessions()) Sign Out
