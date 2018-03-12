@@ -18,13 +18,13 @@ router.post('/', (req, res) => {
 		doc.token = token;
 		doc.save()
 			.then((savedDoc) => {
-				req.flash('success', 'Sign up invitation email sent.');
-				const signUpUrl = new url.URL(path.join(req.get('host'), 'users/new'));
+				const signUpUrl = new url.URL(`${req.protocol}://${path.join(req.get('host'), req.app.locals.paths.signUp())}`);
 				signUpUrl.searchParams.set('token', token);
 				signUpUrl.searchParams.set('tokenId', savedDoc._id);
 				if (process.env.NODE_ENV === 'development') {
 					req.flash('success', signUpUrl);
 				}
+				req.flash('success', 'Sign up invitation email sent.');
 				res.redirect('back');
 			})
 			.catch((err) => {

@@ -55,6 +55,7 @@ app.locals.paths.home = () => '/';
 app.locals.paths.signIn = () => '/sessions/new';
 app.locals.paths.users = user => pathWithId('/users', user);
 app.locals.paths.userEdit = user => pathWithId(path.join(app.locals.paths.users(), 'edit'), user);
+app.locals.paths.signUp = () => path.join(app.locals.paths.users(), 'new');
 app.locals.paths.sessions = () => '/sessions';
 app.locals.paths.signUpAccess = () => '/signUpAccess';
 app.locals.paths.news = news => pathWithId('/news', news);
