@@ -66,7 +66,7 @@ const mustBeSignedIn = authHelper.mustBeSignedIn;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
 app.use('/news', mustBeSignedIn, require('./news/index'));
-const signUpAccessRouter = require('./signUpAccess/index'); // eslint-disable-line import/newline-after-import
+const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-line import/newline-after-import
 if (process.env.NODE_ENV === 'development') {
 	app.use('/signUpAccess', signUpAccessRouter);
 } else {

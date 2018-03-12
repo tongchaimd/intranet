@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('./user');
-const SignUpAccess = require('../signUpAccess/signUpAccess');
+const SignUpAccess = require('../sign-up-access/sign-up-access');
 const authHelper = require('../helpers/authorization');
 
 const router = express.Router();
@@ -10,7 +10,7 @@ router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 	SignUpAccess.validateToken(token, tokenId)
 		.then((access) => {
 			if (access) res.render('users/new', { token, tokenId });
-			else res.render('errors/invalidToken');
+			else res.render('errors/invalid-token');
 		})
 		.catch((err) => {
 			console.log(err);

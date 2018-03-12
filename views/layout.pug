@@ -8,14 +8,14 @@ html
 			include ../node_modules/bulma/css/bulma.css
 			include ./style.css
 		script(src="/public/sessions.js")
-		script(src="/public/addInput.js")
+		script(src="/public/add-input.js")
 		block script
-		script(src="/public/startJobs.js")
+		script(src="/public/start-jobs.js")
 	body
 		if isSignedIn
 			include partials/header.pug
 		if process.env.NODE_ENV == 'development'
-			include partials/developerNav.pug
+			include partials/developer-nav.pug
 		block hero
 		include partials/flash.pug
 		.container(style="padding-top: 10px; padding-bottom: 10px;")

@@ -1,5 +1,5 @@
 const express = require('express');
-const SignUpAccess = require('./signUpAccess');
+const SignUpAccess = require('./sign-up-access');
 const path = require('path');
 const url = require('url');
 const helper = require('../helpers/common');
@@ -7,7 +7,7 @@ const helper = require('../helpers/common');
 const router = express.Router();
 
 router.get('/new', (req, res) => {
-	res.render('signUpAccess/new');
+	res.render('sign-up-access/new');
 });
 
 router.post('/', (req, res) => {
