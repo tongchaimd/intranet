@@ -9,6 +9,7 @@
     "startt": "./node_modules/.bin/nodemon --exec 'mocha'"
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.2.1",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "bulma": "^0.6.2",

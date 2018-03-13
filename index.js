@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const common = require('./helpers/common');
 const authHelper = require('./helpers/authorization');
 const methodOverride = require('method-override');
+const sgMail = require('@sendgrid/mail');
 const express = require('express');
 require('dotenv').config();
 
@@ -31,6 +32,8 @@ app.use(flash());
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
 app.locals.buildTitle = common.buildTitle;
 app.locals.moment = require('moment');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+app.locals.sgMail = sgMail;
 
 // connect to database
 const dbUrl = new url.URL(process.env.DB_HOST);
