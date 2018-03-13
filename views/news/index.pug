@@ -15,4 +15,4 @@ block content
 						a.has-text-grey(href=news.sourceUrl)= news.sourceUrl
 					p #{news.markedupContent.slice(0, 250).replace(/<\/?.>/, '')}...
 					p.has-text-weight-bold(style="margin-top: 5px") posted by: #[a(href=paths.users(news.poster))= news.poster.fullName]
-						span.duration-ago.is-size-6.has-text-grey #[b #{moment(news.postedAt).fromNow()}] (#{moment(news.postedAt).format('LLLL')})
+						span.duration-ago.is-size-6.has-text-grey #[b #{moment(news.createdAt).fromNow()}] (#{moment(news.createdAt).format('LLLL')})

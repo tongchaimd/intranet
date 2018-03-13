@@ -14,8 +14,6 @@ router.post('/', (req, res) => {
 		markedupContent: input.markedupContent,
 		sourceUrl: input.sourceUrl,
 		poster: req.currentUser._id,
-		postedAt: new Date(),
-		updatedAt: new Date(),
 	});
 	if (input.imageSourceArray && input.imageSourceArray.length) {
 		const dataUrlRegex = /^data:.+\/(.+);base64,(.*)$/;

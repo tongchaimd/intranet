@@ -9,14 +9,6 @@ const newsSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	postedAt: {
-		type: Date,
-		required: true,
-	},
-	updatedAt: {
-		type: Date,
-		required: true,
-	},
 	poster: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
@@ -29,7 +21,7 @@ const newsSchema = new mongoose.Schema({
 		data: Buffer,
 		contentType: String,
 	})],
-});
+}, { timestamps: true });
 
 newsSchema.virtual('imageSourceArray')
 	.get(function getImageSourceArray() {
