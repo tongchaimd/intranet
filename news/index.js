@@ -47,7 +47,7 @@ router.post('/preview', (req, res) => {
 		title: input.title,
 		markedupContent: input.markedupContent,
 		sourceUrl: input.sourceUrl,
-		poster: req.currentUser._id,
+		poster: req.currentUser,
 		getImageSourceArray: () => input.imageSourceArray,
 	};
 	if (input.title && input.markedupContent) {
