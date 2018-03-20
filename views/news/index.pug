@@ -10,7 +10,7 @@ block content
 		each news in newsList
 			li.media
 				.media-content
-					h3.title.is-4
+					h3.title.is-4(style="padding-top: 5px")
 						a.has-text-dark(href=paths.news(news)) #{news.title}
 					p.subtitle.is-6(style="margin-bottom: 10px")
 						a.has-text-grey(href=news.sourceUrl)= news.sourceUrl
