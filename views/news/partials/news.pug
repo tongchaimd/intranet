@@ -16,7 +16,7 @@ if imageSourceArray && imageSourceArray.length
 		if imageSourceArray.length > 1
 			img.image(src=imageSourceArray[1])
 		if imageSourceArray.length > 2
-			a(style="flex: 1 100%")#get-images(href="#" data-target=paths.newsImages(news) + '?start=2') #{imageSourceArray.length - 2} more image(s)
+			a#get-images(href="#" data-target=paths.newsImages(news) + '?start=2' style="flex: 1 100%") #{imageSourceArray.length - 2} more image(s)
 .content.
 	!{news.markedupContent}
 
