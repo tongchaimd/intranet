@@ -5,6 +5,7 @@ block hero
 		.hero-body
 			h1.title News
 block content
+	a.button.is-primary(href=paths.newNews() style="width: 100%; height: 50px; margin: 6px 0;") Add News
 	ul
 		each news in newsList
 			li.media

@@ -62,6 +62,7 @@ app.locals.paths.signUp = () => path.join(app.locals.paths.users(), 'new');
 app.locals.paths.sessions = () => '/sessions';
 app.locals.paths.signUpAccess = () => '/signUpAccess';
 app.locals.paths.news = news => pathWithId('/news', news);
+app.locals.paths.newNews = () => pathWithId(app.locals.paths.news(), 'new');
 app.locals.paths.newsPreview = () => path.join(app.locals.paths.news(), 'preview');
 app.locals.paths.newsImages = news => path.join(app.locals.paths.news(news), 'images');
 
