@@ -23,10 +23,12 @@ const newsSchema = new mongoose.Schema({
 	})],
 }, { timestamps: true });
 
-newsSchema.virtual('imageSourceArray')
-	.get(function getImageSourceArray() {
-		return this.images.map(image => `data:${image.contentType};base64,${image.data.toString('base64')}`);
-	});
+newsSchema.methods.getImageSourceArray = function getImageSourceArray(start, end) {
+	if (!this.images || !this.images.length) return [];
+	start = start || 0;
+	end = end || this.images.length;
+	return this.images.slice(start, end).map(image => `data:${image.contentType};base64,${image.data.toString('base64')}`);
+};
 
 const News = mongoose.model('News', newsSchema);
 

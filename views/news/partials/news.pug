@@ -1,24 +1,47 @@
-h1.title= title
-if sourceUrl
+h1.title= news.title
+if news.sourceUrl
 	p.subtitle#preview-source source: 
-		a(href=sourceUrl)= sourceUrl
+		a(href=news.sourceUrl)= news.sourceUrl
 else
 	p.is-hidden#preview-source source: #[a]
 p.subtitle.has-text-weight-bold posted by: 
-	a(href=paths.users(poster))= poster.fullName
+	a(href=paths.users(news.poster))= news.poster.fullName
 	if createdAt
 		span.duration-ago.has-text-weight-semibold.is-italic.is-size-6.has-text-grey #{moment(createdAt).fromNow()} (#{moment(createdAt).format('LLLL')})
 
+- const imageSourceArray =  news.getImageSourceArray()
 if imageSourceArray && imageSourceArray.length
-	.news-image-container.container.is-flex-desktop
-		div.level
-			div.level-item
-				img.image(src=imageSourceArray[0])
-			if imageSourceArray.length > 1
-				div.level-item
-					img.image(src=imageSourceArray[1])
-	if imageSourceArray.length > 2
-		.level
-			a.level-item(href="#") #{imageSourceArray.length - 2} more image(s)
+	.news-image-container.container.is-flex-desktop.has-text-centered(style="flex-wrap: wrap; align-items: center;")
+		img.image(src=imageSourceArray[0])
+		if imageSourceArray.length > 1
+			img.image(src=imageSourceArray[1])
+		if imageSourceArray.length > 2
+			a(style="flex: 1 100%")#get-images(href="#" data-target=paths.newsImages(news) + '?start=2') #{imageSourceArray.length - 2} more image(s)
 .content.
-	!{markedupContent}
+	!{news.markedupContent}
+
+script.
+	const button = document.querySelector('#get-images');
+	button.addEventListener('click', event => {
+		event.stopPropagation();
+		event.preventDefault();
+		fetch(new URL(button.dataset.target, window.location.href), {
+			credentials: 'same-origin',
+		})
+			.then(res => {
+				return res.json();
+			})
+			.then(imageSourceArray => {
+				const container = document.querySelector('.news-image-container');
+				imageSourceArray.forEach(imageSource => {
+					const levelItem = document.createElement('div');
+					levelItem.className = 'level-item';
+					levelItem.innerHTML = `<img class="image" src="${imageSource}">`;
+					container.appendChild(levelItem);
+				})
+				container.removeChild(button);
+			})
+			.catch(e => {
+				console.log(e);
+			});
+	});

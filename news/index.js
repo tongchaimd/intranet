@@ -37,14 +37,21 @@ router.get('/:id', (req, res) => {
 	News.findById(req.params.id)
 		.populate('poster')
 		.then((news) => {
-			res.render('news/show', news);
+			res.render('news/show', { news });
 		});
 });
 
 router.post('/preview', (req, res) => {
 	const input = req.body;
+	const news = {
+		title: input.title,
+		markedupContent: input.markedupContent,
+		sourceUrl: input.sourceUrl,
+		poster: req.currentUser._id,
+		getImageSourceArray: () => input.imageSourceArray,
+	};
 	if (input.title && input.markedupContent) {
-		res.render('news/partials/news', { ...input, poster: req.currentUser });
+		res.render('news/partials/news', { news });
 	} else {
 		res.status(400).send('ERROR 400: bad request');
 	}
@@ -55,6 +62,16 @@ router.get('/', (req, res) => {
 		.populate('poster')
 		.then((newsList) => {
 			res.render('news/index', { newsList });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
+router.get('/:id/images', (req, res) => {
+	News.findById(req.params.id)
+		.then((doc) => {
+			res.json(doc.getImageSourceArray(+req.query.start, +req.query.end));
 		})
 		.catch((err) => {
 			console.log(err);

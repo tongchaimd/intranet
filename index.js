@@ -63,6 +63,7 @@ app.locals.paths.sessions = () => '/sessions';
 app.locals.paths.signUpAccess = () => '/signUpAccess';
 app.locals.paths.news = news => pathWithId('/news', news);
 app.locals.paths.newsPreview = () => path.join(app.locals.paths.news(), 'preview');
+app.locals.paths.newsImages = news => path.join(app.locals.paths.news(news), 'images');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
