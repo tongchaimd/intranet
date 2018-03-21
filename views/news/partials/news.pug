@@ -34,10 +34,10 @@ script.
 			.then(imageSourceArray => {
 				const container = document.querySelector('.news-image-container');
 				imageSourceArray.forEach(imageSource => {
-					const levelItem = document.createElement('div');
-					levelItem.className = 'level-item';
-					levelItem.innerHTML = `<img class="image" src="${imageSource}">`;
-					container.appendChild(levelItem);
+					const imageElem = document.createElement('img');
+					imageElem.className = 'image';
+					imageElem.src = imageSource;
+					container.appendChild(imageElem);
 				})
 				container.removeChild(button);
 			})
