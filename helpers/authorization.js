@@ -9,6 +9,7 @@ async function currentUser(req) {
 	} else if (req.signedCookies.userId && req.cookies.rememberToken) {
 		const user = await User.findById(req.signedCookies.userId);
 
+		if (!user) return null;
 		if (!user.rememberExpiryDate) return null;
 		if (user.rememberExpiryDate < moment()) return null;
 		if (!user.rememberHash) return null;
