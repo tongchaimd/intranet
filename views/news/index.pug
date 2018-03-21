@@ -56,11 +56,12 @@ block after-content
 						li
 							span.pagination-ellipsis ...
 					//- last page
-					li
-						if currentPage == pageCount
-							a.is-current.pagination-link(href=`?page=${pageCount}`)= pageCount
-						else
-							a.pagination-link(href=`?page=${pageCount}`)= pageCount
+					if pageCount != 1
+						li
+							if currentPage == pageCount
+								a.is-current.pagination-link(href=`?page=${pageCount}`)= pageCount
+							else
+								a.pagination-link(href=`?page=${pageCount}`)= pageCount
 				if currentPage < pageCount
 					a.is-right.pagination-next(href=`?page=${currentPage+1}`) >
 				else

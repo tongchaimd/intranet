@@ -60,7 +60,7 @@ router.post('/preview', (req, res) => {
 router.get('/', (req, res) => {
 	News.paginate({}, {
 		page: req.query.page || 1,
-		limit: 5,
+		limit: 10,
 		sort: { createdAt: 'desc' },
 		populate: 'poster',
 	})
