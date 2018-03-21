@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 
 const newsSchema = new mongoose.Schema({
 	title: {
@@ -29,6 +30,8 @@ newsSchema.methods.getImageSourceArray = function getImageSourceArray(start, end
 	end = end || this.images.length;
 	return this.images.slice(start, end).map(image => `data:${image.contentType};base64,${image.data.toString('base64')}`);
 };
+
+newsSchema.plugin(mongoosePaginate);
 
 const News = mongoose.model('News', newsSchema);
 

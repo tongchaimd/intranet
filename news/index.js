@@ -58,10 +58,14 @@ router.post('/preview', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-	News.find()
-		.populate('poster')
-		.then((newsList) => {
-			res.render('news/index', { newsList });
+	News.paginate({}, {
+		page: req.query.page || 1,
+		limit: 5,
+		sort: { createdAt: 'desc' },
+		populate: 'poster',
+	})
+		.then((result) => {
+			res.render('news/index', { newsList: result.docs, currentPage: +result.page, pageCount: +result.pages });
 		})
 		.catch((err) => {
 			console.log(err);
