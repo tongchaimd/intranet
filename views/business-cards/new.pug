@@ -1,0 +1,96 @@
+extends ../layout.pug
+
+block title
+	title= buildTitle('Adding Business Card')
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Adding Business Card
+block content
+	form(action=paths.businessCards(), method="post")
+		.box
+			.buttons.has-addons
+				span.button(data-lang="thai") Thai
+				span.button.is-info.is-selected(data-lang="english") English
+				span.button(data-lang="chinese") Chinese
+			- const lang = 'english'
+			.languageInputs(id=lang)
+				.field.columns
+					.column(style="padding-bottom: 0")
+						label.label Full Name
+						.control
+							input.input(type="text" name=`${lang}-fullName`)
+					.column(style="padding-bottom: 0")
+						label.label Position
+						.control
+							input.input(type="text" name=`${lang}-position`)
+				.field
+					label.label Company's Name
+					.control
+						input.input(type="text" name=`${lang}-companyName`)
+				.field
+					label.label Company's Location
+					.control
+						input.input(type="text" name=`${lang}-companyLocation`)
+		.field.columns
+			.column(style="padding-bottom: 0")
+				label.label Telephone No.
+				.control
+					input.input(type="tel" name="phone")
+			.column(style="padding-bottom: 0")
+				label.label Mobile No.
+				.control
+					input.input(type="tel" name="mobile")
+			.column(style="padding-bottom: 0")
+				label.label Fax No.
+				.control
+					input.input(type="tel" name="fax")
+		.filed.columns
+			.column(style="padding-bottom: 0")
+				label.label Email
+				.control
+					input.input(type="email" name="email")
+			.column(style="padding-bottom: 0")
+				label.label Website
+				.control
+					input.input(type="text" name="website")
+		.field
+			.control
+				input.button.is-primary(type="submit")
+	script.
+		const langButtonList = document.querySelectorAll('.button[data-lang]');
+		langButtonList.forEach((button) => {
+			button.addEventListener('click', (e) => {
+				e.stopPropagation();
+				e.preventDefault();
+
+				langButtonList.forEach((elem) => {
+					elem.classList.remove('is-info', 'is-selected');
+				})
+				button.classList.add('is-info', 'is-selected');
+
+				const language = button.dataset.lang;
+				let container = document.querySelector(`#${language}`);
+				if(!container) {
+					container = document.createElement('div');
+					const otherContainer = document.querySelector('.languageInputs');
+					container.innerHTML = otherContainer.innerHTML;
+					container.className = 'languageInputs';
+					container.id = language;
+					inputList = container.querySelectorAll('input');
+					inputList.forEach((input) => {
+						const realName = input.name.split('-')[1];
+						input.name = `${language}-${realName}`;
+					});
+					otherContainer.parentNode.appendChild(container);
+				}
+				const containerList = document.querySelectorAll('.languageInputs');
+				containerList.forEach((elem) => {
+					if(elem !== container) {
+						elem.classList.add('is-hidden');
+					} else {
+						elem.classList.remove('is-hidden');
+					}
+				});
+			});
+		});
