@@ -150,11 +150,19 @@ function begin() {
 				if (customSourceUrl) {
 					news.sourceUrl = customSourceUrl;
 				}
+				const formData = new FormData();
+				Object.keys(news).forEach((key) => {
+					if(Array.isArray(news[key])) {
+						news[key].forEach((value) => {
+							formData.append(key, value);
+						});
+					} else {
+						formData.append(key, news[key]);
+					}
+				});
+				formData.append('file', fileInputElem.files[0]);
 				return fetch(new URL(submitButtonElem.dataset.target, window.location.href), {
-					body: JSON.stringify(news),
-					headers: {
-						'content-type': 'application/json',
-					},
+					body: formData,
 					method: 'POST',
 					credentials: 'same-origin',
 				});

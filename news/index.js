@@ -1,5 +1,7 @@
 const express = require('express');
 const News = require('./news');
+const upload = require('multer')();
+const stream = require('stream');
 
 const router = express.Router();
 
@@ -7,7 +9,7 @@ router.get('/new', (req, res) => {
 	res.render('news/new');
 });
 
-router.post('/', (req, res) => {
+router.post('/', upload.single('file'), (req, res) => {
 	const input = req.body;
 	const news = new News({
 		title: input.title,
@@ -15,16 +17,26 @@ router.post('/', (req, res) => {
 		sourceUrl: input.sourceUrl,
 		poster: req.currentUser._id,
 	});
-	if (input.imageSourceArray && input.imageSourceArray.length) {
-		const dataUrlRegex = /^data:.+\/(.+);base64,(.*)$/;
-		input.imageSourceArray.forEach((source) => {
-			const matches = source.match(dataUrlRegex);
-			const contentType = matches[1];
-			const data = Buffer.from(matches[2], 'base64');
-			news.images.push({ contentType, data });
-		});
+	if (input.imageSourceArray) {
+		if (!Array.isArray(input.imageSourceArray)) {
+			input.imageSourceArray = [input.imageSourceArray];
+		}
+		if (input.imageSourceArray.length) {
+			const dataUrlRegex = /^data:.+\/(.+);base64,(.*)$/;
+			input.imageSourceArray.forEach((source) => {
+				const matches = source.match(dataUrlRegex);
+				const contentType = matches[1];
+				const data = Buffer.from(matches[2], 'base64');
+				news.images.push({ contentType, data });
+			});
+		}
 	}
-	news.save()
+	const fileStream = new stream.PassThrough();
+	fileStream.end(req.file.buffer);
+	news.saveFile(fileStream, req.file.originalname)
+		.then(() => {
+			return news.save()
+		})
 		.then((savedNews) => {
 			res.end(req.app.locals.paths.news(savedNews));
 		})
@@ -80,6 +92,20 @@ router.get('/:id/images', (req, res) => {
 		.catch((err) => {
 			console.log(err);
 		});
+});
+
+router.get('/:id/file', async (req, res) => {
+	try {
+		const doc = await News.findById(req.params.id);
+		const metadata = await doc.getFileMetadata();
+		res.writeHead(200, {
+			'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'Content-Disposition': `attachment; filename*= UTF-8''${encodeURIComponent(metadata.filename)}`,
+		});
+		doc.getFileReadStream().pipe(res);
+	} catch (err) {
+		console.log(err);
+	};
 });
 
 module.exports = router;
