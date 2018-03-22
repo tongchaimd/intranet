@@ -37,7 +37,7 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 		})
 		.then(() => {
 			this.access.remove();
-			return res.redirect(req.app.locals.paths.home());
+			return res.redirect(req.app.locals.paths.signIn());
 		})
 		.catch((err) => {
 			// if it's not a validation error
