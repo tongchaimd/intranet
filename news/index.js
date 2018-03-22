@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
 	}
 	news.save()
 		.then((savedNews) => {
-			res.end(`/news/${savedNews._id.toString()}`);
+			res.end(req.app.locals.paths.news(savedNews));
 		})
 		.catch((err) => {
 			console.error(err);
