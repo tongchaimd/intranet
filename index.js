@@ -44,27 +44,32 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // defining routing paths
-function pathWithId(base, arg) {
-	if (typeof arg === 'string') {
-		return `${base}/${arg}`;
+function resolvePath(...argList) {
+	if(!argList.length) {
+		return '/';
 	}
-	if (arg && arg._id) {
-		return `${base}/${arg._id.toString()}`;
-	}
-	return base;
+	return argList.reduce((result, arg) => {
+		if (!arg) {
+			return result;
+		}
+		if (arg._id) {
+			return path.join(result, `${arg._id.toString()}/`);
+		}
+		return path.join(result, `${arg}/`);
+	}, '/');
 }
 app.locals.paths = {};
 app.locals.paths.home = () => '/';
-app.locals.paths.signIn = () => '/sessions/new';
-app.locals.paths.users = user => pathWithId('/users', user);
-app.locals.paths.userEdit = user => pathWithId(path.join(app.locals.paths.users(), 'edit'), user);
-app.locals.paths.signUp = () => path.join(app.locals.paths.users(), 'new');
-app.locals.paths.sessions = () => '/sessions';
-app.locals.paths.signUpAccess = () => '/signUpAccess';
-app.locals.paths.news = news => pathWithId('/news', news);
-app.locals.paths.newNews = () => pathWithId(app.locals.paths.news(), 'new');
-app.locals.paths.newsPreview = () => path.join(app.locals.paths.news(), 'preview');
-app.locals.paths.newsImages = news => path.join(app.locals.paths.news(news), 'images');
+app.locals.paths.signIn = () => '/sessions/new/';
+app.locals.paths.users = user => resolvePath('/users/', user);
+app.locals.paths.userEdit = user => resolvePath(app.locals.paths.users(), 'edit', user);
+app.locals.paths.signUp = () => resolvePath(app.locals.paths.users(), 'new');
+app.locals.paths.sessions = () => '/sessions/';
+app.locals.paths.signUpAccess = () => '/signUpAccess/';
+app.locals.paths.news = news => resolvePath('/news/', news);
+app.locals.paths.newNews = () => resolvePath(app.locals.paths.news(), 'new');
+app.locals.paths.newsPreview = () => resolvePath(app.locals.paths.news(), 'preview');
+app.locals.paths.newsImages = news => resolvePath(app.locals.paths.news(news), 'images');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
