@@ -44,7 +44,13 @@ router.get('/', (req, res) => {
 		limit: 20,
 	})
 		.then((result) => {
-			res.render('business-cards/index', { cardList: result.docs, currentPage: +result.page, pageCount: +result.pages, preferLang });
+			res.render('business-cards/index', {
+				cardList: result.docs,
+				currentPage: +result.page,
+				pageCount: +result.pages,
+				preferLang,
+				languageList: ['english', 'thai', 'chinese'],
+			});
 		})
 		.catch((err) => {
 			console.log(err);

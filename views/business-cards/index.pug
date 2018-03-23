@@ -7,10 +7,24 @@ block hero
 		.hero-body
 			h1.title Business Cards
 block content
-	a.button.is-info(href=paths.newBusinessCard() style="margin: 6px 0;")
-			span.icon
-				i.fas.fa-plus
-			span Add Business Card
+	.level.is-mobile
+		.level-left
+			a.button.is-info.level-item(href=paths.newBusinessCard())
+					span.icon
+						i.fas.fa-plus
+					span Add Business Card
+		.level-right
+			.dropdown.level-item
+				.dropdown-trigger(onclick="this.parentNode.classList.toggle('is-active')")
+					button.button
+						span.is-capitalized= preferLang
+						span.icon.is-small
+							i.fas.fa-angle-down
+				.dropdown-menu
+					.dropdown-content
+						each language in languageList
+							if language !== preferLang
+								a.dropdown-item.is-capitalized(href=relQString({prefLang: language}))= language
 	table.table.is-fullwidth.is-hoverable
 		thead
 			tr
