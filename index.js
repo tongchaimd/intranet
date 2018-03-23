@@ -70,7 +70,7 @@ app.locals.paths.news = news => resolvePath('/news/', news);
 app.locals.paths.newNews = () => resolvePath(app.locals.paths.news(), 'new');
 app.locals.paths.newsPreview = () => resolvePath(app.locals.paths.news(), 'preview');
 app.locals.paths.newsImages = news => resolvePath(app.locals.paths.news(news), 'images');
-app.locals.paths.businessCards = () => '/businessCard/'
+app.locals.paths.businessCards = () => '/businessCards/'
 app.locals.paths.newBusinessCard = () => resolvePath(app.locals.paths.businessCards(), 'new');
 
 // routing
@@ -78,7 +78,7 @@ const mustBeSignedIn = authHelper.mustBeSignedIn;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
 app.use('/news', mustBeSignedIn, require('./news/index'));
-app.use('/businessCard', mustBeSignedIn, require('./business-card/index'));
+app.use('/businessCards', mustBeSignedIn, require('./business-card/index'));
 const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-line import/newline-after-import
 if (process.env.NODE_ENV === 'development') {
 	app.use('/signUpAccess', signUpAccessRouter);
