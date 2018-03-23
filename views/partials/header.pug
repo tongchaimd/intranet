@@ -2,13 +2,22 @@ header.navbar
 	.navbar-brand
 		a.navbar-item(href="#")
 			img.image(src="/public/images/dipt.png" style="height: 30px")
-		a.navbar-item(href=paths.news()) News
-		a.navbar-item(href=paths.businessCards()) Business Cards
+		a.navbar-item(href=paths.news())
+			span.icon.is-medium
+				i.far.fa-newspaper.fa-lg
+			span.is-hidden-touch News
+		a.navbar-item(href=paths.businessCards())
+			span.icon.is-medium
+				i.far.fa-address-card.fa-lg
+			span.is-hidden-touch Business Cards
 		.navbar-burger(onclick="document.querySelector('.navbar-menu').classList.toggle('is-active')")
 			span
 			span
 			span
 	.navbar-menu
 		.navbar-end
-			a.navbar-item(href=paths.users(currentUser)) #{currentUser.username}
+			a.navbar-item(href=paths.users(currentUser))
+				span.icon.is-medium
+					i.far.fa-user.fa-lg
+				span #{currentUser.username}
 			a#sign-out.navbar-item.has-text-danger(data-target=paths.sessions()) Sign Out
