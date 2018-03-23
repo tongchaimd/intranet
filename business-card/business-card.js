@@ -16,6 +16,16 @@ const multiLangStringSchema =  new mongoose.Schema({
 	},
 }, { _id: false });
 
+multiLangStringSchema.methods.prefer = function prefer(prefLang, def) {
+	const obj = this.toObject();
+	if(obj[prefLang]) return obj[prefLang];
+	const keys = Object.keys(obj)
+	for(let i = 0; i < keys.length; i = i + 1) {
+		if(obj[keys[i]]) return obj[keys[i]];
+	}
+	return def;
+}
+
 const businessCardSchema = new mongoose.Schema({
 	fullName: {
 		type: multiLangStringSchema,

@@ -1,0 +1,26 @@
+extends ../layout.pug
+
+block title
+	title= buildTitle('Business Cards')
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Business Cards
+block content
+	a.button.is-primary(href=paths.newBusinessCard() style="width: 100%; height: 50px; margin: 6px 0;") Add Business Card
+	table.table.is-fullwidth.is-hoverable
+		thead
+			tr
+				th Full Name
+				th Company
+		tbody
+			each card in cardList
+				tr()
+					td= card.fullName.prefer(preferLang, '-')
+					td= card.companyName.prefer(preferLang, '-')
+		tfoot
+			tr
+				th Full Name
+				th Company
+block after-content
+	include ../partials/pagination.pug

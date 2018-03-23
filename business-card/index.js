@@ -36,4 +36,19 @@ router.post('/', (req, res) => {
 		});
 });
 
+router.get('/', (req, res) => {
+	const preferLang = req.query.prefLang || 'english';
+	BusinessCard.paginate({}, {
+		page: req.query.page || 1,
+		sort: { createdAt: 'desc' },
+		limit: 20,
+	})
+		.then((result) => {
+			res.render('business-cards/index', { cardList: result.docs, currentPage: +result.page, pageCount: +result.pages, preferLang });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
 module.exports = router;
