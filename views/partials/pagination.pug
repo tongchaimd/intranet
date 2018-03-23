@@ -46,3 +46,12 @@ section.section
 				a.is-right.pagination-next(href=`?page=${currentPage+1}`) >
 			else
 				a.is-right.pagination-next(href=`?page=${currentPage+1}` disabled) >
+script.
+	const linkList = document.querySelectorAll('.pagination a');
+	if(document.location.search) {
+		const matches = document.location.search.match(/(.*)page=.+&(.*)/);
+		const currentQueryWithoutPage = matches[1] + matches[2];
+		linkList.forEach((link) => {
+			link.href = link.href + (/\?/.test(link.href) ? '&' : '?') + currentQueryWithoutPage.slice(1);
+		});
+	}
