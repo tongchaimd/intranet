@@ -1,51 +1,50 @@
-section.section
-	.container
-		nav.pagination.is-centered
-			if currentPage > 1
-				a.pagination-previous(href=`?page=${currentPage-1}`) <
-			else
-				a.pagination-previous(href=`?page=${currentPage-1}` disabled) <
-			ul.pagination-list
-				- const padding = 3
-				//- first page
-				li
-					if currentPage == 1
-						a.is-current.pagination-link(href='?page=1')= 1
-					else
-						a.pagination-link(href='?page=1')= 1
-				//- need ellipsis?
-				if currentPage - padding > 2
-					li
-						span.pagination-ellipsis ...
-				//- middle
-				- var page
-				if currentPage - padding < 2
-					- page = 2
+.container
+	nav.pagination.is-centered
+		if currentPage > 1
+			a.pagination-previous(href=`?page=${currentPage-1}`) <
+		else
+			a.pagination-previous(href=`?page=${currentPage-1}` disabled) <
+		ul.pagination-list
+			- const padding = 3
+			//- first page
+			li
+				if currentPage == 1
+					a.is-current.pagination-link(href='?page=1')= 1
 				else
-					- page = currentPage - padding
-				while (page <= (currentPage + padding) && page < pageCount)
-					li
-						if page == currentPage
-							a.is-current.pagination-link(href=`?page=${page}`)= page
-							- page = page + 1
-						else
-							a.pagination-link(href=`?page=${page}`)= page
-							- page = page + 1
-				//- need ellipsis?
-				if currentPage + padding < pageCount - 1
-					li
-						span.pagination-ellipsis ...
-				//- last page
-				if pageCount != 1
-					li
-						if currentPage == pageCount
-							a.is-current.pagination-link(href=`?page=${pageCount}`)= pageCount
-						else
-							a.pagination-link(href=`?page=${pageCount}`)= pageCount
-			if currentPage < pageCount
-				a.is-right.pagination-next(href=`?page=${currentPage+1}`) >
+					a.pagination-link(href='?page=1')= 1
+			//- need ellipsis?
+			if currentPage - padding > 2
+				li
+					span.pagination-ellipsis ...
+			//- middle
+			- var page
+			if currentPage - padding < 2
+				- page = 2
 			else
-				a.is-right.pagination-next(href=`?page=${currentPage+1}` disabled) >
+				- page = currentPage - padding
+			while (page <= (currentPage + padding) && page < pageCount)
+				li
+					if page == currentPage
+						a.is-current.pagination-link(href=`?page=${page}`)= page
+						- page = page + 1
+					else
+						a.pagination-link(href=`?page=${page}`)= page
+						- page = page + 1
+			//- need ellipsis?
+			if currentPage + padding < pageCount - 1
+				li
+					span.pagination-ellipsis ...
+			//- last page
+			if pageCount != 1
+				li
+					if currentPage == pageCount
+						a.is-current.pagination-link(href=`?page=${pageCount}`)= pageCount
+					else
+						a.pagination-link(href=`?page=${pageCount}`)= pageCount
+		if currentPage < pageCount
+			a.is-right.pagination-next(href=`?page=${currentPage+1}`) >
+		else
+			a.is-right.pagination-next(href=`?page=${currentPage+1}` disabled) >
 script.
 	const linkList = document.querySelectorAll('.pagination a');
 	if(document.location.search) {
