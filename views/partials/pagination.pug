@@ -1,17 +1,17 @@
 .container
 	nav.pagination.is-centered
 		if currentPage > 1
-			a.pagination-previous(href=`?page=${currentPage-1}`) <
+			a.pagination-previous(href=relQString({page: currentPage-1})) <
 		else
-			a.pagination-previous(href=`?page=${currentPage-1}` disabled) <
+			a.pagination-previous(href=relQString({page: currentPage-1}) disabled) <
 		ul.pagination-list
 			- const padding = 3
 			//- first page
 			li
 				if currentPage == 1
-					a.is-current.pagination-link(href='?page=1')= 1
+					a.is-current.pagination-link(href=relQString({page: 1}))= 1
 				else
-					a.pagination-link(href='?page=1')= 1
+					a.pagination-link(href=relQString({page: 1}))= 1
 			//- need ellipsis?
 			if currentPage - padding > 2
 				li
@@ -25,10 +25,10 @@
 			while (page <= (currentPage + padding) && page < pageCount)
 				li
 					if page == currentPage
-						a.is-current.pagination-link(href=`?page=${page}`)= page
+						a.is-current.pagination-link(href=relQString({page: page}))= page
 						- page = page + 1
 					else
-						a.pagination-link(href=`?page=${page}`)= page
+						a.pagination-link(href=relQString({page: page}))= page
 						- page = page + 1
 			//- need ellipsis?
 			if currentPage + padding < pageCount - 1
@@ -38,19 +38,10 @@
 			if pageCount != 1
 				li
 					if currentPage == pageCount
-						a.is-current.pagination-link(href=`?page=${pageCount}`)= pageCount
+						a.is-current.pagination-link(href=relQString({page: pageCount}))= pageCount
 					else
-						a.pagination-link(href=`?page=${pageCount}`)= pageCount
+						a.pagination-link(href=relQString({page: pageCount}))= pageCount
 		if currentPage < pageCount
-			a.is-right.pagination-next(href=`?page=${currentPage+1}`) >
+			a.is-right.pagination-next(href=relQString({page: currentPage+1})) >
 		else
-			a.is-right.pagination-next(href=`?page=${currentPage+1}` disabled) >
-script.
-	const linkList = document.querySelectorAll('.pagination a');
-	if(document.location.search) {
-		const matches = document.location.search.match(/(.*)page=.+&(.*)/);
-		const currentQueryWithoutPage = matches[1] + matches[2];
-		linkList.forEach((link) => {
-			link.href = link.href + (/\?/.test(link.href) ? '&' : '?') + currentQueryWithoutPage.slice(1);
-		});
-	}
+			a.is-right.pagination-next(href=relQString({page: currentPage+1}) disabled) >

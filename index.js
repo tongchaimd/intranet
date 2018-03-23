@@ -10,6 +10,7 @@ const common = require('./helpers/common');
 const authHelper = require('./helpers/authorization');
 const methodOverride = require('method-override');
 const sgMail = require('@sendgrid/mail');
+const querystring = require('querystring');
 const express = require('express');
 require('dotenv').config();
 
@@ -34,6 +35,13 @@ app.locals.buildTitle = common.buildTitle;
 app.locals.moment = require('moment');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.locals.sgMail = sgMail;
+app.use((req, res, next) => {
+	// keep old querystring
+	res.locals.relQString = (obj) => {
+		return `?${querystring.stringify({...req.query, ...obj})}`;
+	}
+	next();
+});
 
 // connect to database
 const dbUrl = new url.URL(process.env.DB_HOST);
