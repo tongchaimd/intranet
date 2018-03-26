@@ -28,8 +28,27 @@ block content
 	table.table.is-fullwidth.is-hoverable
 		thead
 			tr
-				th Full Name
-				th Company
+				mixin sortingHeader(path, text, bottom, right)
+					- const sort = sortBy === path && direction;
+					th= text
+						.dropdown.is-pulled-right(class=`${bottom ? 'is-up' : ''} ${right ? 'is-right' : ''}`)
+							.dropdown-trigger(onclick="this.parentNode.classList.toggle('is-active')" style="cursor: pointer;")
+								span.icon
+									if sort
+										if sort === 'asc'
+											i.fas.fa-sort-up
+										else
+											i.fas.fa-sort-down
+									else
+										i.fas.fa-sort
+							.dropdown-menu
+								.dropdown-content
+									a.dropdown-item(href=`${relQString({ sort: path, direction: 'asc' })}`) ascending
+									a.dropdown-item(href=`${relQString({ sort: path, direction: 'desc' })}`) descending
+									.dropdown-divider
+									a.dropdown-item(href=`${relQString({ sort: '', direction: '' })}`) no sorting
+				+sortingHeader('fullName', 'Full Name')
+				+sortingHeader('companyName', 'Company', false, true)
 		tbody
 			each card in cardList
 				tr()
@@ -37,7 +56,7 @@ block content
 					td= card.companyName.prefer(preferLang, '-')
 		tfoot
 			tr
-				th Full Name
-				th Company
+				+sortingHeader('fullName', 'Full Name', true)
+				+sortingHeader('companyName', 'Company', true, true)
 block after-content
 	include ../partials/pagination.pug
