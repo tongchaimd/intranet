@@ -38,9 +38,12 @@ router.post('/', (req, res) => {
 
 router.get('/', (req, res) => {
 	const preferLang = req.query.prefLang || 'english';
-	BusinessCard.paginate({}, {
+	const sortBy = req.query.sort || 'createdAt';
+	const pathString = BusinessCard.isMultiLang(sortBy) ? `${sortBy}.${preferLang}` : sortBy;
+	const direction = req.query.direction || 'desc';
+	BusinessCard.paginate({ [pathString]: {'$exists': true, '$ne': ''} }, {
 		page: req.query.page || 1,
-		sort: { createdAt: 'desc' },
+		sort: { [pathString]: direction },
 		limit: 20,
 	})
 		.then((result) => {
@@ -50,6 +53,8 @@ router.get('/', (req, res) => {
 				pageCount: +result.pages,
 				preferLang,
 				languageList: ['english', 'thai', 'chinese'],
+				sortBy,
+				direction,
 			});
 		})
 		.catch((err) => {

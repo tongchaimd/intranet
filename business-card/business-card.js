@@ -26,23 +26,14 @@ multiLangStringSchema.methods.prefer = function prefer(prefLang, def) {
 	return def;
 }
 
+const multiLangPaths = ['fullName', 'position', 'companyName', 'companyLocation'];
+const multiLangPathsObj = multiLangPaths.reduce((obj, path) => {
+	obj[path] = { type: multiLangStringSchema, default: {} };
+	return obj;
+}, {});
+
 const businessCardSchema = new mongoose.Schema({
-	fullName: {
-		type: multiLangStringSchema,
-		default: {},
-	},
-	position: {
-		type: multiLangStringSchema,
-		default: {},
-	},
-	companyName: {
-		type: multiLangStringSchema,
-		default: {},
-	},
-	companyLocation: {
-		type: multiLangStringSchema,
-		default: {},
-	},
+	...multiLangPathsObj,
 	phone: {
 		type: String,
 		default: '',
@@ -64,6 +55,10 @@ const businessCardSchema = new mongoose.Schema({
 		default: '',
 	},
 }, { timestamps: true });
+
+businessCardSchema.statics.isMultiLang = function isMultiLang(path) {
+	return multiLangPaths.includes(path);
+};
 
 businessCardSchema.plugin(mongoosePaginate);
 
