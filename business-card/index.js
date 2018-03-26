@@ -62,4 +62,17 @@ router.get('/', (req, res) => {
 		});
 });
 
+router.get('/:id', (req, res) => {
+	BusinessCard.findById(req.params.id)
+		.then((card) => {
+			res.render('business-cards/show', {
+				card,
+				languageList: ['english', 'chinese', 'thai'],
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
 module.exports = router;

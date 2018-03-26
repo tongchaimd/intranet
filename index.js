@@ -78,7 +78,7 @@ app.locals.paths.news = news => resolvePath('/news/', news);
 app.locals.paths.newNews = () => resolvePath(app.locals.paths.news(), 'new');
 app.locals.paths.newsPreview = () => resolvePath(app.locals.paths.news(), 'preview');
 app.locals.paths.newsImages = news => resolvePath(app.locals.paths.news(news), 'images');
-app.locals.paths.businessCards = () => '/businessCards/'
+app.locals.paths.businessCards = card => resolvePath('/businessCards/', card);
 app.locals.paths.newBusinessCard = () => resolvePath(app.locals.paths.businessCards(), 'new');
 
 // routing

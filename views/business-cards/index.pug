@@ -51,7 +51,7 @@ block content
 				+sortingHeader('companyName', 'Company', false, true)
 		tbody
 			each card in cardList
-				tr()
+				tr(onclick=`window.location.href="${paths.businessCards(card)}"` style="cursor: pointer;")
 					td= card.fullName.prefer(preferLang, '-')
 					td= card.companyName.prefer(preferLang, '-')
 		tfoot

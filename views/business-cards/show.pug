@@ -1,0 +1,31 @@
+extends ../layout.pug
+
+block title
+	title= buildTitle(card.companyName.prefer('english', ''))
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title= card.companyName.prefer('english')
+mixin field(label, data)
+	label= label
+	p.is-size-4= data || '-'
+block content
+	.content
+		.box
+			.columns
+				.column
+					+field('Telephone', card.phone)
+				.column
+					+field('Mobile', card.mobile)
+				.column
+					+field('Fax', card.fax)
+		each language in languageList
+			.box
+				.columns
+					.column
+						+field('Name of Card\'s Owner', card.fullName[language])
+					.column
+						+field('Position', card.position[language])
+				br
+				+field('Company Name', card.companyName[language])
+				+field('Address', card.companyLocation[language])
