@@ -60,7 +60,7 @@ router.get('/', (req, res) => {
 				preferLang,
 				sortBy,
 				direction,
-				languageList: BusinessCard.languageList,
+				languageList: BusinessCard.languageList(),
 			});
 		})
 		.catch((err) => {
