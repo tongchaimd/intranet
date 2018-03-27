@@ -4,7 +4,9 @@ const BusinessCard = require('./business-card');
 const router = express.Router();
 
 router.get('/new', (req, res) => {
-	res.render('business-cards/new');
+	res.render('business-cards/new', {
+		languageList: BusinessCard.languageList(),
+	});
 });
 
 router.post('/', (req, res) => {
@@ -52,9 +54,9 @@ router.get('/', (req, res) => {
 				currentPage: +result.page,
 				pageCount: +result.pages,
 				preferLang,
-				languageList: ['english', 'thai', 'chinese'],
 				sortBy,
 				direction,
+				languageList: BusinessCard.languageList,
 			});
 		})
 		.catch((err) => {
@@ -67,7 +69,6 @@ router.get('/:id', (req, res) => {
 		.then((card) => {
 			res.render('business-cards/show', {
 				card,
-				languageList: ['english', 'chinese', 'thai'],
 			});
 		})
 		.catch((err) => {

@@ -19,7 +19,7 @@ block content
 					+field('Mobile', card.mobile)
 				.column
 					+field('Fax', card.fax)
-		each language in languageList
+		each language in card.languageList()
 			.box
 				.columns
 					.column

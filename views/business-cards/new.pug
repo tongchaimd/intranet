@@ -8,30 +8,36 @@ block hero
 			h1.title Adding Business Card
 block content
 	form(action=paths.businessCards(), method="post")
+		.tabs.is-boxed(style="margin-bottom: 0; padding-bottom: 0;" data-group='language')
+			ul
+				li(data-target=languageList[0]).is-active
+					a= languageList[0]
+				each language in languageList.slice(1)
+					li(data-target=language)
+						a= language
 		.box
-			.buttons.has-addons
-				span.button(data-lang="thai") Thai
-				span.button.is-info.is-selected(data-lang="english") English
-				span.button(data-lang="chinese") Chinese
-			- const lang = 'english'
-			.languageInputs(id=lang)
-				.field.columns
-					.column(style="padding-bottom: 0")
-						label.label Full Name
+			mixin multiLangFields(language, hidden)
+				div.group-language(class=`target-${language} ${(hidden ? 'is-hidden' : '')}`)
+					.field.columns
+						.column(style="padding-bottom: 0")
+							label.label Full Name
+							.control
+								input.input(type="text" name=`${language}-fullName`)
+						.column(style="padding-bottom: 0")
+							label.label Position
+							.control
+								input.input(type="text" name=`${language}-position`)
+					.field
+						label.label Company's Name
 						.control
-							input.input(type="text" name=`${lang}-fullName`)
-					.column(style="padding-bottom: 0")
-						label.label Position
+							input.input(type="text" name=`${language}-companyName`)
+					.field
+						label.label Company's Location
 						.control
-							input.input(type="text" name=`${lang}-position`)
-				.field
-					label.label Company's Name
-					.control
-						input.input(type="text" name=`${lang}-companyName`)
-				.field
-					label.label Company's Location
-					.control
-						input.input(type="text" name=`${lang}-companyLocation`)
+							input.input(type="text" name=`${language}-companyLocation`)
+			+multiLangFields(languageList[0])
+			each language in languageList.slice(1)
+				+multiLangFields(language, true)
 		.field.columns
 			.column(style="padding-bottom: 0")
 				label.label Telephone No.
@@ -57,40 +63,3 @@ block content
 		.field
 			.control
 				input.button.is-primary(type="submit")
-	script.
-		const langButtonList = document.querySelectorAll('.button[data-lang]');
-		langButtonList.forEach((button) => {
-			button.addEventListener('click', (e) => {
-				e.stopPropagation();
-				e.preventDefault();
-
-				langButtonList.forEach((elem) => {
-					elem.classList.remove('is-info', 'is-selected');
-				})
-				button.classList.add('is-info', 'is-selected');
-
-				const language = button.dataset.lang;
-				let container = document.querySelector(`#${language}`);
-				if(!container) {
-					container = document.createElement('div');
-					const otherContainer = document.querySelector('.languageInputs');
-					container.innerHTML = otherContainer.innerHTML;
-					container.className = 'languageInputs';
-					container.id = language;
-					inputList = container.querySelectorAll('input');
-					inputList.forEach((input) => {
-						const realName = input.name.split('-')[1];
-						input.name = `${language}-${realName}`;
-					});
-					otherContainer.parentNode.appendChild(container);
-				}
-				const containerList = document.querySelectorAll('.languageInputs');
-				containerList.forEach((elem) => {
-					if(elem !== container) {
-						elem.classList.add('is-hidden');
-					} else {
-						elem.classList.remove('is-hidden');
-					}
-				});
-			});
-		});

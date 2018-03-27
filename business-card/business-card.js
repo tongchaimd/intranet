@@ -1,19 +1,13 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
+const languageList = ['english', 'chinese', 'thai'];
+const languageListObj = languageList.reduce((obj, path) => {
+	obj[path] = { type: String, default: '' };
+	return obj;
+}, {});
 const multiLangStringSchema =  new mongoose.Schema({
-	english: {
-		type: String,
-		default: '',
-	},
-	thai: {
-		type: String,
-		default: '',
-	},
-	chinese: {
-		type: String,
-		default: '',
-	},
+	...languageListObj,
 }, { _id: false });
 
 multiLangStringSchema.methods.prefer = function prefer(prefLang, def) {
@@ -59,6 +53,13 @@ const businessCardSchema = new mongoose.Schema({
 businessCardSchema.statics.isMultiLang = function isMultiLang(path) {
 	return multiLangPaths.includes(path);
 };
+
+function getLanguageList() {
+	return languageList;
+};
+
+businessCardSchema.statics.languageList = getLanguageList;
+businessCardSchema.methods.languageList = getLanguageList;
 
 businessCardSchema.plugin(mongoosePaginate);
 
