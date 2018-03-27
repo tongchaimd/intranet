@@ -1,0 +1,62 @@
+mixin form(action)
+	form(action=action, method="post")
+		.tabs.is-boxed(style="margin-bottom: 0; padding-bottom: 0;" data-group='language')
+			ul
+				li(data-target=languageList[0]).is-active
+					a= languageList[0]
+				each language in languageList.slice(1)
+					li(data-target=language)
+						a= language
+		.box
+			mixin fieldInput(path, language)
+				if language
+					input.input(type="text" name=`${language}-${path}` value=(card ? card[path][language] : ''))
+				else
+					input.input(type="text" name=path value=(card ? card[path] : ''))
+			mixin multiLangFields(language, hidden)
+				div.group-language(class=`target-${language} ${(hidden ? 'is-hidden' : '')}`)
+					.field.columns
+						.column(style="padding-bottom: 0")
+							label.label Full Name
+							.control
+								+fieldInput('fullName', language)
+						.column(style="padding-bottom: 0")
+							label.label Position
+							.control
+								+fieldInput('position', language)
+					.field
+						label.label Company's Name
+						.control
+							+fieldInput('companyName', language)
+					.field
+						label.label Company's Location
+						.control
+							+fieldInput('companyLocation', language)
+			+multiLangFields(languageList[0])
+			each language in languageList.slice(1)
+				+multiLangFields(language, true)
+		.field.columns
+			.column(style="padding-bottom: 0")
+				label.label Telephone No.
+				.control
+					+fieldInput('phone')
+			.column(style="padding-bottom: 0")
+				label.label Mobile No.
+				.control
+					+fieldInput('mobile')
+			.column(style="padding-bottom: 0")
+				label.label Fax No.
+				.control
+					+fieldInput('fax')
+		.filed.columns
+			.column(style="padding-bottom: 0")
+				label.label Email
+				.control
+					+fieldInput('email')
+			.column(style="padding-bottom: 0")
+				label.label Website
+				.control
+					+fieldInput('website')
+		.field
+			.control
+				input.button.is-primary(type="submit")

@@ -9,11 +9,10 @@ router.get('/new', (req, res) => {
 	});
 });
 
-router.post('/', (req, res) => {
-	const input = {};
-	// extract language specific fields
-	Object.keys(req.body).forEach((key) => {
-		if(req.body[key]) {
+function extractLanguageSpecificFields(form) {
+	const input = {}
+	Object.keys(form).forEach((key) => {
+		if(form[key]) {
 			const matches = key.match(/(.+)-(.+)/);
 			if(matches) {
 				const language = matches[1];
@@ -21,12 +20,17 @@ router.post('/', (req, res) => {
 				if(!input[realKey]) {
 					input[realKey] = {};
 				}
-				input[realKey][language] = req.body[key];
+				input[realKey][language] = form[key];
 			} else {
-				input[key] = req.body[key];
+				input[key] = form[key];
 			}
 		}
 	});
+	return input;
+}
+
+router.post('/', (req, res) => {
+	const input = extractLanguageSpecificFields(req.body);
 	const businessCard = new BusinessCard(input);
 	businessCard.save()
 		.then((doc) => {
@@ -70,6 +74,32 @@ router.get('/:id', (req, res) => {
 			res.render('business-cards/show', {
 				card,
 			});
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
+router.get('/:id/edit', (req, res) => {
+	BusinessCard.findById(req.params.id)
+		.then((card) => {
+			res.render('business-cards/edit', { card });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
+router.patch('/:id', (req, res) => {
+	const input = extractLanguageSpecificFields(req.body);
+	let card;
+	BusinessCard.findById(req.params.id)
+		.then((doc) => {
+			card = doc;
+			return card.update(input);
+		})
+		.then((updatedCard) => {
+			res.redirect(req.app.locals.paths.businessCards(card));
 		})
 		.catch((err) => {
 			console.log(err);

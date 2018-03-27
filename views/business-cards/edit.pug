@@ -1,0 +1,12 @@
+extends ../layout.pug
+
+block title
+	title= buildTitle('Updating Business Card')
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Updating Business Card
+block content
+	- const languageList = card.languageList();
+	include ./partials/form.pug
+	+form(`${paths.businessCards(card)}?_method=PATCH`)

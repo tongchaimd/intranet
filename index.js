@@ -80,6 +80,7 @@ app.locals.paths.newsPreview = () => resolvePath(app.locals.paths.news(), 'previ
 app.locals.paths.newsImages = news => resolvePath(app.locals.paths.news(news), 'images');
 app.locals.paths.businessCards = card => resolvePath('/businessCards/', card);
 app.locals.paths.newBusinessCard = () => resolvePath(app.locals.paths.businessCards(), 'new');
+app.locals.paths.editBusinessCard = card => resolvePath(app.locals.paths.businessCards(), card, 'edit');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
