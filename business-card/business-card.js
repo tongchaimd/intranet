@@ -21,6 +21,7 @@ multiLangStringSchema.methods.prefer = function prefer(prefLang, def) {
 }
 
 const multiLangPaths = ['fullName', 'position', 'companyName', 'companyLocation'];
+const multiLangPathsWithIndex = ['fullName', 'companyName'];
 const multiLangPathsObj = multiLangPaths.reduce((obj, path) => {
 	obj[path] = { type: multiLangStringSchema, default: {} };
 	return obj;
@@ -49,6 +50,12 @@ const businessCardSchema = new mongoose.Schema({
 		default: '',
 	},
 }, { timestamps: true });
+
+multiLangPathsWithIndex.forEach((path) => {
+	languageList.forEach((language) => {
+		businessCardSchema.index({[`${path}.${language}`]: 1});
+	});
+});
 
 businessCardSchema.statics.isMultiLang = function isMultiLang(path) {
 	return multiLangPaths.includes(path);
