@@ -1,12 +1,23 @@
 const express = require('express');
 const BusinessCard = require('./business-card');
+const queryString = require('query-string');
 
 const router = express.Router();
 
+function renderForm(res, card, isNew) {
+	BusinessCard.getTagsByPopularity()
+		.then((popularTags) => {
+			res.render('business-cards/form', {
+				languageList: BusinessCard.languageList(),
+				popularTags,
+				card,
+				isNew,
+			});
+		});
+}
+
 router.get('/new', (req, res) => {
-	res.render('business-cards/new', {
-		languageList: BusinessCard.languageList(),
-	});
+	renderForm(res, new BusinessCard(), true);
 });
 
 function extractLanguageSpecificFields(form) {
@@ -38,6 +49,14 @@ router.post('/', (req, res) => {
 			res.redirect(req.app.locals.paths.newBusinessCard());
 		})
 		.catch((err) => {
+			if (err.name === 'ValidationError') {
+				Object.values(err.errors).forEach((validationError) => {
+					req.flash('danger', validationError.message);
+				});
+				renderForm(res, new BusinessCard(input), true);
+			}
+		})
+		.catch((err) => {
 			console.log(err);
 		});
 });
@@ -47,7 +66,24 @@ router.get('/', (req, res) => {
 	const sortBy = req.query.sort || 'createdAt';
 	const pathString = BusinessCard.isMultiLang(sortBy) ? `${sortBy}.${preferLang}` : sortBy;
 	const direction = req.query.direction || 'desc';
-	BusinessCard.paginate({ [pathString]: {'$exists': true, '$ne': ''} }, {
+
+	let tagQuery = {};
+	const filterList = req.query.filter || [];
+	if (filterList.length) {
+		const toCondition = tag => ({ tagList: tag });
+		const groups = filterList
+			.map(v => v.split(','))
+			.map(group => ({ $or: group.map(toCondition) }));
+
+		tagQuery = { $and: groups };
+	}
+
+	BusinessCard.paginate({
+		$and: [
+			{ [pathString]: { $exists: true, $ne: '' } },
+			tagQuery,
+		],
+	}, {
 		page: req.query.page || 1,
 		sort: { [pathString]: direction },
 		limit: 20,
@@ -61,11 +97,29 @@ router.get('/', (req, res) => {
 				sortBy,
 				direction,
 				languageList: BusinessCard.languageList(),
+				filterList,
 			});
 		})
 		.catch((err) => {
 			console.log(err);
 		});
+});
+
+router.get('/tags', async (req, res) => {
+	try {
+		const search = req.query.search;
+		res.json(BusinessCard.search(search).map(i => i._id));
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+router.post('/orGroup', (req, res) => {
+	const memberIndices = Object.keys(req.body).map(m => +m);
+	const memberList = req.query.filter.filter((v, i) => memberIndices.includes(i))
+	req.query.filter = req.query.filter.filter((v, i) => !memberIndices.includes(i));
+	req.query.filter.push(memberList.join(','))
+	res.redirect(`${req.app.locals.paths.businessCards()}?${queryString.stringify(req.query, { arrayFormat: 'index' })}`)
 });
 
 router.get('/:id', (req, res) => {
@@ -81,9 +135,11 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/:id/edit', (req, res) => {
+	let card;
 	BusinessCard.findById(req.params.id)
-		.then((card) => {
-			res.render('business-cards/edit', { card });
+		.then((doc) => {
+			card = doc;
+			return renderForm(res, card);
 		})
 		.catch((err) => {
 			console.log(err);
@@ -96,14 +152,24 @@ router.patch('/:id', (req, res) => {
 	BusinessCard.findById(req.params.id)
 		.then((doc) => {
 			card = doc;
-			return card.update(input);
+			return card.update({ tagList: [], ...input }, { runValidators: true });
 		})
-		.then((updatedCard) => {
+		.then(() => {
 			res.redirect(req.app.locals.paths.businessCards(card));
+		})
+		.catch((err) => {
+			if (err.name === 'ValidationError') {
+				Object.values(err.errors).forEach((validationError) => {
+					req.flash('danger', validationError.message);
+				});
+				renderForm(res, new BusinessCard(input));
+			}
+			throw err;
 		})
 		.catch((err) => {
 			console.log(err);
 		});
 });
+
 
 module.exports = router;

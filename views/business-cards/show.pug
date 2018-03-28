@@ -16,6 +16,13 @@ block content
 			span Edit
 	.content
 		.box
+			label Tags:
+			.tags
+				if card.tagList.length
+					each tag in card.tagList
+						.tag.is-info.is-medium= tag
+				else
+					p.is-size-4 -
 			.columns
 				.column
 					+field('Telephone', card.phone)

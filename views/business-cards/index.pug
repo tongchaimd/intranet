@@ -25,7 +25,45 @@ block content
 						each language in languageList
 							if language !== preferLang
 								a.dropdown-item.is-capitalized(href=relQString({prefLang: language}))= language
-	table.table.is-fullwidth.is-hoverable
+	.field.has-addons
+		.control.has-icons-left
+			input.input#filter-input(type="text" placeholder="filter by tags" data-target=paths.businessCardsTags() autocomplete="off").autocomplete
+			.autocomplete-items.is-hidden
+			span.icon.is-left.is-medium
+				i.fas.fa-tags.fa-lg
+		.control
+			a(data-target=qStringArrayAddingTemplate('filter')).button#add-filter
+				span.icon
+					i.fas.fa-plus
+	mixin filterTag(value, delHref, index)
+		.control
+			.tags.has-addons
+				span.tag.is-info.is-medium(style="cursor: pointer;" )
+					if index !== undefined
+						input.checkbox.or-group(type="checkbox" name=index style="margin-right: 1em;")
+					span= value
+				a(href=delHref).tag.is-delete.is-medium
+	form(action=paths.businessCardsOrGroup()+relQString({}) method="POST" style="margin-bottom: 1em")
+		if filterList && filterList.length
+			- var checkboxable = filterList.reduce((c, i) => !i.includes(',') ? c+1 : c, 0)
+			.field.is-grouped.is-grouped-multiline(style="align-items: baseline")
+					each filter, index in filterList
+						if filter.split(',').length > 1
+							each subFilter, subIndex in filter.split(',').slice(0, -1)
+								+filterTag(subFilter, remQStringNestedArray({'filter': [index, subIndex]}))
+								.control
+									span.tag.is-dark OR
+							+filterTag(filter.split(',').slice(-1), remQStringNestedArray({'filter': [index, filter.split(',').length-1]}))
+						else
+							if checkboxable >= 2
+								+filterTag(filter, remQStringArray({'filter': index}), index)
+							else
+								+filterTag(filter, remQStringArray({'filter': index}))
+			if checkboxable >= 2
+				.field
+					.control
+						input.button.is-link#or-button(type="submit" value="form 'OR' group" disabled)
+	table.table.is-fullwidth.is-hoverable.is-bordered.is-striped
 		thead
 			tr
 				mixin sortingHeader(path, text, bottom, right)
@@ -49,14 +87,145 @@ block content
 									a.dropdown-item(href=`${relQString({ sort: '', direction: '' })}`) no sorting
 				+sortingHeader('fullName', 'Full Name')
 				+sortingHeader('companyName', 'Company', false, true)
+				th Tags
 		tbody
 			each card in cardList
 				tr(onclick=`window.location.href="${paths.businessCards(card)}"` style="cursor: pointer;")
 					td= card.fullName.prefer(preferLang, '-')
 					td= card.companyName.prefer(preferLang, '-')
+					td
+						.tags
+							each tag in card.tagList.slice(0, 7)
+								.tag.is-info= tag
 		tfoot
 			tr
 				+sortingHeader('fullName', 'Full Name', true)
 				+sortingHeader('companyName', 'Company', true, true)
+				th Tags
+	script.
+		const filterInput = document.querySelector('#filter-input');
+		const autocomplete = document.querySelector('.autocomplete-items');
+		const addFilter = document.querySelector('#add-filter');
+		filterInput.addEventListener('input', (e) => {
+			const value = filterInput.value;
+			if(!value) {
+				autocomplete.classList.add('is-hidden');
+				return;
+			}
+			fetch(new URL(`${filterInput.dataset.target}?search=${value}`, window.location.href), {
+				credentials: 'same-origin',
+			})
+				.then((res) => {
+					return res.json();
+				})
+				.then((list) => {
+					autocomplete.innerHTML = '';
+					list.slice(0,4).forEach((tag) => {
+						const div = document.createElement('div');
+						div.innerHTML = `<span>${tag}</span`
+						autocomplete.appendChild(div);
+						div.addEventListener('click', onSelectAutocomplete.bind(null, tag));
+					});
+					autocomplete.classList.remove('is-hidden');
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+		});
+
+		function onSelectAutocomplete(tag) {
+			filterInput.value = tag;
+			autocomplete.innerHTML = '';
+		}
+
+		filterInput.addEventListener('keydown', (e) => {
+			if(e.keyCode == 40) {
+				// DOWN key
+				const currentDiv = autocomplete.querySelector('.autocomplete-active');
+				if (currentDiv) {
+					currentDiv.classList.remove('autocomplete-active');
+					if (currentDiv.nextSibling) {
+						currentDiv.nextSibling.classList.add('autocomplete-active')
+					}
+				} else {
+					autocomplete.childNodes[0].classList.add('autocomplete-active')
+				}
+			}
+			if(e.keyCode == 38) {
+				// UP key
+				const currentDiv = autocomplete.querySelector('.autocomplete-active');
+				if (currentDiv) {
+					currentDiv.classList.remove('autocomplete-active');
+					if (currentDiv.previousSibling) {
+						currentDiv.previousSibling.classList.add('autocomplete-active')
+					}
+				} else {
+					autocomplete.childNodes[autocomplete.childNodes.length-1].classList.add('autocomplete-active')
+				}
+			}
+			if(e.keyCode == 13) {
+				// ENTER key
+				e.preventDefault();
+				const currentDiv = autocomplete.querySelector('.autocomplete-active');
+				if(!currentDiv) {
+					addFilter.dispatchEvent(new Event('click'))
+				} else {
+					currentDiv.dispatchEvent(new Event('click'))
+				}
+			}
+			if(e.keyCode == 27) {
+				// ESC key
+				autocomplete.innerHTML = '';
+			}
+		});
+
+		addFilter.addEventListener('click', (e) => {
+			e.preventDefault();
+			const tag = filterInput.value;
+			const original = addFilter.dataset.target
+			window.location.href = `${original}${encodeURIComponent(tag)}`
+		})
+
+		document.addEventListener('click', (e) => {
+			autocomplete.innerHTML = '';
+		})
+
+		let checkCount = 0;
+
+		const orGroupCheckbox = document.querySelectorAll('input.or-group');
+		orGroupCheckbox.forEach((checkbox) => {
+			checkbox.addEventListener('click', (e) => {
+				e.stopPropagation();
+				if (checkbox.checked) {
+					checkCount++;
+				} else {
+					checkCount--;
+				}
+				if (checkCount >= 2) {
+					document.querySelector('#or-button').disabled = false
+				}
+				else {
+					document.querySelector('#or-button').disabled = true
+				}
+			})
+
+			checkbox.parentNode.addEventListener('click', (e) => {
+				e.stopPropagation();
+				e.preventDefault();
+				checkbox.checked = !checkbox.checked;
+				if (checkbox.checked) {
+					checkCount++;
+				} else {
+					checkCount--;
+				}
+				if (checkCount >= 2) {
+					document.querySelector('#or-button').disabled = false
+				}
+				else {
+					document.querySelector('#or-button').disabled = true
+				}
+			})
+		})
+
 block after-content
 	include ../partials/pagination.pug
