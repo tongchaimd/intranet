@@ -34,6 +34,7 @@ app.use(flash());
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.locals.sgMail = sgMail;
+app.locals.helpers = {};
 app.use((req, res, next) => {
 	res.locals.helpers = {};
 	// keep old querystring
