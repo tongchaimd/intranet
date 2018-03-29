@@ -32,14 +32,15 @@ app.use(session({
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
-app.locals.buildTitle = common.buildTitle;
-app.locals.moment = moment;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.locals.sgMail = sgMail;
 app.use((req, res, next) => {
+	res.locals.helpers = {};
 	// keep old querystring
-	res.locals.relQString = obj =>
+	res.locals.helpers.relQString = obj =>
 		`?${querystring.stringify({ ...req.query, ...obj })}`;
+	res.locals.helpers.buildTitle = common.buildTitle;
+	res.locals.helpers.moment = moment;
 	next();
 });
 

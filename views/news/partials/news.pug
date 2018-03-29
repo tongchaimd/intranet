@@ -7,7 +7,7 @@ else
 p.subtitle.has-text-weight-bold posted by: 
 	a(href=paths.users(news.poster))= news.poster.fullName
 	if createdAt
-		span.duration-ago.has-text-weight-semibold.is-italic.is-size-6.has-text-grey #{moment(createdAt).fromNow()} (#{moment(createdAt).format('LLLL')})
+		span.duration-ago.has-text-weight-semibold.is-italic.is-size-6.has-text-grey #{helpers.moment(createdAt).fromNow()} (#{helpers.moment(createdAt).format('LLLL')})
 
 - const imageSourceArray =  news.getImageSourceArray()
 if imageSourceArray && imageSourceArray.length

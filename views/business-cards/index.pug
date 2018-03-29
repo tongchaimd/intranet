@@ -1,7 +1,7 @@
 extends ../layout.pug
 
 block title
-	title= buildTitle('Business Cards')
+	title= helpers.buildTitle('Business Cards')
 block hero
 	.hero.is-dark
 		.hero-body
@@ -24,7 +24,7 @@ block content
 					.dropdown-content
 						each language in languageList
 							if language !== preferLang
-								a.dropdown-item.is-capitalized(href=relQString({prefLang: language}))= language
+								a.dropdown-item.is-capitalized(href=helpers.relQString({prefLang: language}))= language
 	table.table.is-fullwidth.is-hoverable
 		thead
 			tr
@@ -43,10 +43,10 @@ block content
 										i.fas.fa-sort
 							.dropdown-menu
 								.dropdown-content
-									a.dropdown-item(href=`${relQString({ sort: path, direction: 'asc' })}`) ascending
-									a.dropdown-item(href=`${relQString({ sort: path, direction: 'desc' })}`) descending
+									a.dropdown-item(href=`${helpers.relQString({ sort: path, direction: 'asc' })}`) ascending
+									a.dropdown-item(href=`${helpers.relQString({ sort: path, direction: 'desc' })}`) descending
 									.dropdown-divider
-									a.dropdown-item(href=`${relQString({ sort: '', direction: '' })}`) no sorting
+									a.dropdown-item(href=`${helpers.relQString({ sort: '', direction: '' })}`) no sorting
 				+sortingHeader('fullName', 'Full Name')
 				+sortingHeader('companyName', 'Company', false, true)
 		tbody

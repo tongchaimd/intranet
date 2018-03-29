@@ -1,7 +1,7 @@
 extends ../layout.pug
 
 block title
-	title= buildTitle(title)
+	title= helpers.buildTitle(title)
 block content
 	include ./partials/news.pug
 	.flex.has-text-centered
