@@ -5,8 +5,8 @@ function capitalize(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const uniqueValidator = function uniqueValidator(key) {
-	return function (v, cb) {
+const uniqueValidatorBuilder = function uniqueValidatorBuiler(key) {
+	return function uniqueValidator(v, cb) {
 		User.findOne({ [key]: v, _id: { $ne: this._id } }, (err, u) => {
 			cb(!u, `${capitalize(key)} has already been taken!`);
 		});
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
 		trim: true,
 		validate: {
 			isAsync: true,
-			validator: uniqueValidator('username'),
+			validator: uniqueValidatorBuilder('username'),
 		},
 	},
 	passwordHash: {

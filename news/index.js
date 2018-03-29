@@ -34,9 +34,7 @@ router.post('/', upload.single('file'), (req, res) => {
 	const fileStream = new stream.PassThrough();
 	fileStream.end(req.file.buffer);
 	news.saveFile(fileStream, req.file.originalname)
-		.then(() => {
-			return news.save()
-		})
+		.then(() => news.save())
 		.then((savedNews) => {
 			res.end(req.app.locals.paths.news(savedNews));
 		})
@@ -105,7 +103,7 @@ router.get('/:id/file', async (req, res) => {
 		doc.getFileReadStream().pipe(res);
 	} catch (err) {
 		console.log(err);
-	};
+	}
 });
 
 module.exports = router;

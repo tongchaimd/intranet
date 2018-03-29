@@ -11,6 +11,7 @@ const authHelper = require('./helpers/authorization');
 const methodOverride = require('method-override');
 const sgMail = require('@sendgrid/mail');
 const querystring = require('querystring');
+const moment = require('moment');
 const express = require('express');
 require('dotenv').config();
 
@@ -32,14 +33,13 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
 app.locals.buildTitle = common.buildTitle;
-app.locals.moment = require('moment');
+app.locals.moment = moment;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.locals.sgMail = sgMail;
 app.use((req, res, next) => {
 	// keep old querystring
-	res.locals.relQString = (obj) => {
-		return `?${querystring.stringify({...req.query, ...obj})}`;
-	}
+	res.locals.relQString = obj =>
+		`?${querystring.stringify({ ...req.query, ...obj })}`;
 	next();
 });
 
@@ -53,7 +53,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // defining routing paths
 function resolvePath(...argList) {
-	if(!argList.length) {
+	if (!argList.length) {
 		return '/';
 	}
 	return argList.reduce((result, arg) => {

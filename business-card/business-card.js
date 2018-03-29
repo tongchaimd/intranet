@@ -6,19 +6,19 @@ const languageListObj = languageList.reduce((obj, path) => {
 	obj[path] = { type: String, default: '' };
 	return obj;
 }, {});
-const multiLangStringSchema =  new mongoose.Schema({
+const multiLangStringSchema = new mongoose.Schema({
 	...languageListObj,
 }, { _id: false });
 
 multiLangStringSchema.methods.prefer = function prefer(prefLang, def) {
 	const obj = this.toObject();
-	if(obj[prefLang]) return obj[prefLang];
-	const keys = Object.keys(obj)
-	for(let i = 0; i < keys.length; i = i + 1) {
-		if(obj[keys[i]]) return obj[keys[i]];
+	if (obj[prefLang]) return obj[prefLang];
+	const keys = Object.keys(obj);
+	for (let i = 0; i < keys.length; i += 1) {
+		if (obj[keys[i]]) return obj[keys[i]];
 	}
 	return def;
-}
+};
 
 const multiLangPaths = ['fullName', 'position', 'companyName', 'companyLocation'];
 const multiLangPathsWithIndex = ['fullName', 'companyName'];
@@ -53,7 +53,7 @@ const businessCardSchema = new mongoose.Schema({
 
 multiLangPathsWithIndex.forEach((path) => {
 	languageList.forEach((language) => {
-		businessCardSchema.index({[`${path}.${language}`]: 1});
+		businessCardSchema.index({ [`${path}.${language}`]: 1 });
 	});
 });
 
@@ -63,7 +63,7 @@ businessCardSchema.statics.isMultiLang = function isMultiLang(path) {
 
 function getLanguageList() {
 	return languageList;
-};
+}
 
 businessCardSchema.statics.languageList = getLanguageList;
 businessCardSchema.methods.languageList = getLanguageList;

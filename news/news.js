@@ -42,9 +42,7 @@ newsSchema.methods.saveFile = function saveFile(readStream, name) {
 		const writeStream = gfs.createWriteStream({ filename: name });
 		readStream.pipe(writeStream);
 
-		readStream.on('error', (err) => {
-			return reject(err);
-		});
+		readStream.on('error', err => reject(err));
 
 		writeStream.on('close', (file) => {
 			console.log(file);
@@ -56,12 +54,12 @@ newsSchema.methods.saveFile = function saveFile(readStream, name) {
 
 newsSchema.methods.getFileMetadata = function getFileMetadata() {
 	return new Promise((resolve, reject) => {
-		if(!this.fileId) {
+		if (!this.fileId) {
 			return reject(new Error('no fileId'));
 		}
 		const gfs = Grid(mongoose.connection.db, mongoose.mongo);
 		gfs.files.find({ _id: this.fileId }).toArray((err, files) => {
-			if(err) {
+			if (err) {
 				return reject(err);
 			}
 			return resolve(files[0]);
@@ -70,7 +68,7 @@ newsSchema.methods.getFileMetadata = function getFileMetadata() {
 };
 
 newsSchema.methods.getFileReadStream = function getFileReadStream() {
-	if(!this.fileId) {
+	if (!this.fileId) {
 		return null;
 	}
 	const gfs = Grid(mongoose.connection.db, mongoose.mongo);
