@@ -45,6 +45,17 @@ exports.mustBeSignedIn = function mustBeSignedIn(req, res, next) {
 	}
 };
 
+exports.mustBeAdmin = function mustBeAdmin(req, res, next) {
+	if (!req.isSignedIn) {
+		req.session.intendedPath = req.originalUrl;
+		res.redirect(req.app.locals.paths.signIn());
+	} else if (!req.currentUser.isAdmin) {
+		res.render('errors/unauthorized');
+	} else {
+		next();
+	}
+};
+
 exports.redirectIfSignedIn = function redirectIfSignedIn(req, res, next) {
 	if (req.isSignedIn) {
 		res.redirect(req.app.locals.paths.home());

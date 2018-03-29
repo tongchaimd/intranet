@@ -44,7 +44,15 @@ const userSchema = new mongoose.Schema({
 	rememberExpiryDate: {
 		type: Date,
 	},
+	admin: {
+		type: Boolean,
+	},
 });
+
+userSchema.virtual('isAdmin')
+	.get(function getIsAdmin() {
+		return this.admin;
+	});
 
 userSchema.virtual('password')
 	.get(function getPassword() {

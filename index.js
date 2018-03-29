@@ -84,6 +84,7 @@ app.locals.paths.editBusinessCard = card => resolvePath(app.locals.paths.busines
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
+const mustBeAdmin = authHelper.mustBeAdmin;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
 app.use('/news', mustBeSignedIn, require('./news/index'));
@@ -92,7 +93,7 @@ const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-
 if (process.env.NODE_ENV === 'development') {
 	app.use('/signUpAccess', signUpAccessRouter);
 } else {
-	app.use('/signUpAccess', mustBeSignedIn, signUpAccessRouter);
+	app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
 }
 app.get('/sumtingwong', (req, res) => {
 	res.render('errors/sumtingwong');
