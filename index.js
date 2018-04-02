@@ -11,6 +11,7 @@ const authHelper = require('./helpers/authorization');
 const methodOverride = require('method-override');
 const sgMail = require('@sendgrid/mail');
 const querystring = require('querystring');
+const moment = require('moment');
 const express = require('express');
 require('dotenv').config();
 
@@ -31,15 +32,16 @@ app.use(session({
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
 app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
-app.locals.buildTitle = common.buildTitle;
-app.locals.moment = require('moment');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.locals.sgMail = sgMail;
+app.locals.helpers = {};
 app.use((req, res, next) => {
+	res.locals.helpers = {};
 	// keep old querystring
-	res.locals.relQString = (obj) => {
-		return `?${querystring.stringify({...req.query, ...obj})}`;
-	}
+	res.locals.helpers.relQString = obj =>
+		`?${querystring.stringify({ ...req.query, ...obj })}`;
+	res.locals.helpers.buildTitle = common.buildTitle;
+	res.locals.helpers.moment = moment;
 	next();
 });
 
@@ -53,7 +55,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // defining routing paths
 function resolvePath(...argList) {
-	if(!argList.length) {
+	if (!argList.length) {
 		return '/';
 	}
 	return argList.reduce((result, arg) => {
@@ -86,6 +88,7 @@ app.locals.paths.businessCardsBasketTable = () => resolvePath(app.locals.paths.b
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
+const mustBeAdmin = authHelper.mustBeAdmin;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
 app.use('/news', mustBeSignedIn, require('./news/index'));
@@ -94,7 +97,7 @@ const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-
 if (process.env.NODE_ENV === 'development') {
 	app.use('/signUpAccess', signUpAccessRouter);
 } else {
-	app.use('/signUpAccess', mustBeSignedIn, signUpAccessRouter);
+	app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
 }
 app.get('/sumtingwong', (req, res) => {
 	res.render('errors/sumtingwong');

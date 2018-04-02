@@ -12,14 +12,14 @@ router.get('/new', (req, res) => {
 });
 
 function extractLanguageSpecificFields(form) {
-	const input = {}
+	const input = {};
 	Object.keys(form).forEach((key) => {
-		if(form[key]) {
+		if (form[key]) {
 			const matches = key.match(/(.+)-(.+)/);
-			if(matches) {
+			if (matches) {
 				const language = matches[1];
 				const realKey = matches[2];
-				if(!input[realKey]) {
+				if (!input[realKey]) {
 					input[realKey] = {};
 				}
 				input[realKey][language] = form[key];
@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
 	const input = extractLanguageSpecificFields(req.body);
 	const businessCard = new BusinessCard(input);
 	businessCard.save()
-		.then((doc) => {
+		.then(() => {
 			req.flash('success', 'Business Card Saved');
 			res.redirect(req.app.locals.paths.newBusinessCard());
 		})
@@ -49,7 +49,7 @@ router.get('/', (req, res) => {
 	const sortBy = req.query.sort || 'createdAt';
 	const pathString = BusinessCard.isMultiLang(sortBy) ? `${sortBy}.${preferLang}` : sortBy;
 	const direction = req.query.direction || 'desc';
-	BusinessCard.paginate({ [pathString]: {'$exists': true, '$ne': ''} }, {
+	BusinessCard.paginate({ [pathString]: { $exists: true, $ne: '' } }, {
 		page: req.query.page || 1,
 		sort: { [pathString]: direction },
 		limit: 5,
@@ -101,7 +101,7 @@ router.patch('/:id', (req, res) => {
 			card = doc;
 			return card.update(input);
 		})
-		.then((updatedCard) => {
+		.then(() => {
 			res.redirect(req.app.locals.paths.businessCards(card));
 		})
 		.catch((err) => {
