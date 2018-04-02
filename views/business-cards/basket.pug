@@ -1,0 +1,65 @@
+extends ../layout.pug
+
+block title
+	title= buildTitle('Saved Business Cards')
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Saved Business Cards
+block content
+	form(action=`${paths.businessCardsBasket()}?_method=PATCH` method="POST" style="margin-bottom: 20px")
+		.columns(style="margin-bottom: 0")
+			.field.is-flex.column.is-one-third
+				label.label Language:
+				.field
+					each lang in languageList
+						.control
+							label.checkbox.is-capitalized
+								if prefLangList.includes(lang)
+									input(type="checkbox" name=lang checked)
+								else
+									input(type="checkbox" name=lang)
+								|  #{lang}
+			.filed.column.is-one-third
+				.is-flex
+					label.label Fill:
+					.field
+						.control
+							label.radio
+								if fill
+									input(type="radio" name="fill" value="true" checked)
+								else
+									input(type="radio" name="fill" value="true")
+								|  Yes
+						.control
+							label.radio
+								if !fill
+									input(type="radio" name="fill" value="" checked)
+								else
+									input(type="radio" name="fill" value="")
+								|  No
+				p.help Fill with other language
+		.field
+			.control
+				input.button.is-link(type="submit" value="Refresh Table")
+				a.button.is-danger.is-pulled-right#clear(data-target=paths.businessCardsBasket()) Clear
+	- const editable = true
+	include ./partials/basket-table.pug
+	a.button.is-primary(href=paths.businessCardsBasketTable()) See Table
+	script.
+		const clear = document.querySelector('#clear')
+		const removeCards = document.querySelectorAll('.remove-card')
+		clear.addEventListener('click', (e) => {
+			const idList = Array.prototype.map.call(removeCards, i => i.dataset.id);
+			fetch(clear.dataset.target, {
+				credentials: 'same-origin',
+				method: 'DELETE',
+				headers: {
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({ idList }),
+			})
+				.then(() => {
+					document.location.href = document.location.href;
+				})
+		});

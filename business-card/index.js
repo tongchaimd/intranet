@@ -3,6 +3,8 @@ const BusinessCard = require('./business-card');
 
 const router = express.Router();
 
+router.use('/basket', require('./basket'));
+
 router.get('/new', (req, res) => {
 	res.render('business-cards/new', {
 		languageList: BusinessCard.languageList(),
@@ -50,7 +52,7 @@ router.get('/', (req, res) => {
 	BusinessCard.paginate({ [pathString]: {'$exists': true, '$ne': ''} }, {
 		page: req.query.page || 1,
 		sort: { [pathString]: direction },
-		limit: 20,
+		limit: 5,
 	})
 		.then((result) => {
 			res.render('business-cards/index', {
@@ -61,6 +63,7 @@ router.get('/', (req, res) => {
 				sortBy,
 				direction,
 				languageList: BusinessCard.languageList(),
+				basket: req.session.basket || [],
 			});
 		})
 		.catch((err) => {

@@ -1,5 +1,6 @@
 extends ../layout.pug
 
+
 block title
 	title= buildTitle('Business Cards')
 block hero
@@ -25,6 +26,7 @@ block content
 						each language in languageList
 							if language !== preferLang
 								a.dropdown-item.is-capitalized(href=relQString({prefLang: language}))= language
+	a.button(href=paths.businessCardsBasket()) Saved Cards
 	table.table.is-fullwidth.is-hoverable
 		thead
 			tr
@@ -47,16 +49,98 @@ block content
 									a.dropdown-item(href=`${relQString({ sort: path, direction: 'desc' })}`) descending
 									.dropdown-divider
 									a.dropdown-item(href=`${relQString({ sort: '', direction: '' })}`) no sorting
+				th
+					input.checkbox.check-this-page(type="checkbox" style="zoom: 1.25" data-post=paths.businessCardsBasket())
 				+sortingHeader('fullName', 'Full Name')
 				+sortingHeader('companyName', 'Company', false, true)
 		tbody
 			each card in cardList
 				tr(onclick=`window.location.href="${paths.businessCards(card)}"` style="cursor: pointer;")
+					td
+						.control
+							if basket.includes(card._id.toString())
+								input.checkbox.select-card(type="checkbox" data-post=paths.businessCardsBasket() data-id=card._id checked style="zoom: 1.25")
+							else
+								input.checkbox.select-card(type="checkbox" data-post=paths.businessCardsBasket() data-id=card._id style="zoom: 1.25")
 					td= card.fullName.prefer(preferLang, '-')
 					td= card.companyName.prefer(preferLang, '-')
 		tfoot
 			tr
+				th
+					input.checkbox.check-this-page(type="checkbox" style="zoom: 1.25" data-post=paths.businessCardsBasket())
 				+sortingHeader('fullName', 'Full Name', true)
 				+sortingHeader('companyName', 'Company', true, true)
+	script.
+		const selectBoxList = document.querySelectorAll('.select-card');
+		selectBoxList.forEach((elem) => {
+			elem.addEventListener('click', onSelectBoxClick);
+		});
+
+		function onSelectBoxClick(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			if (this.checked) {
+				basketQuery.call(this, [this.dataset.id], true);
+			} else {
+				basketQuery.call(this, [this.dataset.id]);
+			}
+		}
+
+		const pageSelectBoxList = document.querySelectorAll('.check-this-page');
+		pageSelectBoxList.forEach((elem) => {
+			elem.addEventListener('click', onPageSelectBoxClick);
+		});
+
+		function onPageSelectBoxClick(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			if (this.checked) {
+				basketQuery.call(this, getIdList(selectBoxList), true)
+					.then(() => {
+						selectBoxList.forEach((elem) => {
+							elem.checked = true;
+						});
+						pageSelectBoxList.forEach((elem) => {
+							elem.checked = true;
+						});
+					})
+			} else {
+				basketQuery.call(this, getIdList(selectBoxList))
+					.then(() => {
+						selectBoxList.forEach((elem) => {
+							elem.checked = false;
+						});
+						pageSelectBoxList.forEach((elem) => {
+							elem.checked = false;
+						});
+					})
+			}
+		}
+
+		function basketQuery(idList, isPost) {
+			return fetch(this.dataset.post, {
+				credentials: 'same-origin',
+				method: isPost ? 'POST' : 'DELETE',
+				headers: {
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({ idList }),
+			})
+				.then((res) => {
+					if (res.ok) {
+						this.checked = !!isPost;
+						return;
+					} else {
+						return (new Error(res));
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+		}
+
+		function getIdList(checkboxList) {
+			return Array.prototype.map.call(checkboxList, i => i.dataset.id);
+		}
 block after-content
 	include ../partials/pagination.pug

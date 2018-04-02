@@ -1,0 +1,72 @@
+style
+	include ../../../node_modules/bulma/css/bulma.css
+table.table.is-fullwidth.is-hoverable.is-striped.is-narrow
+	thead
+		if editable
+			th 
+		th Full Name
+		th Position
+		th Company
+		th Company Address
+		th Telephone
+		th Mobile
+		th Fax
+		th Email
+		th Website
+	tbody
+		each card in cardList
+			tr
+				if editable
+					td
+						a.remove-card(data-id=card._id data-target=paths.businessCardsBasket())
+							span.icon.has-text-danger
+								i.fas.fa-times
+				each path in ['fullName', 'position', 'companyName', 'companyLocation']
+					- const result = prefLangList.map(lang => card[path][lang]).filter(i => i)
+					if !fill
+						if result.length
+							td
+								each field in result.slice(0, -1)
+									| #{field}
+									br
+								| #{result.slice(-1)}
+						else
+							td -
+					else
+						if result.length
+							td
+								each field in result.slice(0, -1)
+									| #{field}
+									br
+								| #{result.slice(-1)}
+						else
+							td= card[path].prefer(undefined, '-')
+				td= card.phone || '-'
+				td= card.mobile || '-'
+				td= card.fax || '-'
+				td= card.email || '-'
+				td= card.website || '-'
+	if editable
+		script.
+			const remButton = document.querySelectorAll('.remove-card');
+			remButton.forEach((elem) => {
+				elem.addEventListener('click', onRemove);
+			});
+			function onRemove(e) {
+				e.stopPropagation();
+				e.preventDefault();
+				fetch(this.dataset.target, {
+					credentials: 'same-origin',
+					method: 'DELETE',
+					headers: {
+						'content-type': 'application/json',
+					},
+					body: JSON.stringify({ idList: [this.dataset.id] }),
+				})
+					.then(() => {
+						this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+					})
+					.catch((err) => {
+						console.log(err)
+					})
+			}
