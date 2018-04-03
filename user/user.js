@@ -47,6 +47,9 @@ const userSchema = new mongoose.Schema({
 	admin: {
 		type: Boolean,
 	},
+	info: {
+		type: String,
+	},
 });
 
 userSchema.virtual('isAdmin')

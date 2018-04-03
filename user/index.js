@@ -116,6 +116,7 @@ router.patch('/:id', authHelper.mustBeSignedIn, (req, res) => {
 				user.fullNameList = input.fullNameList.filter(v => v.trim().length);
 			}
 			user.email = input.email;
+			user.info = input.info;
 			if (input.password) {
 				user.password = input.password;
 				user.passwordConfirmation = input.passwordConfirmation;
