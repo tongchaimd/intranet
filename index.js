@@ -119,6 +119,7 @@ app.locals.paths.userEdit = user => resolvePath(app.locals.paths.users(), 'edit'
 app.locals.paths.signUp = () => resolvePath(app.locals.paths.users(), 'new');
 app.locals.paths.sessions = () => '/sessions/';
 app.locals.paths.signUpAccess = () => '/signUpAccess/';
+app.locals.paths.invite = () => resolvePath(app.locals.paths.signUpAccess(), 'new');
 app.locals.paths.news = news => resolvePath('/news/', news);
 app.locals.paths.newNews = () => resolvePath(app.locals.paths.news(), 'new');
 app.locals.paths.newsPreview = () => resolvePath(app.locals.paths.news(), 'preview');

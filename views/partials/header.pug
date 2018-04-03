@@ -20,6 +20,11 @@ header.navbar
 			span
 	.navbar-menu
 		.navbar-end
+			if currentUser.isAdmin
+				a.navbar-item(href=paths.invite())
+					span.icon.is-medium
+						i.fas.fa-user-plus.fa-lg
+					span Invite
 			a.navbar-item(href=paths.users(currentUser))
 				span.icon.is-medium
 					i.fas.fa-user-circle.fa-lg
