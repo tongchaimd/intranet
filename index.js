@@ -10,8 +10,8 @@ const common = require('./helpers/common');
 const authHelper = require('./helpers/authorization');
 const methodOverride = require('method-override');
 const sgMail = require('@sendgrid/mail');
-const querystring = require('querystring');
 const moment = require('moment');
+const queryString = require('query-string');
 const express = require('express');
 require('dotenv').config();
 
@@ -37,11 +37,54 @@ app.locals.sgMail = sgMail;
 app.locals.helpers = {};
 app.use((req, res, next) => {
 	res.locals.helpers = {};
-	// keep old querystring
-	res.locals.helpers.relQString = obj =>
-		`?${querystring.stringify({ ...req.query, ...obj })}`;
 	res.locals.helpers.buildTitle = common.buildTitle;
 	res.locals.helpers.moment = moment;
+	const format = { arrayFormat: 'index' };
+	// keep old queryString
+	res.locals.helpers.relQString = (obj) => {
+		return `?${queryString.stringify({...req.query, ...obj}, format)}`;
+	}
+	res.locals.helpers.addQStringArray = (obj) => {
+		const newQuery = JSON.parse(JSON.stringify(req.query));
+		Object.keys(obj).forEach((key) => {
+			if(!newQuery[key]) {
+				newQuery[key] = [];
+			}
+			newQuery[key].push(obj[key]);
+		})
+		return `?${queryString.stringify(newQuery, format)}`;
+	}
+	res.locals.helpers.qStringArrayAddingTemplate = (key) => {
+		if(req.query[key] && req.query[key].length) {
+			return `?${queryString.stringify(req.query, format)}&${key}[${req.query[key].length}]=`;
+		}
+		return `?${queryString.stringify(req.query, format)}&${key}[${0}]=`;
+	}
+	res.locals.helpers.remQStringArray = (obj) => {
+		const newQuery = JSON.parse(JSON.stringify(req.query));
+		Object.keys(obj).forEach((key) => {
+			if(newQuery[key]) {
+				newQuery[key].splice(obj[key],1);
+				if(!newQuery[key].length) {
+					delete newQuery[key];
+				}
+			}
+		})
+		return `?${queryString.stringify(newQuery, format)}`;
+	}
+	res.locals.helpers.remQStringNestedArray = (obj) => {
+		const newQuery = JSON.parse(JSON.stringify(req.query));
+		Object.keys(obj).forEach((key) => {
+			if(newQuery[key]) {
+				if(newQuery[key][obj[key][0]]) {
+					const arr = newQuery[key][obj[key][0]].split(',');
+					arr.splice(obj[key][1], 1);
+					newQuery[key][obj[key][0]] = arr.join(',');
+				}
+			}
+		})
+		return `?${queryString.stringify(newQuery, format)}`;
+	}
 	next();
 });
 
@@ -85,6 +128,8 @@ app.locals.paths.newBusinessCard = () => resolvePath(app.locals.paths.businessCa
 app.locals.paths.editBusinessCard = card => resolvePath(app.locals.paths.businessCards(), card, 'edit');
 app.locals.paths.businessCardsBasket = () => resolvePath(app.locals.paths.businessCards(), 'basket');
 app.locals.paths.businessCardsBasketTable = () => resolvePath(app.locals.paths.businessCards(), 'basket', 'table');
+app.locals.paths.businessCardsTags = () => resolvePath(app.locals.paths.businessCards(), 'tags');
+app.locals.paths.businessCardsOrGroup = () => resolvePath(app.locals.paths.businessCards(), 'orGroup');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
