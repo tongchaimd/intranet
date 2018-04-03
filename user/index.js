@@ -44,6 +44,9 @@ router.post('/', authHelper.redirectIfSignedIn, (req, res) => {
 		.then((access) => {
 			if (access) {
 				this.access = access;
+				if (access.admin) {
+					user.admin = true;
+				}
 				return user.save();
 			}
 			return Promise.reject(new Error('token invalid'));

@@ -12,6 +12,9 @@ const signUpAccessSchema = new mongoose.Schema({
 		type: Date,
 		required: true,
 	},
+	admin: {
+		type: Boolean,
+	}
 });
 
 signUpAccessSchema.pre('validate', function setExpiryDate() {

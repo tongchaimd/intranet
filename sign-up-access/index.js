@@ -4,6 +4,7 @@ const path = require('path');
 const url = require('url');
 const helper = require('../helpers/common');
 const moment = require('moment');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
@@ -13,10 +14,19 @@ router.get('/new', (req, res) => {
 
 router.post('/', (req, res) => {
 	const email = req.body.email;
+	const isAdmin = !!req.body.admin;
+	const password = req.body.password;
 	if (email) {
 		const doc = new SignUpAccess();
 		const token = helper.randomUrlSafeToken(32);
 		doc.token = token;
+		if (isAdmin) {
+			if (!password || !bcrypt.compareSync(password, req.currentUser.passwordHash)) {
+				throw new Error('wrong password');
+				return;
+			}
+			doc.admin = true;
+		}
 		doc.save()
 			.then((savedDoc) => {
 				const signUpUrl = new url.URL(`${req.protocol}://${path.join(req.get('host'), req.app.locals.paths.signUp())}`);
@@ -26,7 +36,7 @@ router.post('/', (req, res) => {
 					to: email,
 					from: `noreply@${req.host}`,
 					subject: 'Intranet sign up invitation.',
-					text: `This email contains a link to creating only 1 account on the intranet. The link will be expired in ${moment(doc.expiryDate).fromNow()}.\nThe link: ${signUpUrl}`,
+					text: `This email contains a link to creating only 1 account on the intranet. The link will be expired ${moment(doc.expiryDate).fromNow()}.\nThe link: ${signUpUrl}`,
 				};
 				if (process.env.NODE_ENV === 'development') {
 					req.flash('success', signUpUrl);

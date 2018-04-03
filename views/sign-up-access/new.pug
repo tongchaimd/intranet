@@ -13,4 +13,12 @@ block content
 			.control
 				input.input(type="email" name="email" placeholder="New user's email")
 		.field
+			label.checkbox.has-text-danger(onclick="this.parentNode.nextSibling.classList.remove('is-hidden')")
+				input(type="checkbox" name="admin")
+				|  **MAKE THIS NEW USER AN ADMIN** (require password)
+		.field.is-hidden
+			label.label Password
+			.control
+				input.input(type="password" name="password" placeholder="Your Password")
+		.field
 			input.button.is-primary(type="submit")
