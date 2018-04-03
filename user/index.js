@@ -5,6 +5,19 @@ const authHelper = require('../helpers/authorization');
 
 const router = express.Router();
 
+router.get('/', authHelper.mustBeSignedIn, (req, res) => {
+	User.find()
+		.select('fullNameList email')
+		.then((userList) => {
+			res.render('users/index', {
+				userList,
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
 router.get('/new', authHelper.redirectIfSignedIn, (req, res) => {
 	const { token, tokenId } = req.query;
 	SignUpAccess.validateToken(token, tokenId)

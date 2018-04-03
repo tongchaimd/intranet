@@ -1,0 +1,21 @@
+extends ../layout.pug
+
+block title
+	title= helpers.buildTitle('Users')
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Users
+block content
+	each user in userList
+		.box
+			h2.title
+				a(href=paths.users(user))= user.fullName
+			.is-flex(style="align-items: baseline; flex-wrap: wrap")
+				div
+					h3 Other Names:
+					ul(style="margin-left: 1em")
+						each name in user.fullNameList.slice(1)
+							li.is-size-4= name
+				div
+					h3 Email: #[span.is-size-4= user.email]
