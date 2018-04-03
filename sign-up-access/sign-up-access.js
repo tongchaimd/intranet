@@ -41,7 +41,7 @@ SignUpAccess.validateToken = function validateToken(token, id) {
 			if (access.expiryDate < moment()) {
 				return false;
 			}
-			if (!bcrypt.compare(token, access.tokenHash)) {
+			if (!bcrypt.compareSync(token, access.tokenHash)) {
 				return false;
 			}
 			return access;
