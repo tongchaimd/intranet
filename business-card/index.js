@@ -5,6 +5,7 @@ const queryString = require('query-string');
 const router = express.Router();
 
 router.use('/basket', require('./basket'));
+router.use('/import', require('./import'));
 
 function renderForm(res, card, isNew) {
 	BusinessCard.getTagsByPopularity()

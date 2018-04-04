@@ -1,0 +1,119 @@
+extends ../layout.pug
+
+block title
+	title= helpers.buildTitle('Import Business Cards')
+block hero
+	.hero.is-dark
+		.hero-body
+			h1.title Import Business Cards
+block content
+	form(method="post" enctype="multipart/form-data" style="margin-bottom: 1em")
+		.field
+			.control
+				.file.is-boxed.is-large.has-name
+					.file-label
+						input.file-input(type="file" name="file")
+						.file-cta
+							span.file-icon
+								i.fas.fa-upload
+							span.file-label
+								| Choose a file
+						.file-name
+		.field
+			.control
+				input.button.is-primary(type="submit" value="Upload")
+	.footer
+		h2.title WorldCard Instruction (Important!)
+		.content
+			h3 Export
+			ol
+				li Go to "Export".
+				li Choose "CSV File (.csv)".
+				li Choose "UTF-8" as the encoding.
+			h3 Setup
+			ol
+				li Go to [settings(preference) > Sync,Export,Import > csv].
+				li.
+					Make sure "Created Time" is in the "Displayed Field" panel.
+					If not, locate it inside "other" category in "Available Field" panel, then click it.
+				li Make sure these fields are also in "Displayed Field". ( "Field(1-3)" means "Field", "Field2", "Field3" )
+					ul
+						li Name
+							ul
+								li Full Name(1-4)
+						li Organization
+							ul
+								li Company(1-5)
+								li Job Title(1-5)
+						li Phone
+							ul
+								li Office TEL(1-5)
+								li Office FAX(1-5)
+								li Mobile TEL(1-5)
+						li Address
+							ul
+								li Office Address(1-5)
+						li Email
+							ul
+								li Office Email(1-5)
+						li Website
+							ul
+								li Office Website(1-5)
+	script.
+		const fileLabel = document.querySelector('.file-label');
+		const fileInput = fileLabel.querySelector('.file-input');
+		addFileDroppingListener(fileLabel, 'drop', (err, files) => {
+			fileInput.files = files;
+		})
+
+		fileInput.addEventListener('change', (e) => {
+			const fileNameElem = fileLabel.querySelector('.file-name');
+			fileNameElem.textContent = fileInput.files[0].name;
+		})
+
+		function addFileDroppingListener(elem, text, callback) {
+			let dragging = false;
+			let timeout;
+			const parent = elem.parentNode;
+			const elemComputedStyle = window.getComputedStyle(elem);
+			const dropTarget = document.createElement('div');
+			dropTarget.style.height = elemComputedStyle.height;
+			dropTarget.style.width = elemComputedStyle.width;
+			dropTarget.className = 'drop-target';
+			dropTarget.textContent = text;
+
+			function stoppedDragging() {
+				if (dragging) {
+					parent.replaceChild(elem, dropTarget);
+				}
+				dragging = false;
+			}
+
+			function startDragging() {
+				if (!dragging) {
+					parent.replaceChild(dropTarget, elem);
+				}
+				dragging = true;
+			}
+
+			document.body.addEventListener('dragover', (event) => {
+				event.stopPropagation();
+				event.preventDefault();
+				startDragging();
+				clearTimeout(timeout);
+			});
+			document.body.addEventListener('dragleave', (event) => {
+				event.stopPropagation();
+				event.preventDefault();
+				// won't consider dragging stopped unless 'dragover' doesn't fire in 50 ms
+				timeout = setTimeout(stoppedDragging, 50);
+			});
+			document.body.addEventListener('drop', (event) => {
+				event.stopPropagation();
+				event.preventDefault();
+				stoppedDragging();
+				if (event.target === dropTarget) {
+					callback.call(elem, null, event.dataTransfer.files);
+				}
+			});
+		}

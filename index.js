@@ -1,4 +1,5 @@
 // imports
+require('dotenv').config();
 const mongoose = require('mongoose');
 const url = require('url');
 const path = require('path');
@@ -13,7 +14,6 @@ const sgMail = require('@sendgrid/mail');
 const moment = require('moment');
 const queryString = require('query-string');
 const express = require('express');
-require('dotenv').config();
 
 const app = express();
 
@@ -131,6 +131,7 @@ app.locals.paths.businessCardsBasket = () => resolvePath(app.locals.paths.busine
 app.locals.paths.businessCardsBasketTable = () => resolvePath(app.locals.paths.businessCards(), 'basket', 'table');
 app.locals.paths.businessCardsTags = () => resolvePath(app.locals.paths.businessCards(), 'tags');
 app.locals.paths.businessCardsOrGroup = () => resolvePath(app.locals.paths.businessCards(), 'orGroup');
+app.locals.paths.businessCardsImport = () => resolvePath(app.locals.paths.businessCards(), 'import');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
