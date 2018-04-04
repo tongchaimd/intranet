@@ -30,6 +30,11 @@ block content
 					+field('Mobile', card.mobile)
 				.column
 					+field('Fax', card.fax)
+			.columns
+				.column.is-one-third
+					+field('Email', card.email)
+				.column.is-one-third
+					+field('Website', card.website)
 		each language in card.languageList()
 			.box
 				.columns
