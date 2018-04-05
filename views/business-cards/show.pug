@@ -45,3 +45,19 @@ block content
 				br
 				+field('Company Name', card.companyName[language])
 				+field('Address', card.companyLocation[language])
+	a.button#remove-card.is-danger(data-target=paths.businessCards(card) data-redirect=paths.businessCards()) Remove
+	script.
+		const removeButton = document.querySelector('#remove-card');
+		removeButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			fetch(removeButton.dataset.target, {
+				method: 'DELETE',
+				credentials: 'same-origin',
+			})
+				.then((res) => {
+					if (res.ok) window.location.href = removeButton.dataset.redirect;
+				})
+				.catch((err) => {
+					console.log(err)
+				});
+		});

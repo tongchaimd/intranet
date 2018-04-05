@@ -1,6 +1,7 @@
 const express = require('express');
 const BusinessCard = require('./business-card');
 const queryString = require('query-string');
+const authHelper = require('../helpers/authorization');
 
 const router = express.Router();
 
@@ -178,5 +179,19 @@ router.patch('/:id', (req, res) => {
 		});
 });
 
+router.delete('/:id', (req, res) => {
+	BusinessCard.findOneAndRemove({ _id: req.params.id })
+		.then((doc) => {
+			if (doc) {
+				req.flash('success', 'successfully remove the card');
+				res.status(200).end();
+			} else {
+				throw Error('card not found');
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
 
 module.exports = router;
