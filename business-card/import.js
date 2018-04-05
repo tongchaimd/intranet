@@ -97,6 +97,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 						switch (langCode) {
 							case 'ja':
 							case 'zh':
+							case 'zh-Hant':
 								card[key].chinese.push(value);
 								break;
 							case 'th':
