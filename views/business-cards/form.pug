@@ -8,6 +8,7 @@ block hero
 		.hero-body
 			h1.title= title
 block content
+	include ./partials/image.pug
 	- const action = isNew ? paths.businessCards() : `${paths.businessCards(card)}?_method=PATCH`
 	form(action=action, method="post")
 		.tabs.is-boxed(style="margin-bottom: 0; padding-bottom: 0;" data-group='language')

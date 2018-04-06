@@ -10,6 +10,7 @@ mixin field(label, data)
 	label= label
 	p.is-size-4= data || '-'
 block content
+	include ./partials/image.pug
 	a.button.is-info(href=paths.editBusinessCard(card) style="margin-bottom: 6px")
 			span.icon
 				i.far.fa-edit

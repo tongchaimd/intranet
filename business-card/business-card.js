@@ -67,6 +67,12 @@ const businessCardSchema = new mongoose.Schema({
 		type: String,
 		index: true,
 	},
+	imageFront: {
+		type: Buffer,
+	},
+	imageBack: {
+		type: Buffer,
+	}
 }, { timestamps: true });
 
 multiLangPathsWithIndex.forEach((path) => {

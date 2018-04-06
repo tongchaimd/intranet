@@ -1,0 +1,15 @@
+if (card.imageFront || card.imageBack)
+	div.is-flex(style="justify-content: center")
+		.box.is-flex(style="flex-wrap: wrap; justify-content: space-evenly; background-color: black;")
+			if (card.imageFront)
+				img.image(src=`data:image/jpeg;base64,${card.imageFront.toString('base64')}` style="max-height: 300px; cursor: pointer; height: auto;" onclick="this.nextSibling.classList.add('is-active')")
+				.modal.is-hidden-mobile(onclick="this.classList.remove('is-active')")
+					.modal-background
+					.modal-content
+						img.image(src=`data:image/jpeg;base64,${card.imageFront.toString('base64')}`)
+			if (card.imageBack)
+				img.image(src=`data:image/jpeg;base64,${card.imageBack.toString('base64')}` style="max-height: 300px; cursor: pointer; width: auto;" onclick="this.nextSibling.classList.add('is-active')")
+				.modal.is-hidden-mobile(onclick="this.classList.remove('is-active')")
+					.modal-background
+					.modal-content
+						img.image(src=`data:image/jpeg;base64,${card.imageBack.toString('base64')}`)
