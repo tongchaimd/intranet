@@ -92,7 +92,7 @@ block content
 				each tagObj in popularTags
 					.control
 						.tags.has-addons
-							span.tag.is-dark= tagObj._id
+							span.tag.is-dark.example(style="cursor: pointer;")= tagObj._id
 							span.tag= tagObj.count
 		.field
 			.control
@@ -127,3 +127,12 @@ block content
 				}
 			}
 		}, true);
+
+		const exampleList = document.querySelectorAll('.example');
+		exampleList.forEach((example) => {
+			example.addEventListener('click', onClickExample);
+		});
+		function onClickExample(e) {
+			document.querySelector('#input-tag').value = this.textContent;
+			document.querySelector('#add-tag').dispatchEvent(new Event('click'));
+		}
