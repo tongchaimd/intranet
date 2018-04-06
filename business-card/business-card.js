@@ -63,8 +63,8 @@ const businessCardSchema = new mongoose.Schema({
 			message: 'Tags must not include comma(,)',
 		},
 	},
-	wcCreatedTime: {
-		type: Date,
+	wcId: {
+		type: String,
 		index: true,
 	},
 }, { timestamps: true });
