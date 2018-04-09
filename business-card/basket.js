@@ -1,5 +1,6 @@
 const express = require('express');
 const BusinessCard = require('./business-card')
+const asyncMw = require('../helpers/async-middleware');
 
 const router = express.Router();
 
@@ -11,24 +12,18 @@ router.post('/', (req, res) => {
 	res.status(200).end()
 });
 
-router.get('/', (req, res) => {
+router.get('/', asyncMw(async (req, res) => {
 	const config = req.session.basketConfig || {};
-	console.log(config)
-	BusinessCard.find()
+	const cardList = await BusinessCard.find()
 		.where('_id')
-		.in(req.session.basket || [])
-		.then((cardList) => {
-			res.render('business-cards/basket', {
-				cardList,
-				languageList: BusinessCard.languageList(),
-				prefLangList: config.prefLangList || [],
-				fill: config.fill,
-			});
-		})
-		.catch((err) => {
-			console.log(err)
-		});
-});
+		.in(req.session.basket || []);
+	res.render('business-cards/basket', {
+		cardList,
+		languageList: BusinessCard.languageList(),
+		prefLangList: config.prefLangList || [],
+		fill: config.fill,
+	});
+}));
 
 router.patch('/', (req, res) => {
 	const input = req.body;
@@ -41,24 +36,19 @@ router.patch('/', (req, res) => {
 	res.redirect(req.app.locals.paths.businessCardsBasket());
 })
 
-router.get('/table', (req, res) => {
+router.get('/table', asyncMw(async (req, res) => {
 	const config = req.session.basketConfig || {};
 	console.log(config)
-	BusinessCard.find()
+	const cardList = await BusinessCard.find()
 		.where('_id')
-		.in(req.session.basket || [])
-		.then((cardList) => {
-			res.render('business-cards/partials/basket-table', {
-				cardList,
-				languageList: BusinessCard.languageList(),
-				prefLangList: config.prefLangList || [],
-				fill: config.fill,
-			});
-		})
-		.catch((err) => {
-			console.log(err)
-		});
-})
+		.in(req.session.basket || []);
+	res.render('business-cards/partials/basket-table', {
+		cardList,
+		languageList: BusinessCard.languageList(),
+		prefLangList: config.prefLangList || [],
+		fill: config.fill,
+	});
+}));
 
 router.delete('/', (req, res) => {
 	if (!req.session.basket) {

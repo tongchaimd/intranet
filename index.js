@@ -146,13 +146,12 @@ if (process.env.NODE_ENV === 'development') {
 } else {
 	app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
 }
-app.get('/sumtingwong', (req, res) => {
-	res.render('errors/sumtingwong');
+app.use((err, req, res, next) => {
+	console.log(err);
+	res.status(500).render('errors/500');
 });
-app.use((req, res) => {
-	res.status(404);
-
-	res.render('errors/404');
+app.use((req,res) => {
+	res.status(400).render('errors/404');
 });
 
 app.listen(process.env.PORT);

@@ -2,6 +2,7 @@ const express = require('express');
 const News = require('./news');
 const upload = require('multer')();
 const stream = require('stream');
+const asyncMw = require('../helpers/async-middleware');
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get('/new', (req, res) => {
 	res.render('news/new');
 });
 
-router.post('/', upload.single('file'), (req, res) => {
+router.post('/', upload.single('file'), asyncMw(async (req, res) => {
 	const input = req.body;
 	const news = new News({
 		title: input.title,
@@ -33,23 +34,15 @@ router.post('/', upload.single('file'), (req, res) => {
 	}
 	const fileStream = new stream.PassThrough();
 	fileStream.end(req.file.buffer);
-	news.saveFile(fileStream, req.file.originalname)
-		.then(() => news.save())
-		.then((savedNews) => {
-			res.end(req.app.locals.paths.news(savedNews));
-		})
-		.catch((err) => {
-			console.error(err);
-		});
-});
+	await news.saveFile(fileStream, req.file.originalname);
+	const savedNews = await news.save();
+	res.end(req.app.locals.paths.news(savedNews));
+}));
 
-router.get('/:id', (req, res) => {
-	News.findById(req.params.id)
-		.populate('poster')
-		.then((news) => {
-			res.render('news/show', { news });
-		});
-});
+router.get('/:id', asyncMw(async (req, res) => {
+	const news = await News.findById(req.params.id).populate('poster');
+	res.render('news/show', { news });
+}));
 
 router.post('/preview', (req, res) => {
 	const input = req.body;
@@ -67,43 +60,29 @@ router.post('/preview', (req, res) => {
 	}
 });
 
-router.get('/', (req, res) => {
-	News.paginate({}, {
+router.get('/', asyncMw(async (req, res) => {
+	const result = await News.paginate({}, {
 		page: req.query.page || 1,
 		limit: 10,
 		sort: { createdAt: 'desc' },
 		populate: 'poster',
-	})
-		.then((result) => {
-			res.render('news/index', { newsList: result.docs, currentPage: +result.page, pageCount: +result.pages });
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+	});
+	res.render('news/index', { newsList: result.docs, currentPage: +result.page, pageCount: +result.pages });
+}));
 
-router.get('/:id/images', (req, res) => {
-	News.findById(req.params.id)
-		.then((doc) => {
-			res.json(doc.getImageSourceArray(+req.query.start, +req.query.end));
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+router.get('/:id/images', asyncMw(async (req, res) => {
+	const doc = await News.findById(req.params.id);
+	res.json(doc.getImageSourceArray(+req.query.start, +req.query.end));
+}));
 
-router.get('/:id/file', async (req, res) => {
-	try {
-		const doc = await News.findById(req.params.id);
-		const metadata = await doc.getFileMetadata();
-		res.writeHead(200, {
-			'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			'Content-Disposition': `attachment; filename*= UTF-8''${encodeURIComponent(metadata.filename)}`,
-		});
-		doc.getFileReadStream().pipe(res);
-	} catch (err) {
-		console.log(err);
-	}
-});
+router.get('/:id/file', asyncMw(async (req, res) => {
+	const doc = await News.findById(req.params.id);
+	const metadata = await doc.getFileMetadata();
+	res.writeHead(200, {
+		'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		'Content-Disposition': `attachment; filename*= UTF-8''${encodeURIComponent(metadata.filename)}`,
+	});
+	doc.getFileReadStream().pipe(res);
+}));
 
 module.exports = router;

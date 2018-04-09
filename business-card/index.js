@@ -2,27 +2,26 @@ const express = require('express');
 const BusinessCard = require('./business-card');
 const queryString = require('query-string');
 const authHelper = require('../helpers/authorization');
+const asyncMw = require('../helpers/async-middleware');
 
 const router = express.Router();
 
 router.use('/basket', require('./basket'));
 router.use('/import', require('./import'));
 
-function renderForm(res, card, isNew) {
-	BusinessCard.getTagsByPopularity()
-		.then((popularTags) => {
-			res.render('business-cards/form', {
-				languageList: BusinessCard.languageList(),
-				popularTags,
-				card,
-				isNew,
-			});
-		});
+async function renderForm(res, card, isNew) {
+	const popularTags = await BusinessCard.getTagsByPopularity();
+	res.render('business-cards/form', {
+		languageList: BusinessCard.languageList(),
+		popularTags,
+		card,
+		isNew,
+	});
 }
 
-router.get('/new', (req, res) => {
+router.get('/new', asyncMw(async (req, res) => {
 	renderForm(res, new BusinessCard(), true);
-});
+}));
 
 function extractLanguageSpecificFields(form) {
 	const input = {};
@@ -44,28 +43,23 @@ function extractLanguageSpecificFields(form) {
 	return input;
 }
 
-router.post('/', (req, res) => {
+router.post('/', asyncMw(async (req, res) => {
 	const input = extractLanguageSpecificFields(req.body);
 	const businessCard = new BusinessCard(input);
-	businessCard.save()
-		.then(() => {
-			req.flash('success', 'Business Card Saved');
-			res.redirect(req.app.locals.paths.newBusinessCard());
-		})
-		.catch((err) => {
-			if (err.name === 'ValidationError') {
-				Object.values(err.errors).forEach((validationError) => {
-					req.flash('danger', validationError.message);
-				});
-				renderForm(res, new BusinessCard(input), true);
-			}
-		})
-		.catch((err) => {
-			console.log(err);
+	const error = businessCard.validateSync();
+	if (error) {
+		Object.values(error.errors).forEach((validationError) => {
+			req.flash('danger', validationError.message);
 		});
-});
+		await renderForm(res, new BusinessCard(input), true);
+		return;
+	}
+	await businessCard.save();
+	req.flash('success', 'Business Card Saved');
+	res.redirect(req.app.locals.paths.newBusinessCard());
+}));
 
-router.get('/', (req, res) => {
+router.get('/', asyncMw(async (req, res) => {
 	const preferLang = req.query.prefLang || 'english';
 	const sortBy = req.query.sort || 'createdAt';
 	const pathString = BusinessCard.isMultiLang(sortBy) ? `${sortBy}.${preferLang}` : sortBy;
@@ -82,44 +76,36 @@ router.get('/', (req, res) => {
 		tagQuery = { $and: groups };
 	}
 
-	BusinessCard.paginate({
-		$and: [
-			{ [pathString]: { $exists: true, $ne: '' } },
-			tagQuery,
-		],
-	}, {
-		page: req.query.page || 1,
-		sort: { [pathString]: direction },
-		limit: 20,
-	})
-		.then((result) => {
-			if (result.pages < result.page) {
-				res.redirect(res.locals.helpers.relQString({ page: 1 }))
-			}
-			res.render('business-cards/index', {
-				cardList: result.docs,
-				currentPage: +result.page,
-				pageCount: +result.pages,
-				preferLang,
-				sortBy,
-				direction,
-				languageList: BusinessCard.languageList(),
-				basket: req.session.basket || [],
-				filterList,
-			});
-		})
-		.catch((err) => {
-			console.log(err);
+	const result = await BusinessCard.paginate({
+			$and: [
+				{ [pathString]: { $exists: true, $ne: '' } },
+				tagQuery,
+			],
+		}, {
+			page: req.query.page || 1,
+			sort: { [pathString]: direction },
+			limit: 20,
 		});
-});
-
-router.get('/tags', async (req, res) => {
-	try {
-		const search = req.query.search;
-		res.json(BusinessCard.search(search).map(i => i._id));
-	} catch (err) {
-		console.log(err);
+	if (result.pages < result.page) {
+		res.redirect(res.locals.helpers.relQString({ page: 1 }))
+		return;
 	}
+	res.render('business-cards/index', {
+		cardList: result.docs,
+		currentPage: +result.page,
+		pageCount: +result.pages,
+		preferLang,
+		sortBy,
+		direction,
+		languageList: BusinessCard.languageList(),
+		basket: req.session.basket || [],
+		filterList,
+	});
+}));
+
+router.get('/tags', (req, res) => {
+	const search = req.query.search;
+	res.json(BusinessCard.search(search).map(i => i._id));
 });
 
 router.post('/orGroup', (req, res) => {
@@ -130,70 +116,47 @@ router.post('/orGroup', (req, res) => {
 	res.redirect(`${req.app.locals.paths.businessCards()}?${queryString.stringify(req.query, { arrayFormat: 'index' })}`)
 });
 
-router.get('/:id', (req, res) => {
-	BusinessCard.findById(req.params.id)
-		.then((card) => {
-			res.render('business-cards/show', {
-				card,
-			});
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+router.get('/:id', asyncMw(async (req, res) => {
+	const card = await BusinessCard.findById(req.params.id);
+	res.render('business-cards/show', {
+		card,
+	});
+}));
 
-router.get('/:id/edit', (req, res) => {
-	let card;
-	BusinessCard.findById(req.params.id)
-		.then((doc) => {
-			card = doc;
-			return renderForm(res, card);
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+router.get('/:id/edit', asyncMw(async (req, res) => {
+	const card = await BusinessCard.findById(req.params.id);
+	renderForm(res, card);
+}));
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', asyncMw(async (req, res) => {
 	const input = extractLanguageSpecificFields(req.body);
-	input.tagList = input.tagList || [];
-	let card;
-	BusinessCard.findById(req.params.id)
-		.then((doc) => {
-			card = doc;
-			card.set(input);
-			return card.save();
-		})
-		.then(() => {
-			res.redirect(req.app.locals.paths.businessCards(card));
-		})
-		.catch((err) => {
-			if (err.name === 'ValidationError') {
-				Object.values(err.errors).forEach((validationError) => {
-					req.flash('danger', validationError.message);
-				});
-				renderForm(res, card);
-			}
-			throw err;
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+	if (!input.tagList) {
+		input.tagList = [];
+	}
+	const card = await BusinessCard.findById(req.params.id);
+	card.set(input);
 
-router.delete('/:id', (req, res) => {
-	BusinessCard.findOneAndRemove({ _id: req.params.id })
-		.then((doc) => {
-			if (doc) {
-				req.flash('success', 'successfully remove the card');
-				res.status(200).end();
-			} else {
-				throw Error('card not found');
-			}
-		})
-		.catch((err) => {
-			console.log(err);
+	const error = card.validateSync();
+	if (error) {
+		Object.values(error.errors).forEach((validationError) => {
+			req.flash('danger', validationError.message);
 		});
-});
+		await renderForm(res, card);
+		return;
+	}
+
+	await card.save();
+	res.redirect(req.app.locals.paths.businessCards(card));
+}));
+
+router.delete('/:id', asyncMw(async (req, res) => {
+	const doc = await BusinessCard.findOneAndRemove({ _id: req.params.id });
+	if (doc) {
+		req.flash('success', 'successfully remove the card');
+		res.status(200).end();
+	} else {
+		throw Error('card not found');
+	}
+}));
 
 module.exports = router;

@@ -2,6 +2,7 @@ const moment = require('moment');
 const bcrypt = require('bcrypt');
 const User = require('../user/user');
 const cryptoHelper = require('./crypto');
+const asyncMw = require('./async-middleware');
 
 async function currentUser(req) {
 	if (req.session && req.session.userId) {
@@ -20,21 +21,16 @@ async function currentUser(req) {
 	return null;
 }
 
-exports.currentUserMiddleware = function currentUserMiddleware(req, res, next) {
+exports.currentUserMiddleware = asyncMw(async function currentUserMiddleware(req, res, next) {
 	if (!req.currentUser) {
-		currentUser(req)
-			.then((user) => {
-				req.isSignedIn = user;
-				req.currentUser = user;
-				res.locals.isSignedIn = user;
-				res.locals.currentUser = user;
-				next();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		const user = await currentUser(req)
+		req.isSignedIn = user;
+		req.currentUser = user;
+		res.locals.isSignedIn = user;
+		res.locals.currentUser = user;
+		next();
 	}
-};
+});
 
 exports.mustBeSignedIn = function mustBeSignedIn(req, res, next) {
 	if (!req.isSignedIn) {
