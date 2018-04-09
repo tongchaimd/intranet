@@ -54,7 +54,7 @@ router.get('/:id', authHelper.mustBeSignedIn, asyncMw(async (req, res, next) => 
 		next();
 		return;
 	}
-	res.render('users/show', { u: user });
+	res.render('users/show', { user });
 }));
 
 router.get('/edit/:id', authHelper.mustBeSignedIn, asyncMw(async (req, res) => {
@@ -68,7 +68,7 @@ router.get('/edit/:id', authHelper.mustBeSignedIn, asyncMw(async (req, res) => {
 		next();
 		return;
 	}
-	res.render('users/edit', { u: user });
+	res.render('users/edit', { user });
 }));
 
 router.patch('/:id', authHelper.mustBeSignedIn, asyncMw(async (req, res) => {
@@ -96,7 +96,7 @@ router.patch('/:id', authHelper.mustBeSignedIn, asyncMw(async (req, res) => {
 		Object.values(error.errors).forEach((validationError) => {
 			req.flash('danger', validationError.message);
 		});
-		res.render('users/edit', { u: user });
+		res.render('users/edit', { user });
 		return;
 	}
 	await user.save();

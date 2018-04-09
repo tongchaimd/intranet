@@ -5,12 +5,12 @@ block title
 block hero
 	.hero.is-dark
 		.hero-body
-			h1.title Updating Your Profile (#{u.username})
+			h1.title Updating Your Profile (#{user.username})
 block content
 	form(action=`${paths.users(currentUser)}?_method=PATCH` method="POST")
 		.field
 			label.label Full Names (first of the list will be considered as the main one)
-			each name in u.fullNameList
+			each name in user.fullNameList
 				.field
 					.control
 						input.input(type="text" name="fullNameList" value=name)
@@ -21,11 +21,11 @@ block content
 		.field
 			label.label Email
 			.control
-				input.input(type="email" name="email" value=u.email)
+				input.input(type="email" name="email" value=user.email)
 		.field
 			label.label Info
 			.control
-				textarea.textarea(name="info" placeholder="Additional Information")= u.info
+				textarea.textarea(name="info" placeholder="Additional Information")= user.info
 		.field
 			label.label New Password
 			.field
