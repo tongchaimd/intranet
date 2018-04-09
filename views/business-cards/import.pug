@@ -22,43 +22,13 @@ block content
 		.field
 			.control
 				input.button.is-primary(type="submit" value="Upload")
-	.footer
-		h2.title WorldCard Instruction (Important!)
+	.box
+		h2.title WorldCard Instruction
 		.content
 			h3 Export
 			ol
-				li Go to "Export".
-				li Choose "CSV File (.csv)".
-				li Choose "UTF-8" as the encoding.
-			h3 Setup
-			ol
-				li Go to [settings(preference) > Sync,Export,Import > csv].
-				li.
-					Make sure "Created Time" is in the "Displayed Field" panel.
-					If not, locate it inside "other" category in "Available Field" panel, then click it.
-				li Make sure these fields are also in "Displayed Field". ( "Field(1-3)" means "Field", "Field2", "Field3" )
-					ul
-						li Name
-							ul
-								li Full Name(1-4)
-						li Organization
-							ul
-								li Company(1-5)
-								li Job Title(1-5)
-						li Phone
-							ul
-								li Office TEL(1-5)
-								li Office FAX(1-5)
-								li Mobile TEL(1-5)
-						li Address
-							ul
-								li Office Address(1-5)
-						li Email
-							ul
-								li Office Email(1-5)
-						li Website
-							ul
-								li Office Website(1-5)
+				li Go to "Export". (Management > Export)
+				li Choose "WorldCard Data Exchange File(.wcxf)".
 	script.
 		const fileLabel = document.querySelector('.file-label');
 		const fileInput = fileLabel.querySelector('.file-input');
