@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const common = require('./helpers/common');
+const buildTitle = require('./helpers/build-title');
 const authHelper = require('./helpers/authorization');
 const methodOverride = require('method-override');
 const sgMail = require('@sendgrid/mail');
@@ -37,7 +37,7 @@ app.locals.sgMail = sgMail;
 app.locals.helpers = {};
 app.use((req, res, next) => {
 	res.locals.helpers = {};
-	res.locals.helpers.buildTitle = common.buildTitle;
+	res.locals.helpers.buildTitle = buildTitle;
 	res.locals.helpers.moment = moment;
 	const format = { arrayFormat: 'index' };
 	// keep old queryString

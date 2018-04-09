@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
-const helper = require('../helpers/common');
+const cryptoHelper = require('../helpers/crypto');
 const bcrypt = require('bcrypt');
 
 const signUpAccessSchema = new mongoose.Schema({
@@ -27,7 +27,7 @@ signUpAccessSchema.virtual('token')
 	})
 	.set(function setToken(value) {
 		this._token = value;
-		this.tokenHash = helper.bcryptHash(value);
+		this.tokenHash = cryptoHelper.bcryptHash(value);
 	});
 
 const SignUpAccess = mongoose.model('SignUpAccess', signUpAccessSchema);

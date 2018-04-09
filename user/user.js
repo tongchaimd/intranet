@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const helper = require('../helpers/common');
+const cryptoHelper = require('../helpers/crypto');
 
 function capitalize(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
@@ -63,7 +63,7 @@ userSchema.virtual('password')
 	})
 	.set(function setPassword(value) {
 		this._password = value;
-		this.passwordHash = helper.bcryptHash(value);
+		this.passwordHash = cryptoHelper.bcryptHash(value);
 	});
 
 userSchema.virtual('passwordConfirmation')

@@ -1,7 +1,7 @@
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const User = require('../user/user');
-const commonHelper = require('../helpers/common');
+const cryptoHelper = require('./crypto');
 
 async function currentUser(req) {
 	if (req.session && req.session.userId) {
@@ -70,9 +70,9 @@ function signIn(user, req) {
 exports.signIn = signIn;
 
 exports.remember = async function remember(user, res) {
-	const rememberToken = commonHelper.randomUrlSafeToken(32);
+	const rememberToken = cryptoHelper.randomUrlSafeToken(32);
 	const rememberExpiryDate = moment().add(process.env.SIGN_IN_REMEMBER_LIFE_SPAN_DAYS, 'days').toDate();
-	user.set({ rememberHash: commonHelper.bcryptHash(rememberToken) });
+	user.set({ rememberHash: cryptoHelper.bcryptHash(rememberToken) });
 	user.set({ rememberExpiryDate });
 	return user.save()
 		.then(() => {

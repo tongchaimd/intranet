@@ -2,7 +2,7 @@ const express = require('express');
 const SignUpAccess = require('./sign-up-access');
 const path = require('path');
 const url = require('url');
-const helper = require('../helpers/common');
+const cryptoHelper = require('../helpers/crypto');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 
@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
 	const password = req.body.password;
 	if (email) {
 		const doc = new SignUpAccess();
-		const token = helper.randomUrlSafeToken(32);
+		const token = cryptoHelper.randomUrlSafeToken(32);
 		doc.token = token;
 		if (isAdmin) {
 			if (!password || !bcrypt.compareSync(password, req.currentUser.passwordHash)) {
