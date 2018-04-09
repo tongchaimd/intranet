@@ -156,11 +156,13 @@ router.get('/:id/edit', (req, res) => {
 
 router.patch('/:id', (req, res) => {
 	const input = extractLanguageSpecificFields(req.body);
+	input.tagList = input.tagList || [];
 	let card;
 	BusinessCard.findById(req.params.id)
 		.then((doc) => {
 			card = doc;
-			return card.update({ tagList: [], ...input }, { runValidators: true });
+			card.set(input);
+			return card.save();
 		})
 		.then(() => {
 			res.redirect(req.app.locals.paths.businessCards(card));
@@ -170,7 +172,7 @@ router.patch('/:id', (req, res) => {
 				Object.values(err.errors).forEach((validationError) => {
 					req.flash('danger', validationError.message);
 				});
-				renderForm(res, new BusinessCard(input));
+				renderForm(res, card);
 			}
 			throw err;
 		})
