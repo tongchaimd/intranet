@@ -132,6 +132,7 @@ app.locals.paths.businessCardsBasketTable = () => resolvePath(app.locals.paths.b
 app.locals.paths.businessCardsTags = () => resolvePath(app.locals.paths.businessCards(), 'tags');
 app.locals.paths.businessCardsOrGroup = () => resolvePath(app.locals.paths.businessCards(), 'orGroup');
 app.locals.paths.businessCardsImport = () => resolvePath(app.locals.paths.businessCards(), 'import');
+app.locals.paths.businessCardsConfig = () => resolvePath(app.locals.paths.businessCards(), 'config');
 
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
