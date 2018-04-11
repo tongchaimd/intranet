@@ -122,7 +122,6 @@ businessCardSchema.post('insertMany', updateFuse);
 const BusinessCard = mongoose.model('BusinessCard', businessCardSchema);
 
 async function updateFuse() {
-	console.log('updated')
 	try {
 		const tagList = await BusinessCard.getTagsByPopularity();
 		fuse = new Fuse(tagList, {

@@ -45,7 +45,6 @@ newsSchema.methods.saveFile = function saveFile(readStream, name) {
 		readStream.on('error', err => reject(err));
 
 		writeStream.on('close', (file) => {
-			console.log(file);
 			this.fileId = file._id;
 			return resolve(file);
 		});

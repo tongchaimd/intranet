@@ -32,7 +32,6 @@ router.post('/addfilter', (req, res) => {
 });
 
 router.post('/removefilter', (req, res) => {
-	console.log(req.body);
 	const input = req.body;
 	const bc = req.session.bc;
 	if (!bc || !bc.filter || !bc.filter.single) {
