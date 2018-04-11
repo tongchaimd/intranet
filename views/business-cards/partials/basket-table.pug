@@ -4,15 +4,15 @@ table.table.is-fullwidth.is-hoverable.is-striped.is-narrow
 	thead
 		if editable
 			th 
-		th Full Name
-		th Position
-		th Company
-		th Company Address
+		th Company Name
+		th Address
 		th Telephone
-		th Mobile
 		th Fax
+		th Mobile
 		th Email
 		th Website
+		th Contact Person
+		th Position
 	tbody
 		each card in cardList
 			tr
@@ -21,7 +21,7 @@ table.table.is-fullwidth.is-hoverable.is-striped.is-narrow
 						a.remove-card(data-id=card._id data-target=paths.businessCardsBasket())
 							span.icon.has-text-danger
 								i.fas.fa-times
-				each path in ['fullName', 'position', 'companyName', 'companyLocation']
+				each path in ['companyName', 'companyLocation']
 					- const result = prefLangList.map(lang => card[path][lang]).filter(i => i)
 					if !fill
 						if result.length
@@ -42,10 +42,30 @@ table.table.is-fullwidth.is-hoverable.is-striped.is-narrow
 						else
 							td= card[path].prefer(undefined, '-')
 				td= card.phone || '-'
-				td= card.mobile || '-'
 				td= card.fax || '-'
+				td= card.mobile || '-'
 				td= card.email || '-'
 				td= card.website || '-'
+				each path in ['fullName', 'position']
+					- const result = prefLangList.map(lang => card[path][lang]).filter(i => i)
+					if !fill
+						if result.length
+							td
+								each field in result.slice(0, -1)
+									| #{field}
+									br
+								| #{result.slice(-1)}
+						else
+							td -
+					else
+						if result.length
+							td
+								each field in result.slice(0, -1)
+									| #{field}
+									br
+								| #{result.slice(-1)}
+						else
+							td= card[path].prefer(undefined, '-')
 	if editable
 		script.
 			const remButton = document.querySelectorAll('.remove-card');

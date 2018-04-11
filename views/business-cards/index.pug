@@ -119,8 +119,8 @@ block content
 										a.dropdown-item(onclick="this.parentNode.submit();") no sorting
 				th
 					input.checkbox.check-this-page(type="checkbox" style="zoom: 1.25" data-post=paths.businessCardsBasket())
-				+sortingHeader('fullName', 'Full Name')
 				+sortingHeader('companyName', 'Company', false, true)
+				+sortingHeader('fullName', 'Full Name')
 				th Tags
 		tbody
 			each card in cardList
@@ -131,8 +131,8 @@ block content
 								input.checkbox.select-card(type="checkbox" data-post=paths.businessCardsBasket() data-id=card._id checked style="zoom: 1.25")
 							else
 								input.checkbox.select-card(type="checkbox" data-post=paths.businessCardsBasket() data-id=card._id style="zoom: 1.25")
-					td= card.fullName.prefer(preferLang, '-')
 					td= card.companyName.prefer(preferLang, '-')
+					td= card.fullName.prefer(preferLang, '-')
 					td
 						.tags
 							each tag in card.tagList.slice(0, 7)
@@ -141,8 +141,8 @@ block content
 			tr
 				th
 					input.checkbox.check-this-page(type="checkbox" style="zoom: 1.25" data-post=paths.businessCardsBasket())
-				+sortingHeader('fullName', 'Full Name', true)
 				+sortingHeader('companyName', 'Company', true, true)
+				+sortingHeader('fullName', 'Full Name', true)
 				th Tags
 	script.
 		const selectBoxList = document.querySelectorAll('.select-card');
