@@ -36,7 +36,6 @@ block content
 							if language !== preferLang
 								+configForm({'preferLanguage': language})
 									a.dropdown-item.is-capitalized(onclick="this.parentNode.submit();")= language
-	a.button(href=paths.businessCardsBasket()) Saved Cards
 	form(method="POST" action=paths.businessCardsConfig() + 'addfilter')
 		.field.has-addons
 			.control.has-icons-left
@@ -45,7 +44,7 @@ block content
 				span.icon.is-left.is-medium
 					i.fas.fa-tags.fa-lg
 			.control
-				button.button
+				button.button#add-filter
 					span.icon
 						i.fas.fa-plus
 	mixin filterTag(value, index, checkbox)
@@ -86,27 +85,13 @@ block content
 			if filter && filter.single && filter.single.length >= 2
 				.field
 					.control
-						input.button.is-link#or-button(type="submit" value="form 'OR' group")
-
-		//- if filterList && filterList.length
-		//- 	- var checkboxable = filterList.reduce((c, i) => !i.includes(',') ? c+1 : c, 0)
-		//- 	.field.is-grouped.is-grouped-multiline(style="align-items: baseline")
-		//- 			each filter, index in filterList
-		//- 				if filter.split(',').length > 1
-		//- 					each subFilter, subIndex in filter.split(',').slice(0, -1)
-		//- 						+filterTag(subFilter, helpers.remQStringNestedArray({'filter': [index, subIndex]}))
-		//- 						.control
-		//- 							span.tag.is-dark OR
-		//- 					+filterTag(filter.split(',').slice(-1), helpers.remQStringNestedArray({'filter': [index, filter.split(',').length-1]}))
-		//- 				else
-		//- 					if checkboxable >= 2
-		//- 						+filterTag(filter, helpers.remQStringArray({'filter': index}), index)
-		//- 					else
-		//- 						+filterTag(filter, helpers.remQStringArray({'filter': index}))
-		//- 	if checkboxable >= 2
-		//- 		.field
-		//- 			.control
-		//- 				input.button.is-link#or-button(type="submit" value="form 'OR' group" disabled)
+						input.button.is-link#or-button(type="submit" value="form 'OR' group" disabled)
+	.levels
+		.level-left
+			form.level-item(method="POST" action=paths.businessCardsBasket())
+				input(type="hidden" name="all" value="true")
+				a.button(onclick="this.parentNode.submit()") Save All
+			a.level-item.button(href=paths.businessCardsBasket()) Saved Cards
 	table.table.is-fullwidth.is-hoverable.is-bordered.is-striped
 		thead
 			tr
@@ -231,7 +216,6 @@ block content
 	script.
 		const filterInput = document.querySelector('#filter-input');
 		const autocomplete = document.querySelector('.autocomplete-items');
-		const addFilter = document.querySelector('#add-filter');
 		filterInput.addEventListener('input', (e) => {
 			const value = filterInput.value;
 			if(!value) {
@@ -291,10 +275,10 @@ block content
 			}
 			if(e.keyCode == 13) {
 				// ENTER key
-				//- e.preventDefault();
+				e.preventDefault();
 				const currentDiv = autocomplete.querySelector('.autocomplete-active');
 				if(!currentDiv) {
-					addFilter.dispatchEvent(new Event('click'))
+					document.querySelector('#add-filter').dispatchEvent(new Event('click'))
 				} else {
 					currentDiv.dispatchEvent(new Event('click'))
 				}
@@ -304,13 +288,6 @@ block content
 				autocomplete.innerHTML = '';
 			}
 		});
-
-		addFilter.addEventListener('click', (e) => {
-			e.preventDefault();
-			const tag = filterInput.value;
-			const original = addFilter.dataset.target
-			window.location.href = `${original}${encodeURIComponent(tag)}`
-		})
 
 		document.addEventListener('click', (e) => {
 			autocomplete.innerHTML = '';

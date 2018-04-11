@@ -74,14 +74,11 @@ router.get('/', asyncMw(async (req, res) => {
 		const groups = [];
 
 		if (filter.or) {
-			console.log(filter.or
-				.map(group => ({ $or: group.map(toCondition) })));
 			groups.push(...filter.or
 				.map(group => ({ $or: group.map(toCondition) })));
 		}
 		if (filter.single) {
 			groups.push(...filter.single.map(toCondition));
-			console.log(filter.single.map(toCondition));
 		}
 
 		if (groups.length) {
@@ -119,14 +116,6 @@ router.get('/', asyncMw(async (req, res) => {
 router.get('/tags', (req, res) => {
 	const search = req.query.search;
 	res.json(BusinessCard.search(search).map(i => i._id));
-});
-
-router.post('/orGroup', (req, res) => {
-	const memberIndices = Object.keys(req.body).map(m => +m);
-	const memberList = req.query.filter.filter((v, i) => memberIndices.includes(i))
-	req.query.filter = req.query.filter.filter((v, i) => !memberIndices.includes(i));
-	req.query.filter.push(memberList.join(','))
-	res.redirect(`${req.app.locals.paths.businessCards()}?${queryString.stringify(req.query, { arrayFormat: 'index' })}`)
 });
 
 router.get('/:id', asyncMw(async (req, res) => {
