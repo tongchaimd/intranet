@@ -1,0 +1,11 @@
+style
+	include ../../node_modules/bulma/css/bulma.css
+table.table.is-striped.is-hoverable
+	if table.headerList && table.headerList.length
+		tr
+			each th in table.headerList
+				th= th
+	each tr in table.rowList
+		tr
+			each td in tr
+				td= td

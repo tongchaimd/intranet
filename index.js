@@ -14,6 +14,8 @@ const sgMail = require('@sendgrid/mail');
 const moment = require('moment');
 const queryString = require('query-string');
 const express = require('express');
+const asyncMw = require('./helpers/async-middleware');
+const Table = require('./business-card/table');
 
 const app = express();
 
@@ -128,7 +130,7 @@ app.locals.paths.businessCards = card => resolvePath('/businessCards/', card);
 app.locals.paths.newBusinessCard = () => resolvePath(app.locals.paths.businessCards(), 'new');
 app.locals.paths.editBusinessCard = card => resolvePath(app.locals.paths.businessCards(), card, 'edit');
 app.locals.paths.businessCardsBasket = () => resolvePath(app.locals.paths.businessCards(), 'basket');
-app.locals.paths.businessCardsBasketTable = () => resolvePath(app.locals.paths.businessCards(), 'basket', 'table');
+app.locals.paths.businessCardsBasketTable = table => resolvePath(app.locals.paths.businessCards(), 'basket', 'table', table);
 app.locals.paths.businessCardsTags = () => resolvePath(app.locals.paths.businessCards(), 'tags');
 app.locals.paths.businessCardsImport = () => resolvePath(app.locals.paths.businessCards(), 'import');
 app.locals.paths.businessCardsConfig = () => resolvePath(app.locals.paths.businessCards(), 'config');
@@ -139,6 +141,10 @@ const mustBeAdmin = authHelper.mustBeAdmin;
 app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
 app.use('/news', mustBeSignedIn, require('./news/index'));
+app.get('/businessCards/basket/table/:id', asyncMw(async (req, res) => {
+	const table = await Table.findById(req.params.id);
+	res.render('business-cards/table', { table });
+}));
 app.use('/businessCards', mustBeSignedIn, require('./business-card/index'));
 const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-line import/newline-after-import
 if (process.env.NODE_ENV === 'development') {
@@ -146,6 +152,9 @@ if (process.env.NODE_ENV === 'development') {
 } else {
 	app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
 }
+app.get('/', (req, res) => {
+	res.redirect(app.locals.paths.news());
+});
 app.use((err, req, res, next) => {
 	console.log(err);
 	res.status(500).render('errors/500');

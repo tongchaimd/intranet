@@ -1,6 +1,7 @@
 const express = require('express');
-const BusinessCard = require('./business-card')
+const BusinessCard = require('./business-card');
 const asyncMw = require('../helpers/async-middleware');
+const Table = require('./table');
 
 const router = express.Router();
 
@@ -62,17 +63,10 @@ router.patch('/', (req, res) => {
 	res.redirect(req.app.locals.paths.businessCardsBasket());
 })
 
-router.get('/table', asyncMw(async (req, res) => {
-	const config = req.session.basketConfig || {};
-	const cardList = await BusinessCard.find()
-		.where('_id')
-		.in(req.session.basket || []);
-	res.render('business-cards/partials/basket-table', {
-		cardList,
-		languageList: BusinessCard.languageList(),
-		prefLangList: config.prefLangList || [],
-		fill: config.fill,
-	});
+router.post('/table', asyncMw(async (req, res) => {
+	const table = new Table(req.body);
+	await table.save();
+	res.status(200).end(req.app.locals.paths.businessCardsBasketTable(table));
 }));
 
 router.delete('/', (req, res) => {

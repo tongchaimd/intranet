@@ -45,7 +45,7 @@ block content
 				a.button.is-danger.is-pulled-right#clear(data-target=paths.businessCardsBasket()) Clear
 	- const editable = true
 	include ./partials/basket-table.pug
-	a.button.is-primary(href=paths.businessCardsBasketTable()) See Table
+	a.button#save-table(data-target=paths.businessCardsBasketTable()) Save Table
 	script.
 		const clear = document.querySelector('#clear')
 		const removeCards = document.querySelectorAll('.remove-card')
@@ -61,5 +61,31 @@ block content
 			})
 				.then(() => {
 					document.location.href = document.location.href;
+				})
+		});
+		const saveButton = document.querySelector('#save-table');
+		saveButton.addEventListener('click', (e) => {
+			e.preventDefault();
+
+			const table = document.querySelector('table');
+			const headerList = Array.prototype.map.call(table.querySelectorAll('th'), (th => th.textContent)).slice(1);
+			const rowList = Array.prototype.slice.call(table.querySelectorAll('tr'), 1).map(tr => Array.prototype.map.call(tr.querySelectorAll('td'), td => td.textContent).slice(1))
+			body = { headerList, rowList };
+			fetch(saveButton.dataset.target, {
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+				},
+				credentials: 'same-origin',
+			})
+				.then((res) => {
+					return res.text();
+				})
+				.then((url) => {
+					window.location.href = url;
+				})
+				.catch((err) => {
+					console.log(err);
 				})
 		});
