@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.use('/basket', require('./basket'));
 router.use('/import', require('./import'));
+router.use('/config', require('./config'));
 
 async function renderForm(res, card, isNew) {
 	const popularTags = await BusinessCard.getTagsByPopularity();
@@ -60,20 +61,29 @@ router.post('/', asyncMw(async (req, res) => {
 }));
 
 router.get('/', asyncMw(async (req, res) => {
-	const preferLang = req.query.prefLang || 'english';
-	const sortBy = req.query.sort || 'createdAt';
+	req.session.bc = req.session.bc || {};
+	const preferLang = req.session.bc.preferLanguage || 'english';
+	const sortBy = req.session.bc.sort || 'createdAt';
 	const pathString = BusinessCard.isMultiLang(sortBy) ? `${sortBy}.${preferLang}` : sortBy;
-	const direction = req.query.direction || 'desc';
+	const direction = req.session.bc.direction || 'desc';
 
 	let tagQuery = {};
-	const filterList = req.query.filter || [];
-	if (filterList.length) {
+	const filter = req.session.bc.filter;
+	if (filter) {
 		const toCondition = tag => ({ tagList: tag });
-		const groups = filterList
-			.map(v => v.split(','))
-			.map(group => ({ $or: group.map(toCondition) }));
+		const groups = [];
 
-		tagQuery = { $and: groups };
+		if (filter.or) {
+			groups.push(...filter.or
+				.map(group => ({ $or: group.map(toCondition) })));
+		}
+		if (filter.single) {
+			groups.push(...filter.single.map(toCondition));
+		}
+
+		if (groups.length) {
+			tagQuery = { $and: groups };
+		}
 	}
 
 	const result = await BusinessCard.paginate({
@@ -99,21 +109,13 @@ router.get('/', asyncMw(async (req, res) => {
 		direction,
 		languageList: BusinessCard.languageList(),
 		basket: req.session.basket || [],
-		filterList,
+		filter,
 	});
 }));
 
 router.get('/tags', (req, res) => {
 	const search = req.query.search;
 	res.json(BusinessCard.search(search).map(i => i._id));
-});
-
-router.post('/orGroup', (req, res) => {
-	const memberIndices = Object.keys(req.body).map(m => +m);
-	const memberList = req.query.filter.filter((v, i) => memberIndices.includes(i))
-	req.query.filter = req.query.filter.filter((v, i) => !memberIndices.includes(i));
-	req.query.filter.push(memberList.join(','))
-	res.redirect(`${req.app.locals.paths.businessCards()}?${queryString.stringify(req.query, { arrayFormat: 'index' })}`)
 });
 
 router.get('/:id', asyncMw(async (req, res) => {

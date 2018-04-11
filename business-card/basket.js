@@ -4,13 +4,39 @@ const asyncMw = require('../helpers/async-middleware');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', asyncMw(async (req, res) => {
 	if (!req.session.basket) {
 		req.session.basket = [];
 	}
-	req.session.basket = [...req.session.basket, ...req.body.idList]
-	res.status(200).end()
-});
+
+	if (!req.body.all) {
+		req.session.basket = [...req.session.basket, ...req.body.idList]
+	} else {
+		req.session.bc = req.session.bc || {};
+		let tagQuery = {};
+		const filter = req.session.bc.filter;
+		if (filter) {
+			const toCondition = tag => ({ tagList: tag });
+			const groups = [];
+
+			if (filter.or) {
+				groups.push(...filter.or
+					.map(group => ({ $or: group.map(toCondition) })));
+			}
+			if (filter.single) {
+				groups.push(...filter.single.map(toCondition));
+			}
+
+			if (groups.length) {
+				tagQuery = { $and: groups };
+			}
+		}
+
+		const result = await BusinessCard.find(tagQuery);
+		req.session.basket = [...req.session.basket, ...result.map(c => c._id)];
+	}
+	res.redirect(req.app.locals.paths.businessCards());
+}));
 
 router.get('/', asyncMw(async (req, res) => {
 	const config = req.session.basketConfig || {};
@@ -38,7 +64,6 @@ router.patch('/', (req, res) => {
 
 router.get('/table', asyncMw(async (req, res) => {
 	const config = req.session.basketConfig || {};
-	console.log(config)
 	const cardList = await BusinessCard.find()
 		.where('_id')
 		.in(req.session.basket || []);

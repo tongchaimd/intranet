@@ -8,6 +8,11 @@ block hero
 		.hero-body
 			h1.title Business Cards
 block content
+	mixin configForm(map, path)
+		form(method="POST" action=paths.businessCardsConfig()+(path||''))
+			each value, key in map
+				input(type="hidden" name=key value=value)
+			block
 	.level.is-mobile
 		.level-left
 			a.button.is-info.level-item(href=paths.newBusinessCard())
@@ -29,46 +34,64 @@ block content
 					.dropdown-content
 						each language in languageList
 							if language !== preferLang
-								a.dropdown-item.is-capitalized(href=helpers.relQString({prefLang: language}))= language
-	a.button(href=paths.businessCardsBasket()) Saved Cards
-	.field.has-addons
-		.control.has-icons-left
-			input.input#filter-input(type="text" placeholder="filter by tags" data-target=paths.businessCardsTags() autocomplete="off").autocomplete
-			.autocomplete-items.is-hidden
-			span.icon.is-left.is-medium
-				i.fas.fa-tags.fa-lg
-		.control
-			a(data-target=helpers.qStringArrayAddingTemplate('filter')).button#add-filter
-				span.icon
-					i.fas.fa-plus
-	mixin filterTag(value, delHref, index)
+								+configForm({'preferLanguage': language})
+									a.dropdown-item.is-capitalized(onclick="this.parentNode.submit();")= language
+	form(method="POST" action=paths.businessCardsConfig() + 'addfilter')
+		.field.has-addons
+			.control.has-icons-left
+				input.input#filter-input(name="text" type="text" placeholder="filter by tags" data-target=paths.businessCardsTags() autocomplete="off").autocomplete
+				.autocomplete-items.is-hidden
+				span.icon.is-left.is-medium
+					i.fas.fa-tags.fa-lg
+			.control
+				button.button#add-filter
+					span.icon
+						i.fas.fa-plus
+	mixin filterTag(value, index, checkbox)
 		.control
 			.tags.has-addons
 				span.tag.is-info.is-medium(style="cursor: pointer;" )
-					if index !== undefined
+					if checkbox
 						input.checkbox.or-group(type="checkbox" name=index style="margin-right: 1em;")
 					span= value
-				a(href=delHref).tag.is-delete.is-medium
-	form(action=paths.businessCardsOrGroup()+helpers.relQString({}) method="POST" style="margin-bottom: 1em")
-		if filterList && filterList.length
-			- var checkboxable = filterList.reduce((c, i) => !i.includes(',') ? c+1 : c, 0)
+				+configForm({ index }, 'removefilter')
+					a(onclick="this.parentNode.submit();").tag.is-delete.is-medium
+	mixin orFilterTag(value, index, subindex)
+		.control
+			.tags.has-addons
+				span.tag.is-info.is-medium(style="cursor: pointer;" )
+					span= value
+				+configForm({ or: 'true', index, subindex }, 'removefilter')
+					a(onclick="this.parentNode.submit();").tag.is-delete.is-medium
+	form(action=paths.businessCardsConfig()+'formorgroup' method="POST" style="margin: 1em 0;")
+		div
 			.field.is-grouped.is-grouped-multiline(style="align-items: baseline")
-					each filter, index in filterList
-						if filter.split(',').length > 1
-							each subFilter, subIndex in filter.split(',').slice(0, -1)
-								+filterTag(subFilter, helpers.remQStringNestedArray({'filter': [index, subIndex]}))
-								.control
-									span.tag.is-dark OR
-							+filterTag(filter.split(',').slice(-1), helpers.remQStringNestedArray({'filter': [index, filter.split(',').length-1]}))
+				form
+				if filter
+					if filter.single && filter.single.length
+						if filter.single.length >= 2
+							each single, index in filter.single
+								+filterTag(single, index, true)
 						else
-							if checkboxable >= 2
-								+filterTag(filter, helpers.remQStringArray({'filter': index}), index)
-							else
-								+filterTag(filter, helpers.remQStringArray({'filter': index}))
-			if checkboxable >= 2
+							+filterTag(filter.single[0], 0)
+					if filter.or && filter.or.length
+						.field.is-grouped.is-grouped-multiline(style="align-items: baseline")
+							each group, idx in filter.or
+								each item, subidx in group.slice(0, -1)
+									+orFilterTag(item, idx, subidx)
+									.control
+										span.tag.is-dark OR
+								+orFilterTag(group.slice(-1), idx, group.length-1)
+			if filter && filter.single && filter.single.length >= 2
 				.field
 					.control
 						input.button.is-link#or-button(type="submit" value="form 'OR' group" disabled)
+	.levels
+		.level-left
+			form.level-item(method="POST" action=paths.businessCardsBasket())
+				input(type="hidden" name="all" value="true")
+				a.button(onclick="this.parentNode.submit()") Save All
+			a.level-item.button(href=paths.businessCardsBasket()) Saved Cards
 	table.table.is-fullwidth.is-hoverable.is-bordered.is-striped
 		thead
 			tr
@@ -87,10 +110,13 @@ block content
 										i.fas.fa-sort
 							.dropdown-menu
 								.dropdown-content
-									a.dropdown-item(href=`${helpers.relQString({ sort: path, direction: 'asc' })}`) ascending
-									a.dropdown-item(href=`${helpers.relQString({ sort: path, direction: 'desc' })}`) descending
+									+configForm({sort:path, direction:'asc'}, 'ascending')
+										a.dropdown-item(onclick="this.parentNode.submit();") ascending
+									+configForm({sort:path, direction:'desc'}, 'descending')
+										a.dropdown-item(onclick="this.parentNode.submit();") descending
 									.dropdown-divider
-									a.dropdown-item(href=`${helpers.relQString({ sort: '', direction: '' })}`) no sorting
+									+configForm({sort:'', direction:''}, 'no sorting')
+										a.dropdown-item(onclick="this.parentNode.submit();") no sorting
 				th
 					input.checkbox.check-this-page(type="checkbox" style="zoom: 1.25" data-post=paths.businessCardsBasket())
 				+sortingHeader('fullName', 'Full Name')
@@ -190,7 +216,6 @@ block content
 	script.
 		const filterInput = document.querySelector('#filter-input');
 		const autocomplete = document.querySelector('.autocomplete-items');
-		const addFilter = document.querySelector('#add-filter');
 		filterInput.addEventListener('input', (e) => {
 			const value = filterInput.value;
 			if(!value) {
@@ -253,7 +278,7 @@ block content
 				e.preventDefault();
 				const currentDiv = autocomplete.querySelector('.autocomplete-active');
 				if(!currentDiv) {
-					addFilter.dispatchEvent(new Event('click'))
+					document.querySelector('#add-filter').dispatchEvent(new Event('click'))
 				} else {
 					currentDiv.dispatchEvent(new Event('click'))
 				}
@@ -263,13 +288,6 @@ block content
 				autocomplete.innerHTML = '';
 			}
 		});
-
-		addFilter.addEventListener('click', (e) => {
-			e.preventDefault();
-			const tag = filterInput.value;
-			const original = addFilter.dataset.target
-			window.location.href = `${original}${encodeURIComponent(tag)}`
-		})
 
 		document.addEventListener('click', (e) => {
 			autocomplete.innerHTML = '';
