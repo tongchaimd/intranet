@@ -7,6 +7,13 @@ block hero
 		.hero-body
 			h1.title Saved Business Cards
 block content
+	.field
+		a.button#save-table.is-primary(data-target=paths.businessCardsBasketTable()) Get Shareable Link
+	.field
+		div#shareable-link-container.is-hidden
+			span link:
+			.box
+				span#shareable-link.has-text-link
 	form(action=`${paths.businessCardsBasket()}?_method=PATCH` method="POST" style="margin-bottom: 20px")
 		.columns(style="margin-bottom: 0")
 			.field.is-flex.column.is-one-third
@@ -45,7 +52,6 @@ block content
 				a.button.is-danger.is-pulled-right#clear(data-target=paths.businessCardsBasket()) Clear
 	- const editable = true
 	include ./partials/basket-table.pug
-	a.button#save-table(data-target=paths.businessCardsBasketTable()) Save Table
 	script.
 		const clear = document.querySelector('#clear')
 		const removeCards = document.querySelectorAll('.remove-card')
@@ -64,6 +70,8 @@ block content
 				})
 		});
 		const saveButton = document.querySelector('#save-table');
+		const linkContainer = document.querySelector('#shareable-link-container');
+		const linkSpan = linkContainer.querySelector('#shareable-link');
 		saveButton.addEventListener('click', (e) => {
 			e.preventDefault();
 
@@ -80,10 +88,15 @@ block content
 				credentials: 'same-origin',
 			})
 				.then((res) => {
-					return res.text();
+					if (res.ok) {
+						return res.text();
+					} else {
+						throw new Error(res);
+					}
 				})
 				.then((url) => {
-					window.location.href = url;
+					linkContainer.classList.remove('is-hidden');
+					linkSpan.textContent = window.location.host + url;
 				})
 				.catch((err) => {
 					console.log(err);

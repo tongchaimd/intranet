@@ -59,13 +59,13 @@ block content
 	mixin orFilterTag(value, index, subindex)
 		.control
 			.tags.has-addons
-				span.tag.is-info.is-medium(style="cursor: pointer;" )
+				span.tag.is-info.is-medium(style="cursor: pointer;")
 					span= value
 				+configForm({ or: 'true', index, subindex }, 'removefilter')
 					a(onclick="this.parentNode.submit();").tag.is-delete.is-medium
 	form(action=paths.businessCardsConfig()+'formorgroup' method="POST" style="margin: 1em 0;")
 		div
-			.field.is-grouped.is-grouped-multiline(style="align-items: baseline")
+			.field.is-grouped.is-grouped-multiline(style="align-items: baseline;")
 				form
 				if filter
 					if filter.single && filter.single.length
@@ -75,23 +75,23 @@ block content
 						else
 							+filterTag(filter.single[0], 0)
 					if filter.or && filter.or.length
-						.field.is-grouped.is-grouped-multiline(style="align-items: baseline")
-							each group, idx in filter.or
-								each item, subidx in group.slice(0, -1)
-									+orFilterTag(item, idx, subidx)
-									.control
-										span.tag.is-dark OR
-								+orFilterTag(group.slice(-1), idx, group.length-1)
+						each group, idx in filter.or
+							each item, subidx in group.slice(0, -1)
+								+orFilterTag(item, idx, subidx)
+								.control
+									span.tag.is-dark OR
+							+orFilterTag(group.slice(-1), idx, group.length-1)
 			if filter && filter.single && filter.single.length >= 2
 				.field
 					.control
 						input.button.is-link#or-button(type="submit" value="form 'OR' group" disabled)
-	.levels
-		.level-left
-			form.level-item(method="POST" action=paths.businessCardsBasket())
-				input(type="hidden" name="all" value="true")
-				a.button(onclick="this.parentNode.submit()") Save All
-			a.level-item.button(href=paths.businessCardsBasket()) Saved Cards
+	.field
+		.levels
+			.level-left
+				form.level-item(method="POST" action=paths.businessCardsBasket())
+					input(type="hidden" name="all" value="true")
+					a.button(onclick="this.parentNode.submit()") Save All
+				a.level-item.button.is-primary(href=paths.businessCardsBasket()) Share Saved Cards
 	table.table.is-fullwidth.is-hoverable.is-bordered.is-striped
 		thead
 			tr
