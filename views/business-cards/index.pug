@@ -110,12 +110,12 @@ block content
 										i.fas.fa-sort
 							.dropdown-menu
 								.dropdown-content
-									+configForm({sort:path, direction:'asc'}, 'ascending')
+									+configForm({sort:path, direction:'asc'})
 										a.dropdown-item(onclick="this.parentNode.submit();") ascending
-									+configForm({sort:path, direction:'desc'}, 'descending')
+									+configForm({sort:path, direction:'desc'})
 										a.dropdown-item(onclick="this.parentNode.submit();") descending
 									.dropdown-divider
-									+configForm({sort:'', direction:''}, 'no sorting')
+									+configForm({sort:'', direction:''})
 										a.dropdown-item(onclick="this.parentNode.submit();") no sorting
 				th
 					input.checkbox.check-this-page(type="checkbox" style="zoom: 1.25" data-post=paths.businessCardsBasket())
