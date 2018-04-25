@@ -24,7 +24,8 @@ router.post('/', asyncMw(async (req, res) => {
 		if (isAdmin) {
 			if (!password || !bcrypt.compareSync(password, req.currentUser.passwordHash)) {
 				if (process.env.NODE_ENV !== 'development') {
-					throw new Error('wrong password');
+					req.flash('danger', 'wrong password');
+					res.redirect(req.app.locals.paths.invite());
 					return;
 				}
 			}
