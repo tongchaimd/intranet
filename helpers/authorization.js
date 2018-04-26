@@ -1,5 +1,5 @@
 function isSignedIn(req) {
-	return (req.session && req.session.isSignedIn);
+	return ((req.session && req.session.isSignedIn) || !process.env.PASSWORD_HASH);
 }
 
 exports.isSignedInMiddleware = function isSignedInMiddleware(req, res, next) {
