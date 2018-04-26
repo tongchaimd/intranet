@@ -29,6 +29,11 @@ const newsSchema = new mongoose.Schema({
 	},
 }, { timestamps: true });
 
+newsSchema.index({
+	title: 'text',
+	markedupContent: 'text',
+});
+
 newsSchema.methods.getImageSourceArray = function getImageSourceArray(start, end) {
 	if (!this.images || !this.images.length) return [];
 	start = start || 0;

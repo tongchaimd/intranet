@@ -61,13 +61,17 @@ router.post('/preview', (req, res) => {
 });
 
 router.get('/', asyncMw(async (req, res) => {
-	const result = await News.paginate({}, {
+	let searchCondition = {};
+	if (req.query.search) {
+		searchCondition = { $text: { $search: req.query.search } };
+	}
+	const result = await News.paginate(searchCondition, {
 		page: req.query.page || 1,
 		limit: 10,
 		sort: { createdAt: 'desc' },
 		populate: 'poster',
 	});
-	res.render('news/index', { newsList: result.docs, currentPage: +result.page, pageCount: +result.pages });
+	res.render('news/index', { newsList: result.docs, currentPage: +result.page, pageCount: +result.pages, search: req.query.search });
 }));
 
 router.get('/:id/images', asyncMw(async (req, res) => {

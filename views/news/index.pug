@@ -7,6 +7,12 @@ block hero
 		.hero-body
 			h1.title News
 block content
+	form
+		.field.has-addons
+			.control
+				input.input#search-input(type="text" placeholder="keyword" name="search" value=search)
+			.control
+				input.button.is-link(type="submit" value="Search")
 	a.button.is-info(href=paths.newNews() style="margin: 6px 0;")
 		span.icon
 			i.fas.fa-plus
