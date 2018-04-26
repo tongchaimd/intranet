@@ -31,6 +31,7 @@ const newsSchema = new mongoose.Schema({
 newsSchema.index({
 	title: 'text',
 	markedupContent: 'text',
+	poster: 'text',
 });
 
 newsSchema.methods.getImageSourceArray = function getImageSourceArray(start, end) {
