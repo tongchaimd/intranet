@@ -6,3 +6,19 @@ block content
 	include ./partials/news.pug
 	.flex.has-text-centered
 		a.button.is-large.is-primary(href='file') Download Docx
+	a.button#remove-news.is-danger(data-target=paths.news(news) data-redirect=paths.news()) Remove
+	script.
+		const removeButton = document.querySelector('#remove-news');
+		removeButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			fetch(removeButton.dataset.target, {
+				method: 'DELETE',
+				credentials: 'same-origin',
+			})
+				.then((res) => {
+					if (res.ok) window.location.href = removeButton.dataset.redirect;
+				})
+				.catch((err) => {
+					console.log(err)
+				});
+		});

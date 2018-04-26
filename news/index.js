@@ -89,4 +89,14 @@ router.get('/:id/file', asyncMw(async (req, res) => {
 	doc.getFileReadStream().pipe(res);
 }));
 
+router.delete('/:id', asyncMw(async (req, res) => {
+	const doc = await News.findOneAndRemove({ _id: req.params.id });
+	if (doc) {
+		req.flash('success', 'successfully remove the news');
+		res.status(200).end();
+	} else {
+		throw Error('news not found');
+	}
+}));
+
 module.exports = router;
