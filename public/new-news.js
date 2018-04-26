@@ -141,6 +141,12 @@ function begin() {
 		updatePreviewSource(sourceUrlInputElem.value.trim());
 	});
 
+	const posterInputElem = document.querySelector('input[name="poster"]');
+	posterInputElem.addEventListener('input', () => {
+		const posterPreview = document.querySelector('#poster');
+		posterPreview.textContent = posterInputElem.value;
+	});
+
 	const submitButtonElem = document.querySelector('#submit-news-button');
 	submitButtonElem.addEventListener('click', () => {
 		readWordAsHtml(fileInputElem.files[0])
@@ -150,6 +156,8 @@ function begin() {
 				if (customSourceUrl) {
 					news.sourceUrl = customSourceUrl;
 				}
+				news.poster = posterInputElem.value;
+
 				const formData = new FormData();
 				Object.keys(news).forEach((key) => {
 					if(Array.isArray(news[key])) {

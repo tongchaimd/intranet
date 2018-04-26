@@ -10,17 +10,9 @@ block hero
 block content
 	form(action=paths.sessions(), method="post")
 		.field
-			label.label Username
-			.control
-				input.input(type="input", name="username", placeholder="username")
-		.field
 			label.label Password
 			.control
 				input.input(type="password", name="password" placeholder="password")
-		.field
-			label.checkbox.
-				#[input(type="checkbox" name="remember")]
-				Remember me
 		.field
 			.control
 				input.button.is-primary(type="submit")

@@ -16,7 +16,7 @@ router.post('/', upload.single('file'), asyncMw(async (req, res) => {
 		title: input.title,
 		markedupContent: input.markedupContent,
 		sourceUrl: input.sourceUrl,
-		poster: req.currentUser._id,
+		poster: input.poster,
 	});
 	if (input.imageSourceArray) {
 		if (!Array.isArray(input.imageSourceArray)) {
@@ -40,7 +40,7 @@ router.post('/', upload.single('file'), asyncMw(async (req, res) => {
 }));
 
 router.get('/:id', asyncMw(async (req, res) => {
-	const news = await News.findById(req.params.id).populate('poster');
+	const news = await News.findById(req.params.id)
 	res.render('news/show', { news });
 }));
 
@@ -50,7 +50,7 @@ router.post('/preview', (req, res) => {
 		title: input.title,
 		markedupContent: input.markedupContent,
 		sourceUrl: input.sourceUrl,
-		poster: req.currentUser,
+		poster: input.poster,
 		getImageSourceArray: () => input.imageSourceArray,
 	};
 	if (input.title && input.markedupContent) {
@@ -69,7 +69,6 @@ router.get('/', asyncMw(async (req, res) => {
 		page: req.query.page || 1,
 		limit: 10,
 		sort: { createdAt: 'desc' },
-		populate: 'poster',
 	});
 	res.render('news/index', { newsList: result.docs, currentPage: +result.page, pageCount: +result.pages, search: req.query.search });
 }));

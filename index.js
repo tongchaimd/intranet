@@ -33,7 +33,7 @@ app.use(session({
 }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(flash());
-app.use(authHelper.currentUserMiddleware); // expose req.currentUser to Controllers
+app.use(authHelper.isSignedInMiddleware);
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.locals.sgMail = sgMail;
 app.locals.helpers = {};
@@ -116,12 +116,7 @@ function resolvePath(...argList) {
 app.locals.paths = {};
 app.locals.paths.home = () => '/';
 app.locals.paths.signIn = () => '/sessions/new/';
-app.locals.paths.users = user => resolvePath('/users/', user);
-app.locals.paths.userEdit = user => resolvePath(app.locals.paths.users(), 'edit', user);
-app.locals.paths.signUp = () => resolvePath(app.locals.paths.users(), 'new');
 app.locals.paths.sessions = () => '/sessions/';
-app.locals.paths.signUpAccess = () => '/signUpAccess/';
-app.locals.paths.invite = () => resolvePath(app.locals.paths.signUpAccess(), 'new');
 app.locals.paths.news = news => resolvePath('/news/', news);
 app.locals.paths.newNews = () => resolvePath(app.locals.paths.news(), 'new');
 app.locals.paths.newsPreview = () => resolvePath(app.locals.paths.news(), 'preview');
@@ -138,7 +133,6 @@ app.locals.paths.businessCardsConfig = () => resolvePath(app.locals.paths.busine
 // routing
 const mustBeSignedIn = authHelper.mustBeSignedIn;
 const mustBeAdmin = authHelper.mustBeAdmin;
-app.use('/users', require('./user/index'));
 app.use('/sessions', require('./session/index'));
 app.use('/news', mustBeSignedIn, require('./news/index'));
 app.get('/businessCards/basket/table/:id', asyncMw(async (req, res) => {
@@ -146,12 +140,6 @@ app.get('/businessCards/basket/table/:id', asyncMw(async (req, res) => {
 	res.render('business-cards/table', { table });
 }));
 app.use('/businessCards', mustBeSignedIn, require('./business-card/index'));
-const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-line import/newline-after-import
-if (process.env.NODE_ENV === 'development') {
-	app.use('/signUpAccess', signUpAccessRouter);
-} else {
-	app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
-}
 app.get('/', (req, res) => {
 	res.redirect(app.locals.paths.news());
 });

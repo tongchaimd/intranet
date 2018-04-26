@@ -26,7 +26,7 @@ block content
 					p.subtitle.is-6(style="margin-bottom: 10px")
 						a.has-text-grey(href=news.sourceUrl)= news.sourceUrl
 					p #{news.markedupContent.slice(0, 400).replace(/<\/?.+?>/g, '').slice(0, 250)}...
-					p.has-text-weight-bold(style="margin-top: 5px") posted by: #[a(href=paths.users(news.poster))= news.poster.fullName]
+					p.has-text-weight-bold(style="margin-top: 5px") posted by: #{news.poster}
 						span.duration-ago.is-size-6.has-text-grey #[b #{helpers.moment(news.createdAt).fromNow()}] (#{helpers.moment(news.createdAt).format('LLLL')})
 block after-content
 	include ../partials/pagination.pug

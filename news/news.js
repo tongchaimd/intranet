@@ -12,8 +12,7 @@ const newsSchema = new mongoose.Schema({
 		required: true,
 	},
 	poster: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
+		type: String,
 		required: true,
 	},
 	sourceUrl: {

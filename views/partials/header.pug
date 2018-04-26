@@ -10,23 +10,10 @@ header.navbar
 			span.icon.is-medium
 				i.far.fa-address-book.fa-lg
 			span.is-hidden-touch Business Cards
-		a.navbar-item(href=paths.users())
-			span.icon.is-medium
-				i.fas.fa-users.fa-lg
-			span.is-hidden-touch Users
 		.navbar-burger(onclick="document.querySelector('.navbar-menu').classList.toggle('is-active')")
 			span
 			span
 			span
 	.navbar-menu
 		.navbar-end
-			if currentUser.isAdmin
-				a.navbar-item(href=paths.invite())
-					span.icon.is-medium
-						i.fas.fa-user-plus.fa-lg
-					span Invite
-			a.navbar-item(href=paths.users(currentUser))
-				span.icon.is-medium
-					i.fas.fa-user-circle.fa-lg
-				span #{currentUser.username}
 			a#sign-out.navbar-item.has-text-danger(data-target=paths.sessions()) Sign Out
