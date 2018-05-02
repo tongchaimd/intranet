@@ -13,7 +13,6 @@ const newsSchema = new mongoose.Schema({
 	},
 	poster: {
 		type: String,
-		required: true,
 	},
 	sourceUrl: {
 		type: String,
