@@ -147,11 +147,11 @@ app.get('/businessCards/basket/table/:id', asyncMw(async (req, res) => {
 }));
 app.use('/businessCards', mustBeSignedIn, require('./business-card/index'));
 const signUpAccessRouter = require('./sign-up-access/index'); // eslint-disable-line import/newline-after-import
-if (process.env.NODE_ENV === 'development') {
+// if (process.env.NODE_ENV === 'development') {
 	app.use('/signUpAccess', signUpAccessRouter);
-} else {
-	app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
-}
+// } else {
+	// app.use('/signUpAccess', mustBeAdmin, signUpAccessRouter);
+// }
 app.get('/', (req, res) => {
 	res.redirect(app.locals.paths.news());
 });
