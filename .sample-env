@@ -1,6 +1,6 @@
 ## App
 PORT=3000
-TITLE=Intranet of TTCKunming
+TITLE=Intranet
 
 ## Database(MongoDB)
 DB_HOST=mongodb://localhost/
