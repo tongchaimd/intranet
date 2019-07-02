@@ -17,8 +17,7 @@ html
 	body
 		if isSignedIn
 			include partials/header.pug
-		if process.env.NODE_ENV == 'development'
-			include partials/developer-nav.pug
+		include partials/developer-nav.pug
 		block hero
 		include partials/flash.pug
 		.container(style="padding-top: 10px; padding-bottom: 10px;")

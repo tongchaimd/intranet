@@ -91,12 +91,12 @@ app.use((req, res, next) => {
 });
 
 // connect to database
-const dbUrl = new url.URL(process.env.DB_HOST);
-dbUrl.port = process.env.DB_PORT;
-dbUrl.pathname = process.env.DB_NAME;
-mongoose.connect(dbUrl.toString(), { user: process.env.DB_USER, pass: process.env.DB_PWD });
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+// const dbUrl = new url.URL(process.env.DB_HOST);
+// dbUrl.port = process.env.DB_PORT;
+// dbUrl.pathname = process.env.DB_NAME;
+// mongoose.connect(dbUrl.toString(), { user: process.env.DB_USER, pass: process.env.DB_PWD });
+// const db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error:'));
 
 // defining routing paths
 function resolvePath(...argList) {
